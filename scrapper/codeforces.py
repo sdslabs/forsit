@@ -275,10 +275,26 @@ def fetch_tags_problems():
                 result = db.write(sql, cursor, conn)
     cursor.close()
 
+def update_tag_count():
+    sql = "SELECT tag FROM tag"
+
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    a = db.read(sql, cursor)
+    for i in a:
+        tag = str(i[0].encode('utf8'))
+        sql = "UPDATE tag SET count = (SELECT COUNT(*) FROM ptag WHERE tag = \'" + str(tag) + "\' ) WHERE tag = \'" + tag + "\'" 
+
+        print sql
+        conn = db.connect('forsit')
+        cursor=conn.cursor()
+        result = db.write(sql, cursor, conn)
+
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()
 # fetch_all_problems()
 # insert_all_problems()
 # increment_problem()
-fetch_tags_problems()
+# fetch_tags_problems()
+update_tag_count()
