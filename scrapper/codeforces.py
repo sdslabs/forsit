@@ -53,18 +53,12 @@ except ImportError as exc:
 
 print "script was run at ", time()
 
-proxies = {
-    "http": "http://user:pass@10.10.1.10:3128/"
-}
-
 tags = {}
 precise = {}
 
 def fetch_tag_from_page(pageno):
     url = "http://codeforces.com/problemset/page/"
-    r = requests.get(url+str(pageno), proxies=proxies)
-    # print r.text
-    # print r.status_code
+    r = requests.get(url+str(pageno))
     if(r.status_code != 200):
         print r.status_code, " returned from ", url
         return -1
@@ -74,13 +68,10 @@ def fetch_tag_from_page(pageno):
         results = soup.findAll("a", {"class" : "notice"})
         for i in results:
             a = i['title'].encode('utf8')
-            # print a
             temp = i['href'].split('/tags/')
-            # print temp[1]   
             tags[a] = temp[1]
     
         print pageno, " pages done"
-        # print pagenext
         if(pagenext!=[]):
             return -1
         return 0
@@ -94,10 +85,6 @@ def fetch_all_tags():
             break        
         pageno+=1
 
-    # print len(tags.keys())    
-    # for i in tags.keys():
-    #     print i, " ", tags[i]        
-
 def insert_all_tags():
     sql = "INSERT INTO tag (tag, description, time) VALUES "
     for i in tags.keys():
@@ -108,21 +95,17 @@ def insert_all_tags():
         sql+="('" + str(b) + "','" + str(a) + "','" + str(int(time())) + "'), "
     sql = sql[:-2]
     conn = db.connect('forsit')
-    # Create a cursor object
     cursor=conn.cursor()
     result = db.write(sql, cursor, conn)
     cursor.close()
     
 def fetch_all_problems():
     sql = "SELECT tag from tag"
-    # print sql
     conn = db.connect('forsit')
-    # Create a cursor object
     cursor=conn.cursor()
     a = db.read(sql, cursor)
     cursor.close()
     for i in a:
-        # sleep(10)
         url = "http://codeforces.com/api/problemset.problems"
         payload = {'tags':str(i[0].encode('utf8'))}
         r = requests.get(url, params=payload)
@@ -147,7 +130,6 @@ def fetch_all_problems():
                     temp_list.append(name)
                     temp_list.append(points)
                     precise[code]=temp_list
-                    # print temp_list
 
             for j in problemStatistics:
                 code = 'cfs'+str(j['contestId'])+str(j['index'])
@@ -168,11 +150,8 @@ def insert_all_problems():
 
     sql = sql[:-2]
     print sql
-    # Open database connection
     conn = db.connect('forsit')
-    # Create a cursor object
     cursor=conn.cursor()
-    # result = db.write(sql, cursor, conn)
     cursor.close()
 
 def increment_tags():
@@ -189,17 +168,9 @@ def increment_tags():
         tag_list.append(tag)
 
     for i in tags.keys():
-        if i not in tag_list:
+        if tags[i] not in tag_list:
             new_tags.append(i)
 
-    print new_tags
-    print "\n"
-
-    print tag_list
-    print "\n"
-
-    print tags.keys()
-    print "\n"
     if(len(new_tags)>0):
         sql = "INSERT INTO tag (tag, description, time) VALUES "
         for i in new_tags:
@@ -209,7 +180,6 @@ def increment_tags():
             b = str(tags[i]).replace("'","\\'")
             sql+="('" + str(b) + "','" + str(a) + "','" + str(int(time())) + "'), "
         sql = sql[:-2]
-        print sql
         result = db.write(sql, cursor, conn)
     cursor.close()
 
