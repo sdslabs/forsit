@@ -55,6 +55,9 @@ print "script was run at ", time()
 
 tags = {}
 precise = {}
+problem_list = []
+new_problem = {}
+tag_data = {}
 
 def fetch_tag_from_page(pageno):
     url = "http://codeforces.com/problemset/page/"
@@ -152,6 +155,7 @@ def insert_all_problems():
     print sql
     conn = db.connect('forsit')
     cursor=conn.cursor()
+    result = db.write(sql, cursor, conn)
     cursor.close()
 
 def increment_tags():
@@ -183,9 +187,69 @@ def increment_tags():
         result = db.write(sql, cursor, conn)
     cursor.close()
 
+def increment_problem_from_page(pageno):
+    url = "http://codeforces.com/problemset/page/"
+    r = requests.get(url+str(pageno))
+    if(r.status_code != 200):
+        print r.status_code, " returned from ", url
+        return -1
+    else:
+        soup = BeautifulSoup(r.text)
+        p = soup.findAll("tr")
+        for i in p:
+            j = i.find("td", {"class" : "id"})
+            if(j==None):
+                continue
+            new_pid = "cfs" + str( (j.text).strip() )
+            if new_pid not in problem_list:
+                new_problem[new_pid] = []
+                new_name = str(((soup.find('div', style="float:left;")).text).strip())
+                new_correct_count = str(((soup.find('td', style="font-size:11px;")).text).strip())
+                temp.append(new_pid)
+                temp.append(new_name)
+                temp.append(new_corect_count)
+                new_problem[new_pid] = temp
+            else:
+                return -1
+        print pageno, " pages done"
+        return 0
+
+def increment_problem():
+    sql = "SELECT MID(pid,4) id FROM `problem` WHERE MID(pid, 1, 3) = \"cfs\""
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    a = db.read(sql, cursor)
+    problem_list = []
+    for i in a:
+        # print i
+        pid = str(i[0].encode('utf8'))
+        problem_list.append(pid)
+    pageno = 1        
+    while(fetch_tag_from_page(pageno)==0):
+        pageno+=1
+
+    if(len(new_problem)>0):
+        sql = "INSERT INTO problem (pid, name, correct_count, time) VALUES "
+    for j in new_problem:
+        a = str(j[0]).replace('"','\\"')
+        a = a.replace("'","\\'")
+        b = j[1].encode('utf8')
+        b = str(b).replace('"','\\"')
+        b = b.replace("'","\\'")
+        d = str(j[3]) 
+        sql+="('" + str(a) + "','" + str(b) + "','" + str(d) + "','" + str(int(time())) + "'), "
+
+    sql = sql[:-2]
+    print sql
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    result = db.write(sql, cursor, conn)
+    cursor.close()
+
 
 # fetch_all_tags()
 # insert_all_tags()
-increment_tags()
+# increment_tags()
 # fetch_all_problems()
 # insert_all_problems()
+increment_problem_from_page(1)
