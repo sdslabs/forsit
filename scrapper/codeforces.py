@@ -246,6 +246,16 @@ def increment_problem():
         cursor.close()
 
 def fetch_tags_problems():
+    sql = "SELECT DISTINCT(pid) from ptag"
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    res = db.read(sql, cursor)
+    problem_list = []
+    for i in res:
+        problem = str(i[0])
+        if problem not in problem_list:
+            problem_list.append(problem)
+
     sql = "SELECT tag from tag"
     conn = db.connect('forsit')
     cursor=conn.cursor()
@@ -262,13 +272,16 @@ def fetch_tags_problems():
             res = r.json()
             problems = res['result']['problems']    
             problemStatistics = res['result']['problemStatistics']
-            if len(problems)>0:        
-                sql = "INSERT INTO ptag (pid, tag) VALUES "
-                for j in problems:
-                    code = str(j['contestId'])+str(j['index'])
-                    code = "cfs"+code
+            sql = ""    
+            for j in problems:
+                code = str(j['contestId'])+str(j['index'])
+                code = "cfs"+code
+                if code not in problem_list:
                     sql +="(\'"+code+"\', \'"+tag+"\'), "
+            if(sql!=""):
+                print sql
                 sql = sql[:-2]
+                sql = "INSERT INTO ptag (pid, tag) VALUES " + sql
                 print sql
                 conn = db.connect('forsit')
                 cursor=conn.cursor()
@@ -290,6 +303,30 @@ def update_tag_count():
         cursor=conn.cursor()
         result = db.write(sql, cursor, conn)
 
+def update_problem():
+
+    fetch_all_problems()
+    sql = "INSERT INTO problem (pid, name, points, correct_count, time) VALUES "
+    for j in precise.keys():
+        i = precise[j]
+        a = str(i[0]).replace('"','\\"')
+        a = a.replace("'","\\'")
+        b = i[1].encode('utf8')
+        b = str(b).replace('"','\\"')
+        b = b.replace("'","\\'")
+        b = b.replace(",","\,")
+        c = str(int(i[2]))
+        d = str(i[3]) 
+        sql+="('" + str(a) + "','" + str(b) + "','" + str(c) + "','" + str(d) + "','" + str(int(time())) + "'), "
+
+    sql = sql[:-2]
+    sql+="ON DUPLICATE KEY UPDATE points=VALUES(points),correct_count=VALUES(correct_count),time=VALUES(time);"
+    print sql
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    result = db.write(sql, cursor, conn)
+    cursor.close()
+
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()
@@ -297,4 +334,6 @@ def update_tag_count():
 # insert_all_problems()
 # increment_problem()
 # fetch_tags_problems()
-update_tag_count()
+# update_tag_count()
+# fetch_tags_problems()
+update_problem()
