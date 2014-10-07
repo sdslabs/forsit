@@ -245,10 +245,40 @@ def increment_problem():
         result = db.write(sql, cursor, conn)
         cursor.close()
 
+def fetch_tags_problems():
+    sql = "SELECT tag from tag"
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    a = db.read(sql, cursor)
+    for i in a:
+        url = "http://codeforces.com/api/problemset.problems"
+        tag = str(i[0].encode('utf8'))
+        payload = {'tags':tag}
+        r = requests.get(url, params=payload)
+        if(r.status_code != 200 ):
+            print r.status_code, " returned from ", r.url
+            continue
+        else:
+            res = r.json()
+            problems = res['result']['problems']    
+            problemStatistics = res['result']['problemStatistics']
+            if len(problems)>0:        
+                sql = "INSERT INTO ptag (pid, tag) VALUES "
+                for j in problems:
+                    code = str(j['contestId'])+str(j['index'])
+                    code = "cfs"+code
+                    sql +="(\'"+code+"\', \'"+tag+"\'), "
+                sql = sql[:-2]
+                print sql
+                conn = db.connect('forsit')
+                cursor=conn.cursor()
+                result = db.write(sql, cursor, conn)
+    cursor.close()
 
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()
 # fetch_all_problems()
 # insert_all_problems()
-increment_problem()
+# increment_problem()
+fetch_tags_problems()
