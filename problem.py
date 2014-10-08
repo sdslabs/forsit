@@ -42,7 +42,6 @@ class problem():
 		for i in result :
 			tag = str(i[0].encode('utf8'))
 			self.tag[tag] = round(float(i[1]), 5)
-
 		cursor.close() 
 
 	def print_info(self):
@@ -79,11 +78,10 @@ class problem():
 					continue
 				weight[code][0]+=round( (self.tag[tag]/nfactor), 5)
 		sorted_weight = sorted(weight.items(), key=operator.itemgetter(1), reverse = 1)
-		for i in sorted_weight:
-			print i[0]
+		return sorted_weight
 
 	def find_similar_erdos(self, status):
-
+		self.fetch_info()
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
