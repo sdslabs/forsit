@@ -25,8 +25,6 @@ except ImportError as exc:
 
 
 #generated using http://codeforces.com/blog/entry/3064
-rating = {}
-rank = {}
 
 # 2600+	Red	International grandmaster	1
 # 2200 - 2599	red	Grandmaster	1
@@ -37,6 +35,9 @@ rank = {}
 # 1350 - 1499	Green	Specialist	2
 # 1200 - 1349	Green	Pupil	2
 # 0 - 1199	Gray	Newbie	2
+
+rating = {}
+rank = {}
 
 rank['international grandmaster'] = 1
 rank['grandmaster'] = 0.9
@@ -62,7 +63,7 @@ class user():
 	def __init__(self, uid, cfs_handle = '', erd_handle = ''):
 		self.uid = str(uid)
 		self.cfs_url = "http://codeforces.com/api/user.status"
-		self.erd_url = "http://erdos.sdslabs.co/users/shagun.json"
+		self.erd_url = "http://erdos.sdslabs.co/users/"
 		if(cfs_handle == ''):
 			cfs_handle = self.uid
 		if(erd_handle == ''):
@@ -72,7 +73,7 @@ class user():
 
 	def fetch_user_info_cfs(self):
 		payload = {}
-		payload['handles'] = self.uid
+		payload['handles'] = self.cfs_handle
 		url = "http://codeforces.com/api/user.info"
 		r = requests.get(url, params=payload)
 		if(r.status_code != 200 ):
@@ -83,5 +84,13 @@ class user():
 			self.rating = str(res['rating'])
 			self.score  = rating[self.rank]
 
-a = user('DmitriyH')
-a.fetch_user_info_cfs()
+	def fetch_user_info_erd(self):
+		url = self.erd_url + self.erd_handle + ".json"
+		r = requests.get(url)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			solved_problems = r.json()['solved_problems']
+
+a = user('shagun')
+a.fetch_user_info_erd()
