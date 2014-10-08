@@ -37,7 +37,7 @@ class problem():
 				self.difficulty = round(self.correct_count/self.attempt_count, 5)
 					
 		self.tag = {}
-		sql = "SELECT ptag.tag, 1 - ROUND( 0.5*(count/(SELECT MAX(count) FROM tag)), 6) FROM ptag, tag WHERE ptag.tag = tag.tag AND pid = \'" + self.pid + "\'"
+		sql = "SELECT ptag.tag, 1 - ROUND( 0.75*(count/(SELECT MAX(count) FROM tag)), 6) FROM ptag, tag WHERE ptag.tag = tag.tag AND pid = \'" + self.pid + "\'"
 		result = db.read(sql, cursor)
 		for i in result :
 			tag = str(i[0].encode('utf8'))
@@ -55,7 +55,49 @@ class problem():
 		for i in self.tag:
 			print i, "    ",self.tag[i]
 
-	
-a = problem('erd42')
+	def find_similar_erdos(self, status):
+
+		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
+			   	FROM problem, ptag \
+			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
+				AND problem.pid IN \
+				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
+				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
+				HAVING difficulty BETWEEN "
+		if(status == 1):
+			#correct submission
+			sql+= str(self.difficulty) + " - 0.3 AND " + str(self.difficulty) + " + 0.5 "
+		else:
+			sql+=str(self.difficulty) + " - 0.5 AND " + str(self.difficulty) + " + 0.3 "
+		sql+=" AND difficulty > 0"
+		conn = db.connect('forsit')
+		cursor=conn.cursor()
+		result = db.read(sql, cursor)
+		cursor.close()
+		problem = {}
+		weight = {}
+		difficulty = {}
+		for i in result:
+			code = str(i[0].encode('utf8'))
+			tag = str(i[1].encode('utf8'))
+			if code not in problem.keys():
+				problem[code] = []
+				weight[code] = []
+				weight[code].append(0)
+				weight[code].append( round (abs(float(i[2])-self.difficulty), 5))
+			problem[code].append(tag)
+
+		for code in problem.keys():
+			nfactor = float (len(problem[code]) )
+			for tag in problem[code]:
+				if tag not in self.tag.keys():
+					continue
+				weight[code][0]+=round( (self.tag[tag]/nfactor), 5)
+
+		sorted_weight = sorted(weight.items(), key=operator.itemgetter(1), reverse = 1)
+		for i in sorted_weight:
+			print i[0]
+
+a = problem('erd1')
 a.fetch_info()
-a.print_info()
+a.find_similar_erdos(1)
