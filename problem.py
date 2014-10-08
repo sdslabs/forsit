@@ -17,6 +17,7 @@ except ImportError as exc:
 class problem():
 	def __init__(self, pid):
 		self.pid = str(pid)
+		self.fetch_info()
 
 	def fetch_info(self):
 		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem WHERE MID(pid,1,3) = \'" + self.pid[0:3] + "\') AS max_points FROM problem WHERE pid = \'" + self.pid + "\'"
@@ -42,7 +43,6 @@ class problem():
 		for i in result :
 			tag = str(i[0].encode('utf8'))
 			self.tag[tag] = round(float(i[1]), 5)
-
 		cursor.close() 
 
 	def print_info(self):
@@ -79,11 +79,9 @@ class problem():
 					continue
 				weight[code][0]+=round( (self.tag[tag]/nfactor), 5)
 		sorted_weight = sorted(weight.items(), key=operator.itemgetter(1), reverse = 1)
-		for i in sorted_weight:
-			print i[0]
+		return sorted_weight
 
 	def find_similar_erdos(self, status):
-
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
@@ -97,10 +95,9 @@ class problem():
 		else:
 			sql+=str(self.difficulty) + " - 0.5 AND " + str(self.difficulty) + " + 0.3 "
 		sql+=" AND difficulty > 0"
-		self.reco_algo(sql)
+		return self.reco_algo(sql)
 	
 	def find_similar_cfs(self, status):
-
 		sql = "	SELECT ptag.pid, ptag.tag, \
 				points/(SELECT MAX(points) FROM problem WHERE MID(pid,1,3) = \"cfs\") as difficulty \
 			   	FROM problem, ptag \
@@ -115,7 +112,7 @@ class problem():
 		else:
 			sql+=str(self.difficulty) + " - 0.46 AND " + str(self.difficulty) + " - 0.11 "
 		sql+=" AND difficulty > 0"
-		self.reco_algo(sql)
+		return self.reco_algo(sql)
 
 # a = problem('erd1')
 # a.fetch_info()
