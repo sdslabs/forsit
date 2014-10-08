@@ -55,21 +55,7 @@ class problem():
 		for i in self.tag:
 			print i, "    ",self.tag[i]
 
-	def find_similar_erdos(self, status):
-
-		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
-			   	FROM problem, ptag \
-			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
-				AND problem.pid IN \
-				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
-				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
-				HAVING difficulty BETWEEN "
-		if(status == 1):
-			#correct submission
-			sql+= str(self.difficulty) + " - 0.3 AND " + str(self.difficulty) + " + 0.5 "
-		else:
-			sql+=str(self.difficulty) + " - 0.5 AND " + str(self.difficulty) + " + 0.3 "
-		sql+=" AND difficulty > 0"
+	def reco_algo(self, sql):
 		conn = db.connect('forsit')
 		cursor=conn.cursor()
 		result = db.read(sql, cursor)
@@ -86,18 +72,53 @@ class problem():
 				weight[code].append(0)
 				weight[code].append( round (abs(float(i[2])-self.difficulty), 5))
 			problem[code].append(tag)
-
 		for code in problem.keys():
 			nfactor = float (len(problem[code]) )
 			for tag in problem[code]:
 				if tag not in self.tag.keys():
 					continue
 				weight[code][0]+=round( (self.tag[tag]/nfactor), 5)
-
 		sorted_weight = sorted(weight.items(), key=operator.itemgetter(1), reverse = 1)
 		for i in sorted_weight:
 			print i[0]
 
+	def find_similar_erdos(self, status):
+
+		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
+			   	FROM problem, ptag \
+			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
+				AND problem.pid IN \
+				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
+				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
+				HAVING difficulty BETWEEN "
+		if(status == 1):
+			#correct submission
+			sql+= str(self.difficulty) + " - 0.3 AND " + str(self.difficulty) + " + 0.5 "
+		else:
+			sql+=str(self.difficulty) + " - 0.5 AND " + str(self.difficulty) + " + 0.3 "
+		sql+=" AND difficulty > 0"
+		self.reco_algo(sql)
+	
+	def find_similar_cfs(self, status):
+
+		sql = "	SELECT ptag.pid, ptag.tag, \
+				points/(SELECT MAX(points) FROM problem WHERE MID(pid,1,3) = \"cfs\") as difficulty \
+			   	FROM problem, ptag \
+			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
+				AND problem.pid IN \
+				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
+				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'cfs\' ) \
+				HAVING difficulty BETWEEN "
+		if(status == 1):
+			#correct submission
+			sql+= str(self.difficulty) + " - 0.3 AND " + str(self.difficulty) + " - 0.05 "
+		else:
+			sql+=str(self.difficulty) + " - 0.46 AND " + str(self.difficulty) + " - 0.11 "
+		sql+=" AND difficulty > 0"
+		self.reco_algo(sql)
+
+
 a = problem('erd1')
 a.fetch_info()
-a.find_similar_erdos(1)
+# a.print_info()
+a.find_similar_cfs(1)
