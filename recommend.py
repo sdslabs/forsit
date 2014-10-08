@@ -45,6 +45,6 @@ class recommend():
 		res = cfs.find_similar_cfs(self.status)
 		print res 
 
-a = recommend("erd1",1)
+a = recommend("cfs172D",1)
 a.recommend_most_recent_erdos()
 a.recommend_most_recent_cfs()

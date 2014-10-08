@@ -82,6 +82,7 @@ class problem():
 		return sorted_weight
 
 	def find_similar_erdos(self, status):
+		self.fetch_info()
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
