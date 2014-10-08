@@ -117,8 +117,7 @@ class problem():
 		sql+=" AND difficulty > 0"
 		self.reco_algo(sql)
 
-
-a = problem('erd1')
-a.fetch_info()
+# a = problem('erd1')
+# a.fetch_info()
 # a.print_info()
-a.find_similar_cfs(1)
+# a.find_similar_cfs(1)
