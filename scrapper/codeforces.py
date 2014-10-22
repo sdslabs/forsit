@@ -216,6 +216,7 @@ def increment_problem_from_page(pageno, problem_list):
         return 0
 
 def increment_problem():
+    # function to fetch newly added problems
     sql = "SELECT pid FROM `problem` WHERE MID(pid, 1, 3) = \"cfs\""
     conn = db.connect('forsit')
     cursor=conn.cursor()
