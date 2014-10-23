@@ -4,6 +4,11 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
+    from base import base
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+try:
     from problem import problem
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
@@ -59,7 +64,7 @@ rating['specialist'] = (1350,1499)
 rating['pupil'] = (1200,1349)
 rating['newbie'] = (0,1199)
 
-class user():
+class user(base):
 	def __init__(self, uid, cfs_handle = '', erd_handle = ''):
 		self.uid = str(uid)
 		self.cfs_url = "http://codeforces.com/api/user.status"
@@ -92,5 +97,32 @@ class user():
 		else:
 			solved_problems = r.json()['solved_problems']
 
+	def fetch_user_activity_erd(self, handle):
+		if handle == "":
+			handle = self.erd_handle
+		conn = db.connect('forsit')
+		cursor=conn.cursor()
+		url = "http://erdos.sdslabs.co/activity/users/" + handle + ".json"
+		handle = 'erd_' + handle
+		r = requests.get(url)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			result = r.json()['list']
+			for act in result:
+				sql = "SELECT * FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+				check = db.read(sql, cursor)
+				difficulty = 0
+				if check == ():
+					sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + " )"
+					db.write(sql, cursor, conn)
+				else:
+					sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+					db.write(sql, cursor, conn)
+
+
+
 a = user('shagun')
-a.fetch_user_info_erd()
+#a.fetch_user_info_cfs()
+#print a.rating, a.rank
+a.fetch_user_activity_erd("")
