@@ -97,6 +97,35 @@ class user(base):
 		else:
 			solved_problems = r.json()['solved_problems']
 
+	def fetch_user_activity_cfs(self, handle):
+		if handle == "":
+			handle = self.cfs_handle
+		conn = db.connect('forsit')
+		cursor=conn.cursor()
+		payload = {}
+		payload['handle'] = handle
+		handle = 'cfs_' + handle
+		url = self.cfs_url
+		r = requests.get(url, params=payload)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			result = r.json()['result']
+			for act in result:
+				sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+				check = db.read(sql, cursor)
+				difficulty = 0
+				if act['verdict'] == "OK":
+					status = 1
+				else:
+					status = 0
+				if check == ():
+					sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + " )"
+					db.write(sql, cursor, conn)
+				else:
+					sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+					db.write(sql, cursor, conn)
+
 	def fetch_user_activity_erd(self, handle):
 		if handle == "":
 			handle = self.erd_handle
@@ -125,4 +154,5 @@ class user(base):
 a = user('shagun')
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
-a.fetch_user_activity_erd("")
+# a.fetch_user_activity_erd("")
+# a.fetch_user_activity_cfs("")
