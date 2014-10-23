@@ -149,6 +149,20 @@ class user(base):
 					sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
 					db.write(sql, cursor, conn)
 
+	def calculate_difficulty(self):
+		conn = db.connect('forsit')
+		cursor=conn.cursor()
+		sql = "UPDATE activity SET difficulty = 1 WHERE status = 0"
+		db.write(sql, cursor, conn)
+		sql = "UPDATE activity SET difficulty = 0 WHERE status = 1"
+		db.write(sql, cursor, conn)
+		sql = "UPDATE activity SET difficulty = difficulty + 1 WHERE attempt_count <= 2"
+		db.write(sql, cursor, conn)
+		sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count >= 3 AND attempt_count <= 5"
+		db.write(sql, cursor, conn)
+		sql = "UPDATE activity SET difficulty = difficulty + 5 WHERE attempt_count > 5;"
+		db.write(sql, cursor, conn)
+
 
 
 a = user('shagun')
