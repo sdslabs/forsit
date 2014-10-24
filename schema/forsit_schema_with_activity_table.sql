@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 23, 2014 at 05:14 PM
+-- Generation Time: Oct 24, 2014 at 11:42 PM
 -- Server version: 5.5.34-0ubuntu0.13.04.1
 -- PHP Version: 5.4.9-4ubuntu2.4
 
@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `attempt_count` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0',
   `difficulty` double NOT NULL DEFAULT '0',
-  `uid` int(11) NOT NULL DEFAULT '0'
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `created_at` int(12) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
