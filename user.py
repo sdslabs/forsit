@@ -28,6 +28,10 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    import math
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
 
 #generated using http://codeforces.com/blog/entry/3064
 
@@ -229,6 +233,50 @@ class user(base):
 			if not self.difficulty_matrix.has_key(user):
 				self.difficulty_matrix[user] = {}
 			self.difficulty_matrix[user][problem] = i[4]
+
+	def find_correlation(self, u1, u2):
+
+		# Get the list of mutually rated items
+		si = {}
+		for item in self.difficulty_matrix[u1]:
+			if item in self.difficulty_matrix[u2]:
+				si[item] = 1
+		# Find the number of elements
+		n = len(si)
+
+		# if they are no ratings in common, return 0
+		if n == 0:
+			return 0
+
+		# Add up all the preferences
+		sum1 = sum([self.difficulty_matrix[u1][it] for it in si])
+		sum2 = sum([self.difficulty_matrix[u2][it] for it in si])
+
+		# Sum up the squares
+		sum1Sq = sum([pow(self.difficulty_matrix[u1][it],2) for it in si])
+		sum2Sq = sum([pow(self.difficulty_matrix[u2][it],2) for it in si])
+
+		# Sum up the products
+		pSum = sum([self.difficulty_matrix[u1][it] * self.difficulty_matrix[u2][it] for it in si])
+
+		# Calculate Pearson score
+		num = pSum - (sum1*sum2/n)
+		den = math.sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
+
+		if den == 0:
+			return 0
+		r = num/den
+		return r
+
+	def find_similar_users(self):
+		self.similar_users = {}
+		for u in self.difficulty_matrix.keys():
+			if u[:3] == "erd" and u[3:] != self.erd_handle:
+				self.similar_users[u] = self.find_correlation('erd' + self.erd_handle, u)
+			if u[:3] == "cfs" and u[3:] != self.cfs_handle:
+				self.similar_users[u] = self.find_correlation('cfs' + self.cfs_handle, u)
+		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
+
 
 
 
