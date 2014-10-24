@@ -126,27 +126,36 @@ class user(base):
 		cursor=conn.cursor()
 		payload = {}
 		payload['handle'] = handle
-		handle = 'cfs_' + handle
+		handle = 'cfs' + handle
+		sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+		res = db.read(sql, cursor)
+		if res == ():
+			last_activity = 0
+		else:
+			last_activity = res[0][0]
+		last_activity = int(last_activity)
 		url = self.cfs_url
 		r = requests.get(url, params=payload)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
 		else:
 			result = r.json()['result']
+			result.reverse()
 			for act in result:
-				sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
-				check = db.read(sql, cursor)
-				difficulty = 0
-				if act['verdict'] == "OK":
-					status = 1
-				else:
-					status = 0
-				if check == ():
-					sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + " )"
-					db.write(sql, cursor, conn)
-				else:
-					sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
-					db.write(sql, cursor, conn)
+				if int(act['creationTimeSeconds']) > last_activity:
+					sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+					check = db.read(sql, cursor)
+					difficulty = 0
+					if act['verdict'] == "OK":
+						status = 1
+					else:
+						status = 0
+					if check == ():
+						sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + ", " + str(act['creationTimeSeconds']) +" )"
+						db.write(sql, cursor, conn)
+					else:
+						sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['creationTimeSeconds']) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+						db.write(sql, cursor, conn)
 
 	def fetch_user_activity_erd(self, handle):
 		if handle == "":
@@ -154,22 +163,31 @@ class user(base):
 		conn = db.connect('forsit')
 		cursor=conn.cursor()
 		url = "http://erdos.sdslabs.co/activity/users/" + handle + ".json"
-		handle = 'erd_' + handle
+		handle = 'erd' + handle
+		sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+		res = db.read(sql, cursor)
+		if res == ():
+			last_activity = 0
+		else:
+			last_activity = res[0][0]
+		last_activity = int(last_activity)
 		r = requests.get(url)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
 		else:
 			result = r.json()['list']
+			result.reverse()
 			for act in result:
-				sql = "SELECT * FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
-				check = db.read(sql, cursor)
-				difficulty = 0
-				if check == ():
-					sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + " )"
-					db.write(sql, cursor, conn)
-				else:
-					sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
-					db.write(sql, cursor, conn)
+				if int(act['created_at']) > last_activity:
+					sql = "SELECT * FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+					check = db.read(sql, cursor)
+					difficulty = 0
+					if check == ():
+						sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + ", " + str(act['created_at']) + " )"
+						db.write(sql, cursor, conn)
+					else:
+						sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['created_at']) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+						db.write(sql, cursor, conn)
 
 	def calculate_difficulty(self):
 		conn = db.connect('forsit')
