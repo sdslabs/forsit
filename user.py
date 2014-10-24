@@ -206,6 +206,17 @@ class user(base):
 		db.write(sql, cursor, conn)
 		self.create_difficulty_matrix()
 
+	def fetch_user_activity_all(self):
+		self.fetch_user_list_erd()
+		self.fetch_user_list_cfs()
+		for handle in self.erd_users:
+			self.fetch_user_activity_erd(handle)
+			print "User activity for " + handle
+		for handle in self.cfs_users:
+			self.fetch_user_activity_cfs(handle)
+			print "User activity for " + handle
+		self.calculate_difficulty()
+
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
 		conn = db.connect('forsit')
