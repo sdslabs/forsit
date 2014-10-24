@@ -75,6 +75,8 @@ class user(base):
 			erd_handle = self.uid	
 		self.cfs_handle = str(cfs_handle)
 		self.erd_handle = str(erd_handle)
+		self.calculate_difficulty()
+		self.create_difficulty_matrix()
 
 	def fetch_user_info_cfs(self):
 		payload = {}
@@ -202,11 +204,29 @@ class user(base):
 		db.write(sql, cursor, conn)
 		sql = "UPDATE activity SET difficulty = difficulty + 5 WHERE attempt_count > 5;"
 		db.write(sql, cursor, conn)
+		self.create_difficulty_matrix()
+
+	def create_difficulty_matrix(self):
+		self.difficulty_matrix = {}
+		conn = db.connect('forsit')
+		cursor=conn.cursor()
+		sql = "SELECT * FROM activity"
+		result = db.read(sql, cursor)
+		for i in result:
+			user = str(i[0].encode('utf8'))
+			problem = str(i[1].encode('utf8'))
+			if not self.difficulty_matrix.has_key(user):
+				self.difficulty_matrix[user] = {}
+			self.difficulty_matrix[user][problem] = i[4]
 
 
 
 a = user('shagun')
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
-# a.fetch_user_activity_erd("")
-# a.fetch_user_activity_cfs("")
+#a.fetch_user_activity_erd("")
+#a.calculate_difficulty()
+#a.fetch_user_activity_cfs("deepalijain")
+#a.fetch_user_activity_all()
+a.find_similar_users()
+print a.similar_users
