@@ -97,6 +97,28 @@ class user(base):
 		else:
 			solved_problems = r.json()['solved_problems']
 
+	def fetch_user_list_cfs(self):
+		self.cfs_users = []
+		url = "http://codeforces.com/api/user.ratedList"
+		r = requests.get(url)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			result = r.json()['result']
+			for i in result:
+				self.cfs_users.append(i['handle'])
+
+	def fetch_user_list_erd(self):
+		self.erd_users = []
+		url = "http://erdos.sdslabs.co/users.json"
+		r = requests.get(url)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			result = r.json()['list']
+			for i in result:
+				self.erd_users.append(i['username'])
+
 	def fetch_user_activity_cfs(self, handle):
 		if handle == "":
 			handle = self.cfs_handle
