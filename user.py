@@ -277,6 +277,36 @@ class user(base):
 				self.similar_users[u] = self.find_correlation('cfs' + self.cfs_handle, u)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
+	def recommend_problems(self, mode):
+		# mode = 1 for difficult problems and 0 for easy problems
+		self.find_similar_users()
+		top_similar_users = self.similar_users[:5]
+		totals = {}
+		simSum = {}
+		for i in top_similar_users:
+
+			handle = i[0]
+			score = i[1]
+
+			if score <= 0:
+				continue
+
+			if handle[:3] == "erd":
+				self_handle = "erd" + self.erd_handle
+			if handle[:3] == "cfs":
+				self_handle = "cfs" + self.cfs_handle
+
+			for problem in self.difficulty_matrix[handle]:
+				if problem not in self.difficulty_matrix[self_handle]:
+					totals.setdefault(problem, 0)
+					totals[problem] += self.difficulty_matrix[handle][problem] * score
+					simSum.setdefault(problem, 0)
+					simSum[problem] += score
+		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
+		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
+		return plist
+
+
 
 
 
@@ -287,5 +317,5 @@ a = user('shagun')
 #a.calculate_difficulty()
 #a.fetch_user_activity_cfs("deepalijain")
 #a.fetch_user_activity_all()
-a.find_similar_users()
-print a.similar_users
+#a.find_similar_users()
+print a.recommend_problems(1)
