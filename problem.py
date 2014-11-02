@@ -144,19 +144,19 @@ class problem(base):
 
 	def find_correlation(self, u1, u2):
 
-		# Get the list of mutually rated items
 		si = {}
 		for item in self.difficulty_matrix[u1]:
 			if item in self.difficulty_matrix[u2]:
 				si[item] = 1
-		# Find the number of elements
 		n = len(si)
 
-		# if they are no ratings in common, return 0
+		n1 = len(self.difficulty_matrix[u1])
+		n2 = len(self.difficulty_matrix[u2])
+
+		# if there are no common users, return 0
 		if n == 0:
 			return 0
 
-		# Add up all the preferences
 		sum1 = sum([self.difficulty_matrix[u1][it] for it in si])
 		sum2 = sum([self.difficulty_matrix[u2][it] for it in si])
 
@@ -174,7 +174,7 @@ class problem(base):
 		if den == 0:
 			return 0
 		r = num/den
-		return r
+		return (r*n)/(n1+n2)
 
 	def find_correlated_problems(self):
 		self.correlated_problems = {}
