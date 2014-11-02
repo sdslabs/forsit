@@ -26,7 +26,7 @@ except ImportError as exc:
 class problem(base):
 	def __init__(self, pid):
 		self.pid = str(pid)
-		self.fetch_info()
+		self.exists_in_db = self.fetch_info()
 		self.create_difficulty_matrix()
 
 	def fetch_info(self):
@@ -36,7 +36,7 @@ class problem(base):
 		result = db.read(sql, cursor)
 		if result == ():
 			print "No Results Found!"
-			return
+			return 0
 
 		for i in result :
 			self.points = float(i[0])
@@ -54,16 +54,20 @@ class problem(base):
 			tag = str(i[0].encode('utf8'))
 			self.tag[tag] = round(float(i[1]), 5)
 		cursor.close() 
+		return 1
 
 	def print_info(self):
-		print "pid = ", self.pid
-		print "points = ", self.points
-		print "correct_count = ", self.correct_count
-		print "attempt_count = ", self.attempt_count
-		print "difficulty = ", self.difficulty 
-		print "Tag count : "
-		for i in self.tag:
-			print i, "    ",self.tag[i]
+		if self.exists_in_db:
+			print "pid = ", self.pid
+			print "points = ", self.points
+			print "correct_count = ", self.correct_count
+			print "attempt_count = ", self.attempt_count
+			print "difficulty = ", self.difficulty 
+			print "Tag count : "
+			for i in self.tag:
+				print i, "    ",self.tag[i]
+		else:
+			print "No Results Found!"
 
 	def reco_algo(self, sql):
 		conn = db.connect('forsit')
