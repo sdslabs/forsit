@@ -105,7 +105,7 @@ class user(base):
 
 	def fetch_user_list_cfs(self):
 		self.cfs_users = []
-		url = "http://codeforces.com/api/user.ratedList"
+		url = "http://codeforces.com/api/user.ratedList?activeOnly=true"
 		r = requests.get(url)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
@@ -198,15 +198,15 @@ class user(base):
 	def calculate_difficulty(self):
 		conn = db.connect('forsit')
 		cursor=conn.cursor()
-		sql = "UPDATE activity SET difficulty = 1 WHERE status = 0"
+		sql = "UPDATE activity SET difficulty = 3 WHERE status = 0"
 		db.write(sql, cursor, conn)
 		sql = "UPDATE activity SET difficulty = 0 WHERE status = 1"
 		db.write(sql, cursor, conn)
 		sql = "UPDATE activity SET difficulty = difficulty + 1 WHERE attempt_count <= 2"
 		db.write(sql, cursor, conn)
-		sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count >= 3 AND attempt_count <= 5"
+		sql = "UPDATE activity SET difficulty = difficulty + 2 WHERE attempt_count >= 3 AND attempt_count <= 5"
 		db.write(sql, cursor, conn)
-		sql = "UPDATE activity SET difficulty = difficulty + 5 WHERE attempt_count > 5;"
+		sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count > 5;"
 		db.write(sql, cursor, conn)
 		self.create_difficulty_matrix()
 
@@ -271,11 +271,13 @@ class user(base):
 
 	def find_similar_users(self):
 		self.similar_users = {}
+		self_erd_handle = 'erd' + self.erd_handle
+		self_cfs_handle = 'cfs' + self.cfs_handle
 		for u in self.difficulty_matrix.keys():
-			if u[:3] == "erd" and u[3:] != self.erd_handle:
-				self.similar_users[u] = self.find_correlation('erd' + self.erd_handle, u)
-			if u[:3] == "cfs" and u[3:] != self.cfs_handle:
-				self.similar_users[u] = self.find_correlation('cfs' + self.cfs_handle, u)
+			if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
+				self.similar_users[u] = self.find_correlation(self_erd_handle, u)
+			if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
+				self.similar_users[u] = self.find_correlation(self_cfs_handle, u)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
 	def recommend_problems(self, mode):
@@ -305,18 +307,22 @@ class user(base):
 					simSum[problem] += score
 		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
-		return plist
+		return plist[:20]
 
 
 
 
 
-a = user('shagun')
+
+a = user('tourist')
+print a.tag_weight_matrix
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
 #a.fetch_user_activity_erd("")
 #a.calculate_difficulty()
 #a.fetch_user_activity_cfs("deepalijain")
 #a.fetch_user_activity_all()
-#a.find_similar_users()
-print a.recommend_problems(1)
+# a.find_similar_users()
+# print a.similar_users
+# print "\n"
+# print a.recommend_problems(1)

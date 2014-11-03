@@ -183,8 +183,24 @@ class problem(base):
 				self.correlated_problems[p] = self.find_correlation(self.pid, p)
 		self.correlated_problems = sorted(self.correlated_problems.items(), key=operator.itemgetter(1), reverse = 1)
 
-a = problem('erd13')
-# a.fetch_info()
-# a.print_info()
-print a.find_similar_erdos(1)
-a.find_correlated_problems()
+if __name__ == "__main__":
+
+	a = problem('cfs175E')
+	# a.fetch_info()
+	# a.print_info()
+	print "\n"
+	print "\n"
+	for item in a.find_similar_cfs(1)[:10]:
+		print item
+		b = problem(item[0])
+		b.print_info()
+		print "\n"
+	a.find_correlated_problems()
+	print "\n"
+	print "\n"
+	print "\n"
+	for item in a.correlated_problems[:10]:
+		print item
+		b = problem(item[0])
+		b.print_info()
+		print "\n"
