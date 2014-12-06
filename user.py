@@ -307,10 +307,12 @@ class user(base):
 	def recommend_problems(self, mode):
 		# mode = 1 for difficult problems and 0 for easy problems
 		self.find_similar_users()
-		top_similar_users = self.similar_users[:10]
+		top_similar_users = self.similar_users
 		totals = {}
 		simSum = {}
-		
+		totals_eval = {}
+		simSum_eval = {}
+
 		for i in top_similar_users:
 
 			handle = i[0]
@@ -332,23 +334,52 @@ class user(base):
 					totals[problem] += ( avg + self.difficulty_matrix[handle][problem] ) * score
 					simSum.setdefault(problem, 0)
 					simSum[problem] += score
+
+				# for evaluating the model
+				if problem in self.difficulty_matrix[self_handle]:
+					totals_eval.setdefault(problem, 0)
+					totals_eval[problem] += ( avg + self.difficulty_matrix[handle][problem] ) * score
+					simSum_eval.setdefault(problem, 0)
+					simSum_eval[problem] += score
+
 		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
+		plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
+		print "error: " + str(self.evaluate_recommendation( plist_eval )) + "\n"
 		return plist[:50]
 
+	def evaluate_recommendation(self, plist_eval):
+		error = 0
+		for i in plist_eval:
+			predicted = i[1]
+
+			if i[0][:3] == "erd":
+				self_handle = "erd" + self.erd_handle
+				avg = self.erd_avg
+				actual = avg + self.difficulty_matrix[self_handle][i[0]]
+
+			if i[0][:3] == "cfs":
+				self_handle = "cfs" + self.erd_handle
+				avg = self.cfs_avg
+				actual = avg + self.difficulty_matrix[self_handle][i[0]]
+
+			error += pow( (predicted - actual), 2 )
+			#print i[0] + " " + str(predicted) + " " + str(actual)
+		n = len(plist_eval)
+		error = error/n
+		error = math.sqrt( error )
+		return error
 
 
 
 
-
-a = user('tourist')
+a = user('shagun')
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
 #a.fetch_user_activity_erd("")
 #a.calculate_difficulty()
 #a.fetch_user_activity_cfs("deepalijain")
 #a.fetch_user_activity_all()
-a.find_similar_users()
-print a.similar_users
-print "\n"
-print a.recommend_problems(0)
+#a.find_similar_users()
+#sprint a.similar_users
+print a.recommend_problems(1)
