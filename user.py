@@ -76,11 +76,10 @@ class user(base):
 		if(cfs_handle == ''):
 			cfs_handle = self.uid
 		if(erd_handle == ''):
-			erd_handle = self.uid	
+			erd_handle = self.uid
 		self.cfs_handle = str(cfs_handle)
 		self.erd_handle = str(erd_handle)
 		self.calculate_difficulty()
-		self.create_difficulty_matrix()
 
 	def fetch_user_info_cfs(self):
 		payload = {}
@@ -234,6 +233,30 @@ class user(base):
 				self.difficulty_matrix[user] = {}
 			self.difficulty_matrix[user][problem] = i[4]
 
+		self_handle = "erd" + self.erd_handle
+		if self.difficulty_matrix.has_key(self_handle):
+			n = len(self.difficulty_matrix[self_handle])
+			s = sum(self.difficulty_matrix[self_handle][it] for it in self.difficulty_matrix[self_handle])
+			self.erd_avg = s/n
+
+		self_handle = "cfs" + self.cfs_handle
+		if self.difficulty_matrix.has_key(self_handle):
+			n = len(self.difficulty_matrix[self_handle])
+			s = sum(self.difficulty_matrix[self_handle][it] for it in self.difficulty_matrix[self_handle])
+			self.cfs_avg = s/n
+
+		self.normalize_difficulty_matrix()
+
+	def normalize_difficulty_matrix(self, type = 0):
+		for u in self.difficulty_matrix:
+			n = len(self.difficulty_matrix[u])
+			s = sum(self.difficulty_matrix[u][it] for it in self.difficulty_matrix[u])
+			avg = s/n
+			for it in self.difficulty_matrix[u]:
+				self.difficulty_matrix[u][it] = self.difficulty_matrix[u][it] - avg
+
+
+
 	def find_correlation(self, u1, u2):
 
 		si = {}
@@ -267,7 +290,8 @@ class user(base):
 		if den == 0:
 			return 0
 		r = num/den
-		return (r*n)/(n1+n2)
+		return r
+		#return (r*n)/(n1+n2)
 
 	def find_similar_users(self):
 		self.similar_users = {}
@@ -283,9 +307,10 @@ class user(base):
 	def recommend_problems(self, mode):
 		# mode = 1 for difficult problems and 0 for easy problems
 		self.find_similar_users()
-		top_similar_users = self.similar_users[:5]
+		top_similar_users = self.similar_users[:10]
 		totals = {}
 		simSum = {}
+		
 		for i in top_similar_users:
 
 			handle = i[0]
@@ -296,18 +321,20 @@ class user(base):
 
 			if handle[:3] == "erd":
 				self_handle = "erd" + self.erd_handle
+				avg = self.erd_avg
 			if handle[:3] == "cfs":
 				self_handle = "cfs" + self.cfs_handle
+				avg = self.cfs_avg
 
 			for problem in self.difficulty_matrix[handle]:
 				if problem not in self.difficulty_matrix[self_handle]:
 					totals.setdefault(problem, 0)
-					totals[problem] += self.difficulty_matrix[handle][problem] * score
+					totals[problem] += ( avg + self.difficulty_matrix[handle][problem] ) * score
 					simSum.setdefault(problem, 0)
 					simSum[problem] += score
 		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
-		return plist[:20]
+		return plist[:50]
 
 
 
@@ -315,14 +342,13 @@ class user(base):
 
 
 a = user('tourist')
-print a.tag_weight_matrix
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
 #a.fetch_user_activity_erd("")
 #a.calculate_difficulty()
 #a.fetch_user_activity_cfs("deepalijain")
 #a.fetch_user_activity_all()
-# a.find_similar_users()
-# print a.similar_users
-# print "\n"
-# print a.recommend_problems(1)
+a.find_similar_users()
+print a.similar_users
+print "\n"
+print a.recommend_problems(0)
