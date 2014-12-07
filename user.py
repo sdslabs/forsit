@@ -257,7 +257,7 @@ class user(base):
 				self.difficulty_matrix[u][it] = self.difficulty_matrix[u][it] - avg
 
 
-	def find_correlation(self, u1, u2):
+	def find_correlation(self, u1, u2, gamma = 100):
 
 		si = {}
 		n1 = len(self.difficulty_matrix[u1])
@@ -296,6 +296,12 @@ class user(base):
 		den = math.sqrt( den )
 
 		r = num/den
+
+		penalizing_factor = float(min(n,gamma))/gamma
+		r = penalizing_factor*r
+
+		#print u1, u2, n, r, num, den
+
 		return r
 		#return (r*n)/(n1+n2)
 
@@ -305,9 +311,9 @@ class user(base):
 		self_cfs_handle = 'cfs' + self.cfs_handle
 		for u in self.difficulty_matrix.keys():
 			if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
-				self.similar_users[u] = self.find_correlation(self_erd_handle, u)
+				self.similar_users[u] = self.find_correlation(self_erd_handle, u, 5)
 			if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
-				self.similar_users[u] = self.find_correlation(self_cfs_handle, u)
+				self.similar_users[u] = self.find_correlation(self_cfs_handle, u, 50)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
 	def recommend_problems(self, mode):
