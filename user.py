@@ -70,6 +70,7 @@ rating['newbie'] = (0,1199)
 
 class user(base):
 	def __init__(self, uid, cfs_handle = '', erd_handle = ''):
+		self.training_problems = {}
 		self.uid = str(uid)
 		self.cfs_url = "http://codeforces.com/api/user.status"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
@@ -256,18 +257,20 @@ class user(base):
 				self.difficulty_matrix[u][it] = self.difficulty_matrix[u][it] - avg
 
 
-
 	def find_correlation(self, u1, u2):
 
 		si = {}
-		for item in self.difficulty_matrix[u1]:
-			if item in self.difficulty_matrix[u2]:
-				si[item] = 1
-
-		n = len(si)
-
 		n1 = len(self.difficulty_matrix[u1])
 		n2 = len(self.difficulty_matrix[u2])
+
+		i = 0
+		for item in self.difficulty_matrix[u1]:
+			if item in self.difficulty_matrix[u2] and (i <= (n1*0.8)):
+				si[item] = 1
+				self.training_problems[item] = 1
+			i = i+1
+
+		n = len(si)
 
 		# if there are no common problems, return 0
 		if n == 0:
@@ -285,10 +288,13 @@ class user(base):
 
 		# Calculate Pearson score
 		num = pSum - (sum1*sum2/n)
-		den = math.sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
+		den = (sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n)
 
-		if den == 0:
+		if den <= 0:
 			return 0
+
+		den = math.sqrt( den )
+
 		r = num/den
 		return r
 		#return (r*n)/(n1+n2)
@@ -336,7 +342,7 @@ class user(base):
 					simSum[problem] += score
 
 				# for evaluating the model
-				if problem in self.difficulty_matrix[self_handle]:
+				if problem in self.difficulty_matrix[self_handle] and problem not in self.training_problems:
 					totals_eval.setdefault(problem, 0)
 					totals_eval[problem] += ( avg + self.difficulty_matrix[handle][problem] ) * score
 					simSum_eval.setdefault(problem, 0)
@@ -373,13 +379,14 @@ class user(base):
 
 
 
-a = user('shagun')
+a = user('tourist')
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
 #a.fetch_user_activity_erd("")
 #a.calculate_difficulty()
 #a.fetch_user_activity_cfs("deepalijain")
 #a.fetch_user_activity_all()
-#a.find_similar_users()
+#print a.find_correlation('cfstourist', 'cfsnew')
 #sprint a.similar_users
 print a.recommend_problems(1)
+#print len(a.training_problems)
