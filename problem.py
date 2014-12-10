@@ -23,6 +23,11 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    import time
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+    
 class problem(base):
 	def __init__(self, pid, app_name = "forsit"):
 		self.pid = str(pid)
@@ -30,7 +35,6 @@ class problem(base):
 		self.cursor = self.conn.cursor()
 		self.exists_in_db = self.fetch_info()
 		# self.create_difficulty_matrix()
-
 
 	def fetch_info(self):
 		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem \
@@ -87,7 +91,7 @@ class problem(base):
 			self.tag[tag]/=normalisation_factor
 			self.tag[tag] = round(self.tag[tag],6)
 			checksum+=self.tag[tag]
-		print "the final checksum = ", checksum	
+		# print "the final checksum = ", checksum	
 		return 1
 
 	def print_info(self):
@@ -104,30 +108,41 @@ class problem(base):
 			print "No Results Found!"
 
 	def reco_algo(self, sql):
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
-		result = db.read(sql, cursor)
-		cursor.close()
+		result = db.read(sql, self.cursor)
 		problem = {}
-		weight = {}
+		#mapping of problem code with a list of tags
+		score = {}
+		#mapping of score of problem code with its score 
 		difficulty = {}
+		#mapping of problem code with difficulty
 		for i in result:
 			code = str(i[0].encode('utf8'))
 			tag = str(i[1].encode('utf8'))
-			if code not in problem.keys():
+			if code not in problem:
 				problem[code] = []
-				weight[code] = []
-				weight[code].append(0)
-				weight[code].append( round (abs(float(i[2])-self.difficulty), 5))
+				score[code] = 0
+				difficulty[code] = round (abs(float(i[2])-self.difficulty), 6)
 			problem[code].append(tag)
-		for code in problem.keys():
-			nfactor = float (len(problem[code]) )
+		for code in problem:
+			# instead of using nfactor as the number of tags, we should normalise only for those 
+			# tags which do not occur in self.tag else the results are biased towards the highest
+			# weighted tag. We can still improve the normalisation factor by using a slow
+			# growing function. Also currently the common tags are being penalised just once 
+			# ie while calculating the idf score for the problem.
+			 
+			nfactor = 1
 			for tag in problem[code]:
-				if tag not in self.tag.keys():
+				if tag not in self.tag:
+					nfactor+=1
 					continue
-				weight[code][0]+=round( (self.tag[tag]/nfactor), 5)
-		sorted_weight = sorted(weight.items(), key=operator.itemgetter(1), reverse = 1)
-		return sorted_weight
+				score[code]+=self.tag[tag]
+			score[code]=round( (score[code]/nfactor), 6)
+		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)	
+		print "top 15 results : "
+		for i in range(1,15):
+			print "problem id, score : ", sorted_score[i]
+			print "tags : ", problem[sorted_score[i][0]]
+		return sorted_score
 
 	def find_similar_erdos(self, status):
 		self.fetch_info()
@@ -146,21 +161,23 @@ class problem(base):
 		sql+=" AND difficulty > 0"
 		return self.reco_algo(sql)
 	
-	def find_similar_cfs(self, status):
-		sql = "	SELECT ptag.pid, ptag.tag, \
-				points/(SELECT MAX(points) FROM problem WHERE MID(pid,1,3) = \"cfs\") as difficulty \
-			   	FROM problem, ptag \
-			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
+	def find_similar_cfs(self, status = 0):
+		sql = "	SELECT ptag.pid, ptag.tag, points/(SELECT MAX(points) FROM problem \
+			    WHERE MID(pid,1,3) = \"cfs\") as difficulty FROM problem, ptag \
+			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid \
 				AND problem.pid IN \
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
-				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'cfs\' ) \
+				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') \
+				AND MID(problem.pid,1,3)=\'cfs\' ) \
 				HAVING difficulty BETWEEN "
 		if(status == 1):
 			#correct submission
-			sql+= str(self.difficulty) + " - 0.3 AND " + str(self.difficulty) + " - 0.05 "
+			sql+= str(self.difficulty) + " + 0.05 AND " + str(self.difficulty) + " - 0.15 "
 		else:
-			sql+=str(self.difficulty) + " - 0.46 AND " + str(self.difficulty) + " - 0.11 "
+			sql+=str(self.difficulty) + " - 0.25 AND " + str(self.difficulty) + " - 0.05 "
 		sql+=" AND difficulty > 0"
+
+		# print sql
 		return self.reco_algo(sql)
 
 	def create_difficulty_matrix(self):
@@ -221,7 +238,11 @@ if __name__ == "__main__":
 
 	a = problem('cfs175E')
 	# a.fetch_info()
+	print time.strftime("%d-%m-%Y %H:%M")
 	a.print_info()
+	a.find_similar_cfs()
+	print "\n\n\n\n"
+
 	# print "\n"
 	# print "\n"
 	# for item in a.find_similar_cfs(1)[:10]:
