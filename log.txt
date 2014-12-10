@@ -41,4 +41,51 @@ tags :  ['brute force', 'dp', 'two pointers']
 
 
 
+11-12-2014 00:13
+pid =  cfs175E
+points =  3000.0
+correct_count =  108.0
+attempt_count =  -1.0
+difficulty =  1.0
+Tag count : 
+brute force      0.355194
+greedy      0.327225
+dp      0.317581
+3
+27
+(0.8571, 3)
+264
+top 15 results : 
+problem id, score :  ('cfs161E', 0.672775)
+tags :  ['brute force', 'dp']
+problem id, score :  ('cfs335F', 0.644806)
+tags :  ['dp', 'greedy']
+problem id, score :  ('cfs370E', 0.644806)
+tags :  ['dp', 'greedy']
+problem id, score :  ('cfs105E', 0.355194)
+tags :  ['brute force']
+problem id, score :  ('cfs152D', 0.355194)
+tags :  ['brute force']
+problem id, score :  ('cfs138E', 0.336388)
+tags :  ['brute force', 'dp', 'two pointers']
+problem id, score :  ('cfs261E', 0.336388)
+tags :  ['brute force', 'dp', 'two pointers']
+problem id, score :  ('cfs175D', 0.336388)
+tags :  ['brute force', 'dp', 'probabilities']
+problem id, score :  ('cfs263E', 0.336388)
+tags :  ['brute force', 'data structures', 'dp']
+problem id, score :  ('cfs27E', 0.336388)
+tags :  ['brute force', 'dp', 'number theory']
+problem id, score :  ('cfs436F', 0.336388)
+tags :  ['brute force', 'data structures', 'dp']
+problem id, score :  ('cfs183E', 0.327225)
+tags :  ['greedy']
+problem id, score :  ('cfs89E', 0.327225)
+tags :  ['greedy']
+problem id, score :  ('cfs448C', 0.322403)
+tags :  ['divide and conquer', 'dp', 'greedy']
+
+
+
+
 
