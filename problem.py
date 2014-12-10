@@ -180,28 +180,45 @@ class problem(base):
 
 		'''plot the distribution of max and min points for a competiton'''
 		a=time.time()
-		sql = "SELECT (SELECT MAX(points) FROM problem WHERE \
-				MID(pid,1,6) = MID(P.pid, 1, 6) ) FROM problem P WHERE P.pid in \
-				(SELECT pid FROM problem GROUP BY MID( pid, 1, 6 ) \
-				 HAVING MID( pid, 1, 3 ) = \"cfs\") AND points > 0 "
+		sql = "SELECT (SELECT MAX(points) FROM problem WHERE contestId = P.contestId), \
+			   (SELECT MIN(points) FROM problem WHERE contestId = P.contestId) \
+			   FROM problem P WHERE P.pid in (SELECT pid FROM problem GROUP BY \
+			   contestId HAVING MID( pid, 1, 3 ) = \"cfs\") AND points > 0 "
+
 		print sql
 		result = db.read(sql, self.cursor)
 		print "time to execute sql = ", time.time()-a
 		max_score = {}
+		min_score = {}
 
 		for i in result:
-			point = float(i[0])
-			if point in max_score:
-				max_score[point]+=1
+			max_point = float(i[0])
+			min_point = float(i[1])
+			if max_point in max_score:
+				max_score[max_point]+=1
 			else:
-				max_score[point] = 1
-		sorted_max_score = sorted(max_score.items(), key=operator.itemgetter(1), reverse = 1)
-		for i in sorted_max_score:
-			print i
-		plt.figure()
-		plt.plot(max_score.keys(), max_score.values(), 'ro')
-		plt.show()
-
+				max_score[max_point] = 1
+			if min_point in min_score:
+				min_score[min_point]+=1
+			else:
+				min_score[min_point] = 1
+		if(max_flag == 1):
+			sorted_max_score = sorted(max_score.items(), key=operator.itemgetter(1), reverse = 1)
+			print "Plot of Max Score"
+			for i in sorted_max_score:
+				print i
+			plt.figure()
+			plt.plot(max_score.keys(), max_score.values(), 'ro')
+			plt.show()
+		if(min_flag == 1):
+			sorted_min_score = sorted(min_score.items(), key=operator.itemgetter(1), reverse = 1)
+			print "Plot of Min Score"
+			for i in sorted_min_score:
+				print i
+			plt.figure()
+			plt.plot(min_score.keys(), min_score.values(), 'bs')
+			plt.show()	
+			
 	def find_similar_erdos(self, status = 0):
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
@@ -299,7 +316,7 @@ if __name__ == "__main__":
 	a.print_info()
 	# a.find_similar_erdos()
 	# print "\n\n\n\n"
-	a.plot_points_distribution()
+	a.plot_points_distribution(max_flag=0, min_flag = 1)
 	# a.plot_difficulty_distribution()
 
 	# print "\n"
