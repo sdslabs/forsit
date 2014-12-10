@@ -55,3 +55,6 @@ target/
 
 #config
 config/config.cfg
+
+#Logs
+Logs/*
