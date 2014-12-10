@@ -118,9 +118,11 @@ def fetch_all_problems():
         else:
             res = r.json()
             problems = res['result']['problems']    
-            problemStatistics = res['result']['problemStatistics']        
+            problemStatistics = res['result']['problemStatistics']  
+            print problems
+            print "\n\n\n"      
             for j in problems:
-                code = str(j['contestId'])+str(j['index'])
+                code = str(j['contestId'])+str(j['index'].encode('utf8'))
                 if(code not in precise.keys()):
                     temp_list = []
                     code = "cfs"+code
@@ -132,6 +134,7 @@ def fetch_all_problems():
                     temp_list.append(code)
                     temp_list.append(name)
                     temp_list.append(points)
+                    temp_list.append(str(j['contestId']))
                     precise[code]=temp_list
 
             for j in problemStatistics:
@@ -139,20 +142,21 @@ def fetch_all_problems():
                 precise[code].append(j['solvedCount'])
 
 def insert_all_problems():
-    sql = "INSERT INTO problem (pid, name, points, correct_count, time) VALUES "
-    for j in precise.keys():
+    sql = "INSERT INTO problem (pid, name, points, correct_count, time, contestId) VALUES "
+    for j in precise:
         i = precise[j]
-        a = str(i[0]).replace('"','\\"')
+        a = str(i[0].encode('utf8')).replace('"','\\"')
         a = a.replace("'","\\'")
         b = i[1].encode('utf8')
         b = str(b).replace('"','\\"')
         b = b.replace("'","\\'")
         c = str(int(i[2]))
-        d = str(i[3]) 
-        sql+="('" + str(a) + "','" + str(b) + "','" + str(c) + "','" + str(d) + "','" + str(int(time())) + "'), "
+        d = str(i[4]) 
+        e = str(i[3].encode('utf8'))
+        sql+="('" + str(a) + "','" + str(b) + "','" + str(c) + "','" + str(d) + "','" + str(int(time())) + "', '" + str(e) + "'), "
 
     sql = sql[:-2]
-    print sql
+    # print sql
     conn = db.connect('forsit')
     cursor=conn.cursor()
     result = db.write(sql, cursor, conn)
@@ -331,10 +335,10 @@ def update_problem():
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()
-# fetch_all_problems()
-# insert_all_problems()
+fetch_all_problems()
+insert_all_problems()
 # increment_problem()
+fetch_tags_problems()
+update_tag_count()
 # fetch_tags_problems()
-# update_tag_count()
-# fetch_tags_problems()
-update_problem()
+# update_problem()

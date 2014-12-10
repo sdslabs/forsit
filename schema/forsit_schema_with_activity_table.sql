@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `activity` (
 CREATE TABLE IF NOT EXISTS `problem` (
   `pid` varchar(50) NOT NULL,
   `name` varchar(200) NOT NULL,
+  `contestId` varchar(50) NOT NULL,
   `points` int(11) NOT NULL,
   `correct_count` int(11) NOT NULL,
   `attempt_count` int(11) NOT NULL DEFAULT '-1',
