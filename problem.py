@@ -44,7 +44,7 @@ class problem(base):
 
 	def fetch_info(self):
 		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem \
-			   WHERE MID(pid,1,3) = \'" + self.pid[0:3] + "\') AS max_points FROM problem \
+			   WHERE contestId = P.contestId ) AS max_points FROM problem P \
 			   WHERE pid = \'" + self.pid + "\'"
 		
 		# print sql
@@ -58,9 +58,9 @@ class problem(base):
 			self.correct_count = float(i[1])
 			self.attempt_count = float(i[2])
 			if(self.points>0):
-				self.difficulty = round(self.points/float(i[3]), 5)
+				self.difficulty = round( (self.points/( max (3000.0,float( i[3] ) ) ) ), 6)
 			else:
-				self.difficulty = round(self.correct_count/self.attempt_count, 5)
+				self.difficulty = round(self.correct_count/self.attempt_count, 6)
 		
 		sql = "SELECT count(*) FROM problem WHERE MID(pid,1,3) = \'" + self.pid[0:3] + "\'"
 		
@@ -152,9 +152,9 @@ class problem(base):
 
 	def plot_difficulty_distribution(self):
 		a=time.time()
-		sql = "SELECT P.pid, P.points, P.points/(SELECT MAX(points) FROM problem \
-			WHERE MID(pid,1,6) = MID(P.pid, 1, 6)) as difficulty FROM problem P \
-			WHERE MID(P.pid,1,3) = \"cfs\""
+		sql = "SELECT P.pid, P.points, P.points/GREATEST(3000, (SELECT MAX(points) FROM problem \
+			WHERE contestId = P.contestId)) as difficulty FROM problem P \
+			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
 		# sql = "SELECT pid, points as difficulty FROM problem WHERE \
 		# 		MID(pid,1,3) = \"cfs\" AND isdeleted = 0 AND points>0"
 		# print sql
@@ -164,14 +164,14 @@ class problem(base):
 
 		for i in result:
 			pid = str(i[0].encode('utf8'))
-			point = float(i[1])
+			point = float(i[2])
 			if point in difficulty:
 				difficulty[point]+=1
 			else:
 				difficulty[point] = 1
-		sorted_difficulty = sorted(difficulty.items(), key=operator.itemgetter(1), reverse = 1)
+		sorted_difficulty = sorted(difficulty.items(), key=operator.itemgetter(0), reverse = 1)
 		for i in sorted_difficulty:
-			print i
+			print i, " ", i[0]*3000
 		plt.figure()
 		plt.plot(difficulty.keys(), difficulty.values(), 'ro')
 		plt.show()	
@@ -218,7 +218,7 @@ class problem(base):
 			plt.figure()
 			plt.plot(min_score.keys(), min_score.values(), 'bs')
 			plt.show()	
-			
+
 	def find_similar_erdos(self, status = 0):
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
@@ -237,10 +237,10 @@ class problem(base):
 		return self.reco_algo(sql)
 	
 	def find_similar_cfs(self, status = 0):
-		sql = "	SELECT ptag.pid, ptag.tag, points/(SELECT MAX(points) FROM problem \
-			    WHERE MID(pid,1,3) = \"cfs\") as difficulty FROM problem, ptag \
-			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid \
-				AND problem.pid IN \
+
+		sql = "	SELECT ptag.pid, ptag.tag, P.points/GREATEST(3000, (SELECT MAX(points) FROM problem \
+			    WHERE contestId = P.contestId)) as difficulty FROM problem P, ptag \
+			   	WHERE P.pid != \'" + self.pid + "\' AND P.pid = ptag.pid AND P.pid IN \
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') \
 				AND MID(problem.pid,1,3)=\'cfs\' ) \
@@ -252,7 +252,7 @@ class problem(base):
 			sql+=str(self.difficulty) + " - 0.25 AND " + str(self.difficulty) + " - 0.05 "
 		sql+=" AND difficulty > 0"
 
-		# print sql
+		print sql
 		return self.reco_algo(sql)
 
 	def create_difficulty_matrix(self):
@@ -314,9 +314,10 @@ if __name__ == "__main__":
 	a = problem('cfs175E')
 	# print time.strftime("%d-%m-%Y %H:%M")
 	a.print_info()
+	a.find_similar_cfs()
 	# a.find_similar_erdos()
 	# print "\n\n\n\n"
-	a.plot_points_distribution(max_flag=0, min_flag = 1)
+	# a.plot_points_distribution(max_flag=0, min_flag = 1)
 	# a.plot_difficulty_distribution()
 
 	# print "\n"
