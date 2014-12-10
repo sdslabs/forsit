@@ -24,19 +24,24 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 class problem(base):
-	def __init__(self, pid):
+	def __init__(self, pid, app_name = "forsit"):
 		self.pid = str(pid)
+		self.conn = db.connect(app_name)
+		self.cursor = self.conn.cursor()
 		self.exists_in_db = self.fetch_info()
-		self.create_difficulty_matrix()
+		# self.create_difficulty_matrix()
+
 
 	def fetch_info(self):
-		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem WHERE MID(pid,1,3) = \'" + self.pid[0:3] + "\') AS max_points FROM problem WHERE pid = \'" + self.pid + "\'"
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
-		result = db.read(sql, cursor)
+		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem \
+			   WHERE MID(pid,1,3) = \'" + self.pid[0:3] + "\') AS max_points FROM problem \
+			   WHERE pid = \'" + self.pid + "\'"
+		
+		# print sql
+		result = db.read(sql, self.cursor)
 		if result == ():
 			print "No Results Found!"
-			return 0
+			return -1
 
 		for i in result :
 			self.points = float(i[0])
@@ -46,14 +51,43 @@ class problem(base):
 				self.difficulty = round(self.points/float(i[3]), 5)
 			else:
 				self.difficulty = round(self.correct_count/self.attempt_count, 5)
-					
+		
+		sql = "SELECT count(*) FROM problem WHERE MID(pid,1,3) = \'" + self.pid[0:3] + "\'"
+		
+		# print sql
+		result = db.read(sql, self.cursor)				
+		number_of_problems = result[0][0]
 		self.tag = {}
-		sql = "SELECT ptag.tag, 1 - ROUND( 0.75*(count/(SELECT MAX(count) FROM tag)), 6) FROM ptag, tag WHERE ptag.tag = tag.tag AND pid = \'" + self.pid + "\'"
-		result = db.read(sql, cursor)
+
+		# using tf-idf approach for assigning weights to tags
+		# tf(tag, problem) = 1/(number of tags in the given problem)
+		# idf(tag, problem) = log(total number of problems/number of problems with that tag)
+		# tf tells how important a tag is for a given problem.
+		# idf tell how common a tag is across all the problems
+
+		sql = "SELECT ptag.tag, ROUND( LOG2("+str(number_of_problems)+"/count), 6) FROM ptag, tag WHERE \
+		       ptag.tag = tag.tag AND pid = \'" + self.pid + "\'"
+		
+		# print sql
+		result = db.read(sql, self.cursor)
+		number_of_tags = len(result)
+		normalisation_factor = 0 
+		#Since the weights are exceeding 1, we normalise using sum of weights of tags
+
+		checksum = 0
+		#a redundant checksum to make sure that the weights add up to 1
+
 		for i in result :
 			tag = str(i[0].encode('utf8'))
-			self.tag[tag] = round(float(i[1]), 5)
-		cursor.close() 
+			self.tag[tag] = float(i[1]) / number_of_tags
+			self.tag[tag] = round(self.tag[tag],6)
+			normalisation_factor+=self.tag[tag]
+
+		for tag in self.tag:
+			self.tag[tag]/=normalisation_factor
+			self.tag[tag] = round(self.tag[tag],6)
+			checksum+=self.tag[tag]
+		print "the final checksum = ", checksum	
 		return 1
 
 	def print_info(self):
@@ -187,20 +221,20 @@ if __name__ == "__main__":
 
 	a = problem('cfs175E')
 	# a.fetch_info()
-	# a.print_info()
-	print "\n"
-	print "\n"
-	for item in a.find_similar_cfs(1)[:10]:
-		print item
-		b = problem(item[0])
-		b.print_info()
-		print "\n"
-	a.find_correlated_problems()
-	print "\n"
-	print "\n"
-	print "\n"
-	for item in a.correlated_problems[:10]:
-		print item
-		b = problem(item[0])
-		b.print_info()
-		print "\n"
+	a.print_info()
+	# print "\n"
+	# print "\n"
+	# for item in a.find_similar_cfs(1)[:10]:
+	# 	print item
+	# 	b = problem(item[0])
+	# 	b.print_info()
+	# 	print "\n"
+	# a.find_correlated_problems()
+	# print "\n"
+	# print "\n"
+	# print "\n"
+	# for item in a.correlated_problems[:10]:
+	# 	print item
+	# 	b = problem(item[0])
+	# 	b.print_info()
+	# 	print "\n"
