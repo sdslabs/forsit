@@ -27,7 +27,13 @@ try:
     import time
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
     
+
 class problem(base):
 	def __init__(self, pid, app_name = "forsit"):
 		self.pid = str(pid)
@@ -129,7 +135,7 @@ class problem(base):
 			# weighted tag. We can still improve the normalisation factor by using a slow
 			# growing function. Also currently the common tags are being penalised just once 
 			# ie while calculating the idf score for the problem.
-			 
+
 			nfactor = 1
 			for tag in problem[code]:
 				if tag not in self.tag:
@@ -144,8 +150,32 @@ class problem(base):
 			print "tags : ", problem[sorted_score[i][0]]
 		return sorted_score
 
-	def find_similar_erdos(self, status):
-		self.fetch_info()
+	def plot_difficulty_distribution(self):
+		a=time.time()
+		sql = "SELECT P.pid, P.points/(SELECT MAX(points) FROM problem \
+			WHERE MID(pid,1,6) = MID(P.pid, 1, 6)) as difficulty FROM problem P \
+			WHERE MID(P.pid,1,3) = \"cfs\""
+		# sql = "SELECT pid, points as difficulty FROM problem WHERE \
+		# 		MID(pid,1,3) = \"cfs\" AND isdeleted = 0 AND points>0"
+		# print sql
+		result = db.read(sql, self.cursor)
+		print "time to execute sql = ", time.time()-a
+		difficulty = {}
+		for i in result:
+			pid = str(i[0].encode('utf8'))
+			point = float(i[1])
+			if point in difficulty:
+				difficulty[point]+=1
+			else:
+				difficulty[point] = 1
+		sorted_difficulty = sorted(difficulty.items(), key=operator.itemgetter(1), reverse = 1)
+		for i in sorted_difficulty:
+			print i
+		plt.figure()
+		plt.plot(difficulty.keys(), difficulty.values(), 'ro')
+		plt.show()	
+
+	def find_similar_erdos(self, status = 0):
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
@@ -159,6 +189,7 @@ class problem(base):
 		else:
 			sql+=str(self.difficulty) + " - 0.5 AND " + str(self.difficulty) + " + 0.3 "
 		sql+=" AND difficulty > 0"
+		print sql
 		return self.reco_algo(sql)
 	
 	def find_similar_cfs(self, status = 0):
@@ -237,11 +268,11 @@ class problem(base):
 if __name__ == "__main__":
 
 	a = problem('cfs175E')
-	# a.fetch_info()
-	print time.strftime("%d-%m-%Y %H:%M")
+	# print time.strftime("%d-%m-%Y %H:%M")
 	a.print_info()
-	a.find_similar_cfs()
-	print "\n\n\n\n"
+	# a.find_similar_erdos()
+	# print "\n\n\n\n"
+	a.plot_difficulty_distribution()
 
 	# print "\n"
 	# print "\n"
