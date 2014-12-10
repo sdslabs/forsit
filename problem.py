@@ -152,7 +152,7 @@ class problem(base):
 
 	def plot_difficulty_distribution(self):
 		a=time.time()
-		sql = "SELECT P.pid, P.points/(SELECT MAX(points) FROM problem \
+		sql = "SELECT P.pid, P.points, P.points/(SELECT MAX(points) FROM problem \
 			WHERE MID(pid,1,6) = MID(P.pid, 1, 6)) as difficulty FROM problem P \
 			WHERE MID(P.pid,1,3) = \"cfs\""
 		# sql = "SELECT pid, points as difficulty FROM problem WHERE \
@@ -161,6 +161,7 @@ class problem(base):
 		result = db.read(sql, self.cursor)
 		print "time to execute sql = ", time.time()-a
 		difficulty = {}
+
 		for i in result:
 			pid = str(i[0].encode('utf8'))
 			point = float(i[1])
@@ -174,6 +175,32 @@ class problem(base):
 		plt.figure()
 		plt.plot(difficulty.keys(), difficulty.values(), 'ro')
 		plt.show()	
+
+	def plot_points_distribution(self, max_flag = 1, min_flag = 0):
+
+		'''plot the distribution of max and min points for a competiton'''
+		a=time.time()
+		sql = "SELECT (SELECT MAX(points) FROM problem WHERE \
+				MID(pid,1,6) = MID(P.pid, 1, 6) ) FROM problem P WHERE P.pid in \
+				(SELECT pid FROM problem GROUP BY MID( pid, 1, 6 ) \
+				 HAVING MID( pid, 1, 3 ) = \"cfs\") AND points > 0 "
+		print sql
+		result = db.read(sql, self.cursor)
+		print "time to execute sql = ", time.time()-a
+		max_score = {}
+
+		for i in result:
+			point = float(i[0])
+			if point in max_score:
+				max_score[point]+=1
+			else:
+				max_score[point] = 1
+		sorted_max_score = sorted(max_score.items(), key=operator.itemgetter(1), reverse = 1)
+		for i in sorted_max_score:
+			print i
+		plt.figure()
+		plt.plot(max_score.keys(), max_score.values(), 'ro')
+		plt.show()
 
 	def find_similar_erdos(self, status = 0):
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
@@ -272,7 +299,8 @@ if __name__ == "__main__":
 	a.print_info()
 	# a.find_similar_erdos()
 	# print "\n\n\n\n"
-	a.plot_difficulty_distribution()
+	a.plot_points_distribution()
+	# a.plot_difficulty_distribution()
 
 	# print "\n"
 	# print "\n"
