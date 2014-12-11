@@ -69,7 +69,7 @@ rating['pupil'] = (1200,1349)
 rating['newbie'] = (0,1199)
 
 class user(base):
-	def __init__(self, uid, cfs_handle = '', erd_handle = ''):
+	def __init__(self, uid, app_name = "forsit", cfs_handle = '', erd_handle = ''):
 		self.uid = str(uid)
 		self.cfs_url = "http://codeforces.com/api/user.status"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
@@ -79,6 +79,8 @@ class user(base):
 			erd_handle = self.uid
 		self.cfs_handle = str(cfs_handle)
 		self.erd_handle = str(erd_handle)
+		self.conn=db.connect(app_name)
+		self.cursor = self.conn.cursor()
 		self.calculate_difficulty()
 
 	def fetch_user_info_cfs(self):
@@ -127,20 +129,17 @@ class user(base):
 	def fetch_user_activity_cfs(self, handle):
 		if handle == "":
 			handle = self.cfs_handle
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
 		payload = {}
 		payload['handle'] = handle
 		handle = 'cfs' + handle
 		sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
-		res = db.read(sql, cursor)
+		res = db.read(sql, self.cursor)
 		if res == ():
 			last_activity = 0
 		else:
 			last_activity = res[0][0]
 		last_activity = int(last_activity)
-		url = self.cfs_url
-		r = requests.get(url, params=payload)
+		r = requests.get(self.cfs_url, params=payload)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
 		else:
@@ -149,7 +148,7 @@ class user(base):
 			for act in result:
 				if int(act['creationTimeSeconds']) > last_activity:
 					sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
-					check = db.read(sql, cursor)
+					check = db.read(sql, self.cursor)
 					difficulty = 0
 					if act['verdict'] == "OK":
 						status = 1
@@ -162,6 +161,54 @@ class user(base):
 						sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['creationTimeSeconds']) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
 						db.write(sql, cursor, conn)
 
+	# @profile					
+	def fetch_all_user_activity_cfs(self, handle):
+		'''log each submission as a seperate entry to plot the concept trail'''
+		difficulty = 0
+		if handle == "":
+			handle = self.cfs_handle
+		payload = {}
+		payload['handle'] = handle
+		handle = 'cfs' + handle
+		sql = "SELECT created_at FROM activity_concept WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+		res = db.read(sql, self.cursor)
+		if res == ():
+			last_activity = 0
+		else:
+			last_activity = int(res[0][0])
+		r = requests.get(self.cfs_url, params=payload)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			result = r.json()['result']
+			#profile reverse operation 
+			result.reverse()
+			count = 1
+			sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES "
+			for act in result:
+				submission_time = int(act['creationTimeSeconds']) + int(act['relativeTimeSeconds'])
+				if submission_time > last_activity:
+					status = str(act['verdict'])
+					if(status == "OK"):
+						status = "1"
+					else:
+						status = "0"
+
+					sql+="(\'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + status + ", " + str(difficulty) + ", " + str(submission_time) +" ), "
+					count+=1;
+					if(count%5000 == 0):
+						sql = sql[:-2]
+						db.write(sql, self.cursor, self.conn)
+						print count, " entries made in the database"
+						sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES " 
+				else:
+					break
+			# print sql
+			# print count
+			if(sql[-2] == ","):
+				sql = sql[:-2]
+				db.write(sql, self.cursor, self.conn)							
+	
 	def fetch_user_activity_erd(self, handle):
 		if handle == "":
 			handle = self.erd_handle
@@ -373,13 +420,13 @@ class user(base):
 
 
 
-a = user('shagun')
+a = user('tourist')
 #a.fetch_user_info_cfs()
 #print a.rating, a.rank
 #a.fetch_user_activity_erd("")
 #a.calculate_difficulty()
-#a.fetch_user_activity_cfs("deepalijain")
+a.fetch_all_user_activity_cfs("tourist")
 #a.fetch_user_activity_all()
 #a.find_similar_users()
 #sprint a.similar_users
-print a.recommend_problems(1)
+# print a.recommend_problems(1)
