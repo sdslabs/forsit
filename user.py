@@ -33,6 +33,21 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+try:
+    import matplotlib.patches as mpatches
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+try:
+    import helper
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
 #generated using http://codeforces.com/blog/entry/3064
 
 # 2600+	Red	International grandmaster	1
@@ -162,7 +177,7 @@ class user(base):
 						db.write(sql, cursor, conn)
 
 	# @profile					
-	def fetch_all_user_activity_cfs(self, handle):
+	def fetch_all_user_activity_cfs(self, handle=""):
 		'''log each submission as a seperate entry to plot the concept trail'''
 		difficulty = 0
 		if handle == "":
@@ -186,7 +201,9 @@ class user(base):
 			count = 1
 			sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES "
 			for act in result:
-				submission_time = int(act['creationTimeSeconds']) + int(act['relativeTimeSeconds'])
+				#checking for min of the 2 values as for some cases, codeforces api is returning absured results for relatice time
+				relative_time = min(7200, int(act['relativeTimeSeconds']))
+				submission_time = int(act['creationTimeSeconds']) + relative_time
 				if submission_time > last_activity:
 					status = str(act['verdict'])
 					if(status == "OK"):
@@ -209,6 +226,51 @@ class user(base):
 				sql = sql[:-2]
 				db.write(sql, self.cursor, self.conn)							
 	
+	def plot_concept_cfs(self, handle, tag = "dp"):
+		'''plot the concept trail of the user using codeforces data'''
+		if(handle==""):
+			handle = self.cfs_handle
+		handle="cfs"+handle
+		# sql = "SELECT "
+		sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at DESC LIMIT 0,100"
+		result = db.read(sql, self.cursor)
+		tag_x = {}
+		tag_y = {}
+		time_x = []
+		#x and y coordinates for plotting tag occurence
+		start_time = int(result[-1][2])
+		time_x.append( (int(result[0][2]) - start_time) / (24*3600))
+		for i in result:
+			tag = str(i[1])
+			submission_time = (int(i[2]) - start_time)/(24*3600)
+			#rounded off to a day
+
+			if time_x[-1] != submission_time:
+				time_x.append(submission_time)
+			if tag not in tag_x:
+				tag_x[tag]=[]
+				tag_y[tag] = []
+				tag_x[tag].append(submission_time)
+				tag_y[tag].append(1)
+			else:
+				if(tag_x[tag][-1]!=submission_time):
+					tag_x[tag].append(submission_time)
+					tag_y[tag].append(1)
+		plt.figure()
+		count = 0
+		color = helper.generate_new_color(len(tag_x))
+		for tag in tag_x:
+			plt.plot(tag_x[tag], [y+count for y in tag_y[tag]], 's', color = color[count], label = tag)
+			count+=1
+		plt.axis(ymin = 0, ymax = count+2, xmax = time_x[0]+30 , xmin = time_x[-1]-1)
+		#offset to make space for legend
+		plt.grid(True, which = "both")
+		plt.yticks([i for i in range(1,count+1)])
+		# plt.xticks(time_x)
+		# print time_x
+		plt.legend(loc='best')
+		plt.show()		
+			
 	def fetch_user_activity_erd(self, handle):
 		if handle == "":
 			handle = self.erd_handle
@@ -301,8 +363,6 @@ class user(base):
 			avg = s/n
 			for it in self.difficulty_matrix[u]:
 				self.difficulty_matrix[u][it] = self.difficulty_matrix[u][it] - avg
-
-
 
 	def find_correlation(self, u1, u2):
 
@@ -425,7 +485,8 @@ a = user('tourist')
 #print a.rating, a.rank
 #a.fetch_user_activity_erd("")
 #a.calculate_difficulty()
-a.fetch_all_user_activity_cfs("tourist")
+# a.fetch_all_user_activity_cfs("tourist")
+a.plot_concept_cfs("")
 #a.fetch_user_activity_all()
 #a.find_similar_users()
 #sprint a.similar_users
