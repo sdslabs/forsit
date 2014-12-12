@@ -29,31 +29,32 @@ except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-	import matplotlib.pyplot as plt
+	from graph import plot_points_distribution_cfs
 except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
     
+try:
+	from graph import plot_difficulty_distribution_cfs
+except ImportError as exc:
+	print("Error: failed to import settings module ({})".format(exc))
+
 
 class problem(base):
 
 	'''
-	|  Class to handle the problem details
+	- *pid* : problem id. For erdos problems, it starts with *erd* and for codeforces problems it starts with *cfs*
+	- *app_name* : Name of the app ie forsit
+	- *cfs_max_score* : Defines the default max score for a competiton on codeforces. 
+	  The codeforces API has some bugs and it does not return all the problems.
+	  So for some contests, the max score is returned incorrect. That error is accounted by taking max of cfs_max_score and actual max score of a contest 
+	- *lower_threshold* : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side. 
+	- *upper_threshold* : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side. 
 	'''
 	
-	def __init__(self, pid, app_name = "forsit", greatest = 3000, lower_threshold = 25, upper_threshold = 25):
+	def __init__(self, pid, app_name = "forsit", cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25):
 		
-		'''
-		Input 
-		- pid : problem id. For erdos problems, it starts with *erd* and for codeforces problems it starts with *cfs*
-		- app_name : Name of the app ie forsit
-		- greatest : Defines the default max score for a competiton. The codeforces API has some bugs and it does not return all the problems.
-		- lower_threshold : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side. 
-		- upper_threshold : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side. 
-
-		'''
-
 		self.pid = str(pid)
-		self.greatest = str(greatest)
+		self.cfs_max_score = str(cfs_max_score)
 		self.conn = db.connect(app_name)
 		self.cursor = self.conn.cursor()
 		self.exists_in_db = self.fetch_info()
@@ -63,7 +64,11 @@ class problem(base):
 
 	def fetch_info(self):
 
-		# '''function to fetch problem information from problem table from the db'''
+		'''
+		|  Fetch problem information from *problem* table from the db
+		|  Return 1 if corresponding entry was found in the db. The variables are initialised as well.
+		|  Return -1 if no results found
+	    '''
 		
 		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem \
 			   WHERE contestId = P.contestId ) AS max_points FROM problem P \
@@ -123,6 +128,7 @@ class problem(base):
 		return 1
 
 	def print_info(self):
+		'''Print problem information from *problem* table from the db'''
 		if self.exists_in_db:
 			print "pid = ", self.pid
 			print "points = ", self.points
@@ -136,6 +142,13 @@ class problem(base):
 			print "No Results Found!"
 
 	def reco_algo(self, sql):
+		'''
+    	Input 
+		- *sql* : sql query which would generate the set of candidates for which similarity would be computed. It is generated via the find_similar_cfs() or find_similar_erdos()
+    	Return a list of recommended problems. Each entry in the list is a tuple of the 
+    	form (pid, score) where more score means better results. The list is sorted in desc order
+    	by score.
+		'''
 		result = db.read(sql, self.cursor)
 		problem = {}
 		#mapping of problem code with a list of tags
@@ -172,80 +185,13 @@ class problem(base):
 			print "tags : ", problem[sorted_score[i][0]]
 		return sorted_score
 
-	def plot_difficulty_distribution(self):
-		a=time.time()
-		sql = "SELECT P.pid, P.points, P.points/GREATEST("+self.greatest+", (SELECT MAX(points) FROM problem \
-			WHERE contestId = P.contestId)) as difficulty FROM problem P \
-			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
-		# print sql
-		result = db.read(sql, self.cursor)
-		print "time to execute sql = ", time.time()-a
-		difficulty = {}
-
-		for i in result:
-			pid = str(i[0].encode('utf8'))
-			point = float(i[2])
-			if point in difficulty:
-				difficulty[point]+=1
-			else:
-				difficulty[point] = 1
-		sorted_difficulty = sorted(difficulty.items(), key=operator.itemgetter(0), reverse = 1)
-		x = []
-		y = []
-
-		for i in sorted_difficulty:
-			x.append(i[0])
-			y.append(i[1])
-			print i, " ", i[0]*3000
-		plt.figure()
-		plt.plot(difficulty.keys(), difficulty.values(), 'ro')
-		plt.plot(x, y)
-		plt.show()	
-
-	def plot_points_distribution(self, max_flag = 1, min_flag = 0):
-
-		'''plot the distribution of max and min points for a competiton'''
-		a=time.time()
-		sql = "SELECT (SELECT MAX(points) FROM problem WHERE contestId = P.contestId), \
-			   (SELECT MIN(points) FROM problem WHERE contestId = P.contestId) \
-			   FROM problem P WHERE P.pid in (SELECT pid FROM problem GROUP BY \
-			   contestId HAVING MID( pid, 1, 3 ) = \"cfs\") AND points > 0 "
-
-		print sql
-		result = db.read(sql, self.cursor)
-		print "time to execute sql = ", time.time()-a
-		max_score = {}
-		min_score = {}
-
-		for i in result:
-			max_point = float(i[0])
-			min_point = float(i[1])
-			if max_point in max_score:
-				max_score[max_point]+=1
-			else:
-				max_score[max_point] = 1
-			if min_point in min_score:
-				min_score[min_point]+=1
-			else:
-				min_score[min_point] = 1
-		if(max_flag == 1):
-			sorted_max_score = sorted(max_score.items(), key=operator.itemgetter(1), reverse = 1)
-			print "Plot of Max Score"
-			for i in sorted_max_score:
-				print i
-			plt.figure()
-			plt.plot(max_score.keys(), max_score.values(), 'ro')
-			plt.show()
-		if(min_flag == 1):
-			sorted_min_score = sorted(min_score.items(), key=operator.itemgetter(1), reverse = 1)
-			print "Plot of Min Score"
-			for i in sorted_min_score:
-				print i
-			plt.figure()
-			plt.plot(min_score.keys(), min_score.values(), 'bs')
-			plt.show()	
-
 	def find_similar_erdos(self, status = 0):
+		'''
+    	Input 
+		- *status* : status = 1 if problem was solved correctly else 0 
+    	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
+    	and then calls the reco_algo() with the sql as input.
+		'''
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
@@ -263,7 +209,12 @@ class problem(base):
 		return self.reco_algo(sql)
 	
 	def find_similar_cfs(self, status = 0):
-
+		'''
+    	Input 
+		- *status* : status = 1 if problem was solved correctly else 0 
+    	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
+    	and then calls the reco_algo() with the sql as input.
+		'''
 		res = self.gen_window_cfs(status)
 		# print res
 		upper = res[0]
@@ -279,8 +230,13 @@ class problem(base):
 		return self.reco_algo(sql)
 
 	def gen_window_cfs(self, status = 0):
-		'''generate the optimal size window for codeforces submissions'''
-		sql = "SELECT P.points/GREATEST("+self.greatest+", (SELECT MAX(points) FROM problem \
+		'''
+    	Input 
+		- *status* : status = 1 if problem was solved correctly else 0 
+    	Return a difficulty window to be used by find_similar_cfs(). 
+    	The window is returned as a tuple of form (upper_limit,lower_limit)
+		'''
+		sql = "SELECT P.points/GREATEST("+self.cfs_max_score+", (SELECT MAX(points) FROM problem \
 			WHERE contestId = P.contestId)) as difficulty FROM problem P \
 			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
 		# print sql
@@ -408,8 +364,8 @@ if __name__ == "__main__":
 	a.find_similar_cfs(0)
 	# a.find_similar_erdos()
 	print "\n\n\n\n"
-	# a.plot_points_distribution(max_flag=0, min_flag = 1)
-	# a.plot_difficulty_distribution()
+	# plot_points_distribution_cfs(max_flag=1, min_flag = 1)
+	plot_difficulty_distribution_cfs(a.cfs_max_score)
 	# a.gen_window_cfs()
 
 	# print "\n"
