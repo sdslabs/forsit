@@ -34,17 +34,7 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import matplotlib.pyplot as plt
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
-    import matplotlib.patches as mpatches
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
-    import helper
+    from graph import plot_concept_cfs
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
@@ -84,6 +74,14 @@ rating['pupil'] = (1200,1349)
 rating['newbie'] = (0,1199)
 
 class user(base):
+	
+	'''
+	- *uid* : user id. To serve as default value of *cfs_handle* and *erd_handle*
+	- *app_name* : Name of the app ie forsit
+	- *cfs_handle* : User's handle on Codeforces.
+	- *erd_handle* : User's handle on Erdos.
+	'''
+
 		
 	def __init__(self, uid, app_name = "forsit", cfs_handle = '', erd_handle = ''):
 		self.training_problems = {}
@@ -101,6 +99,9 @@ class user(base):
 		self.calculate_difficulty()
 
 	def fetch_user_info_cfs(self):
+		'''
+		|  Fetch User's information from Codeforces
+	    '''
 		payload = {}
 		payload['handles'] = self.cfs_handle
 		url = "http://codeforces.com/api/user.info"
@@ -114,6 +115,9 @@ class user(base):
 			self.score  = rating[self.rank]
 
 	def fetch_user_info_erd(self):
+		'''
+		|  Fetch User's information from Codeforces
+	    '''
 		url = self.erd_url + self.erd_handle + ".json"
 		r = requests.get(url)
 		if(r.status_code != 200 ):
@@ -122,6 +126,10 @@ class user(base):
 			solved_problems = r.json()['solved_problems']
 
 	def fetch_user_list_cfs(self):
+		'''
+		|  Fetch List of all the users from Codeforces
+		|  @todo : move to scrapper module 
+	    '''
 		self.cfs_users = []
 		url = "http://codeforces.com/api/user.ratedList?activeOnly=true"
 		r = requests.get(url)
@@ -133,6 +141,10 @@ class user(base):
 				self.cfs_users.append(i['handle'])
 
 	def fetch_user_list_erd(self):
+		'''
+		|  Fetch List of all the users from Codeforces
+		|  @todo : move to scrapper module 
+	    '''
 		self.erd_users = []
 		url = "http://erdos.sdslabs.co/users.json"
 		r = requests.get(url)
@@ -143,7 +155,11 @@ class user(base):
 			for i in result:
 				self.erd_users.append(i['username'])
 
-	def fetch_user_activity_cfs(self, handle):
+	def fetch_user_activity_cfs(self, handle=""):
+		'''
+		|  Fetch User's activity from Codeforces
+		|  @todo : move to scrapper module 
+	    '''
 		if handle == "":
 			handle = self.cfs_handle
 		payload = {}
@@ -180,7 +196,11 @@ class user(base):
 
 	# @profile					
 	def fetch_all_user_activity_cfs(self, handle=""):
-		'''log each submission as a seperate entry to plot the concept trail'''
+		'''
+		|  Fetch User's activity from Codeforces
+		|  It is different from *fetch_user_activity_cfs()* as it logs each submission as a seperate entry to plot the concept trail
+		|  @todo : move to scrapper module 
+	    '''
 		difficulty = 0
 		if handle == "":
 			handle = self.cfs_handle
@@ -228,52 +248,13 @@ class user(base):
 				sql = sql[:-2]
 				db.write(sql, self.cursor, self.conn)							
 	
-	def plot_concept_cfs(self, handle, tag = "dp"):
-		'''plot the concept trail of the user using codeforces data'''
-		if(handle==""):
-			handle = self.cfs_handle
-		handle="cfs"+handle
-		# sql = "SELECT "
-		sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at DESC LIMIT 0,500"
-		result = db.read(sql, self.cursor)
-		tag_x = {}
-		tag_y = {}
-		time_x = []
-		#x and y coordinates for plotting tag occurence
-		start_time = int(result[-1][2])
-		time_x.append( (int(result[0][2]) - start_time) / (24*3600))
-		for i in result:
-			tag = str(i[1])
-			submission_time = (int(i[2]) - start_time)/(24*3600)
-			#rounded off to a day
-
-			if time_x[-1] != submission_time:
-				time_x.append(submission_time)
-			if tag not in tag_x:
-				tag_x[tag]=[]
-				tag_y[tag] = []
-				tag_x[tag].append(submission_time)
-				tag_y[tag].append(1)
-			else:
-				if(tag_x[tag][-1]!=submission_time):
-					tag_x[tag].append(submission_time)
-					tag_y[tag].append(1)
-		plt.figure()
-		count = 0
-		color = helper.generate_new_color(len(tag_x))
-		for tag in tag_x:
-			plt.plot(tag_x[tag], [y+count for y in tag_y[tag]], 's', color = color[count], label = tag)
-			count+=1
-		plt.axis(ymin = 0, ymax = count+2, xmax = time_x[0]+30 , xmin = time_x[-1]-1)
-		#offset to make space for legend
-		plt.grid(True, which = "both")
-		plt.yticks([i for i in range(1,count+1)])
-		# plt.xticks(time_x)
-		# print time_x
-		# plt.legend(loc='best')
-		plt.show()		
 			
-	def fetch_user_activity_erd(self, handle):
+			
+	def fetch_user_activity_erd(self, handle=""):
+		'''
+		|  Fetch User's activity from Erdos
+		|  @todo : move to scrapper module 
+	    '''
 		if handle == "":
 			handle = self.erd_handle
 		conn = db.connect('forsit')
@@ -306,8 +287,6 @@ class user(base):
 						db.write(sql, cursor, conn)
 
 	def calculate_difficulty(self):
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
 		sql = "UPDATE activity SET difficulty = 3 WHERE status = 0"
 		db.write(sql, cursor, conn)
 		sql = "UPDATE activity SET difficulty = 0 WHERE status = 1"
@@ -317,7 +296,7 @@ class user(base):
 		sql = "UPDATE activity SET difficulty = difficulty + 2 WHERE attempt_count >= 3 AND attempt_count <= 5"
 		db.write(sql, cursor, conn)
 		sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count > 5;"
-		db.write(sql, cursor, conn)
+		db.write(sql, self.cursor, self.conn)
 		self.create_difficulty_matrix()
 
 	def fetch_user_activity_all(self):
@@ -365,7 +344,6 @@ class user(base):
 			avg = s/n
 			for it in self.difficulty_matrix[u]:
 				self.difficulty_matrix[u][it] = self.difficulty_matrix[u][it] - avg
-
 
 	def find_correlation(self, u1, u2, gamma = 100):
 
@@ -492,9 +470,9 @@ class user(base):
 		error = math.sqrt( error )
 		return error
 
-
 if __name__ == '__main__':
 	a = user('tourist')
+	plot_concept_cfs(a.cfs_handle)
 	#a.fetch_user_info_cfs()
 	#print a.rating, a.rank
 	#a.fetch_user_activity_erd("")
