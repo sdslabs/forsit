@@ -1,42 +1,57 @@
 try:
-    import db
+	import db
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import requests
+	import requests
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import operator
+	import operator
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    from base import base
+	from base import base
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import math
+	import math
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import time
+	import time
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import matplotlib.pyplot as plt
+	import matplotlib.pyplot as plt
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
     
 
 class problem(base):
 
+	'''
+	|  Class to handle the problem details
+	'''
+	
 	def __init__(self, pid, app_name = "forsit", greatest = 3000, lower_threshold = 25, upper_threshold = 25):
+		
+		'''
+		Input 
+		- pid : problem id. For erdos problems, it starts with *erd* and for codeforces problems it starts with *cfs*
+		- app_name : Name of the app ie forsit
+		- greatest : Defines the default max score for a competiton. The codeforces API has some bugs and it does not return all the problems.
+		- lower_threshold : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side. 
+		- upper_threshold : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side. 
+
+		'''
+
 		self.pid = str(pid)
 		self.greatest = str(greatest)
 		self.conn = db.connect(app_name)
@@ -44,10 +59,12 @@ class problem(base):
 		self.exists_in_db = self.fetch_info()
 		self.lower_threshold = lower_threshold
 		self.upper_threshold = upper_threshold
-
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
+
+		# '''function to fetch problem information from problem table from the db'''
+		
 		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem \
 			   WHERE contestId = P.contestId ) AS max_points FROM problem P \
 			   WHERE pid = \'" + self.pid + "\'"

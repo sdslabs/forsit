@@ -232,7 +232,7 @@ class user(base):
 			handle = self.cfs_handle
 		handle="cfs"+handle
 		# sql = "SELECT "
-		sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at DESC LIMIT 0,100"
+		sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at DESC LIMIT 0,500"
 		result = db.read(sql, self.cursor)
 		tag_x = {}
 		tag_y = {}
@@ -268,7 +268,7 @@ class user(base):
 		plt.yticks([i for i in range(1,count+1)])
 		# plt.xticks(time_x)
 		# print time_x
-		plt.legend(loc='best')
+		# plt.legend(loc='best')
 		plt.show()		
 			
 	def fetch_user_activity_erd(self, handle):
