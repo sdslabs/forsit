@@ -24,7 +24,7 @@ except ImportError as exc:
 config=ConfigParser()
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config', 'config.cfg'))
 
-def connect(app_name):
+def connect(app_name="forsit"):
     '''
     |  Open database connection to *app_name*
     |  Return *conn* object to perform database operations for succesful connection
