@@ -1,48 +1,70 @@
 try:
-    import db
+	import db
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import requests
+	import requests
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import operator
+	import operator
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    from base import base
+	from base import base
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import math
+	import math
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import time
+	import time
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import matplotlib.pyplot as plt
+	import matplotlib.pyplot as plt
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
     
 
 class problem(base):
-	def __init__(self, pid, app_name = "forsit"):
+
+	'''
+	|  Class to handle the problem details
+	'''
+	
+	def __init__(self, pid, app_name = "forsit", greatest = 3000, lower_threshold = 25, upper_threshold = 25):
+		
+		'''
+		Input 
+		- pid : problem id. For erdos problems, it starts with *erd* and for codeforces problems it starts with *cfs*
+		- app_name : Name of the app ie forsit
+		- greatest : Defines the default max score for a competiton. The codeforces API has some bugs and it does not return all the problems.
+		- lower_threshold : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side. 
+		- upper_threshold : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side. 
+
+		'''
+
 		self.pid = str(pid)
+		self.greatest = str(greatest)
 		self.conn = db.connect(app_name)
 		self.cursor = self.conn.cursor()
 		self.exists_in_db = self.fetch_info()
+		self.lower_threshold = lower_threshold
+		self.upper_threshold = upper_threshold
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
+
+		# '''function to fetch problem information from problem table from the db'''
+		
 		sql = "SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem \
 			   WHERE contestId = P.contestId ) AS max_points FROM problem P \
 			   WHERE pid = \'" + self.pid + "\'"
@@ -152,11 +174,9 @@ class problem(base):
 
 	def plot_difficulty_distribution(self):
 		a=time.time()
-		sql = "SELECT P.pid, P.points, P.points/GREATEST(3000, (SELECT MAX(points) FROM problem \
+		sql = "SELECT P.pid, P.points, P.points/GREATEST("+self.greatest+", (SELECT MAX(points) FROM problem \
 			WHERE contestId = P.contestId)) as difficulty FROM problem P \
 			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
-		# sql = "SELECT pid, points as difficulty FROM problem WHERE \
-		# 		MID(pid,1,3) = \"cfs\" AND isdeleted = 0 AND points>0"
 		# print sql
 		result = db.read(sql, self.cursor)
 		print "time to execute sql = ", time.time()-a
@@ -170,10 +190,16 @@ class problem(base):
 			else:
 				difficulty[point] = 1
 		sorted_difficulty = sorted(difficulty.items(), key=operator.itemgetter(0), reverse = 1)
+		x = []
+		y = []
+
 		for i in sorted_difficulty:
+			x.append(i[0])
+			y.append(i[1])
 			print i, " ", i[0]*3000
 		plt.figure()
 		plt.plot(difficulty.keys(), difficulty.values(), 'ro')
+		plt.plot(x, y)
 		plt.show()	
 
 	def plot_points_distribution(self, max_flag = 1, min_flag = 0):
@@ -238,22 +264,87 @@ class problem(base):
 	
 	def find_similar_cfs(self, status = 0):
 
+		res = self.gen_window_cfs(status)
+		# print res
+		upper = res[0]
+		lower = res[1]
 		sql = "	SELECT ptag.pid, ptag.tag, P.points/GREATEST(3000, (SELECT MAX(points) FROM problem \
 			    WHERE contestId = P.contestId)) as difficulty FROM problem P, ptag \
 			   	WHERE P.pid != \'" + self.pid + "\' AND P.pid = ptag.pid AND P.pid IN \
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') \
 				AND MID(problem.pid,1,3)=\'cfs\' ) \
-				HAVING difficulty BETWEEN "
-		if(status == 1):
-			#correct submission
-			sql+= str(self.difficulty) + " + 0.05 AND " + str(self.difficulty) + " - 0.15 "
-		else:
-			sql+=str(self.difficulty) + " - 0.25 AND " + str(self.difficulty) + " - 0.05 "
-		sql+=" AND difficulty > 0"
-
-		print sql
+				HAVING difficulty BETWEEN " + str(upper) + " AND " + str(lower)
+		# print sql
 		return self.reco_algo(sql)
+
+	def gen_window_cfs(self, status = 0):
+		'''generate the optimal size window for codeforces submissions'''
+		sql = "SELECT P.points/GREATEST("+self.greatest+", (SELECT MAX(points) FROM problem \
+			WHERE contestId = P.contestId)) as difficulty FROM problem P \
+			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
+		# print sql
+		result = db.read(sql, self.cursor)
+		difficulty = {}
+		for i in result:
+			point = float(i[0])
+			if point in difficulty:
+				difficulty[point]+=1
+			else:
+				difficulty[point] = 1
+		sorted_difficulty = sorted(difficulty.items(), key=operator.itemgetter(0), reverse = 0)
+		
+		# print len(sorted_difficulty)
+		# for i in sorted_difficulty:
+		# 	print i
+		i = 0
+		imax = len(sorted_difficulty)-1
+		hi = imax
+		lo = 0
+		i = (hi+lo)/2
+		while(hi>=lo):
+			i = (hi+lo)/2
+			a = sorted_difficulty[i][0] - self.difficulty
+			if(a>0):
+				hi = i-1
+			elif(a<0):
+				lo = i+1
+			else:
+				break
+		# print i
+		if status == 1:
+			#correct submission
+			upper = sorted_difficulty[i][1]
+			j = i
+			#increase the right end of the window till the upper threshold is met
+			while(upper < self.upper_threshold):
+				j+=1
+				upper+=sorted_difficulty[j][1]
+			x = sorted_difficulty[j][0] - self.difficulty
+			# print x
+			# how much deviation we allowed on the right side of self.difficulty
+			# we allow only half of this deviation on the left hand side
+			# the reason is that the difficulty of the problem will lie either 
+			# on one of the peaks in which case x = 0 or near a right peak in which case 
+			# we wont need many values on the left or near a left peak in which case our x
+			# would be large enough to cover the left peak as well. Same logic for the next
+			# part of the condition
+			return (self.difficulty+x, self.difficulty-x/2)
+
+		else:
+			#incorrect submission
+			lower = sorted_difficulty[i-1][1]
+			print lower
+			print i
+			print sorted_difficulty[i-1]
+			k=i-1
+			while(lower < self.lower_threshold):
+				k-=1
+				lower+=sorted_difficulty[k][1]
+				print lower
+			x = self.difficulty - sorted_difficulty[k][0]
+			# print x
+			return (self.difficulty-x, self.difficulty+x/2)
 
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
@@ -312,13 +403,14 @@ class problem(base):
 if __name__ == "__main__":
 
 	a = problem('cfs175E')
-	# print time.strftime("%d-%m-%Y %H:%M")
+	print time.strftime("%d-%m-%Y %H:%M")
 	a.print_info()
-	a.find_similar_cfs()
+	a.find_similar_cfs(0)
 	# a.find_similar_erdos()
-	# print "\n\n\n\n"
+	print "\n\n\n\n"
 	# a.plot_points_distribution(max_flag=0, min_flag = 1)
 	# a.plot_difficulty_distribution()
+	# a.gen_window_cfs()
 
 	# print "\n"
 	# print "\n"

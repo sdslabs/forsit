@@ -58,3 +58,6 @@ config/config.cfg
 
 #Logs
 Logs/*
+
+#documentation
+documentation/build/*

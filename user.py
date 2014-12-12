@@ -33,6 +33,21 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+try:
+    import matplotlib.patches as mpatches
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+try:
+    import helper
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
 #generated using http://codeforces.com/blog/entry/3064
 
 # 2600+	Red	International grandmaster	1
@@ -69,7 +84,8 @@ rating['pupil'] = (1200,1349)
 rating['newbie'] = (0,1199)
 
 class user(base):
-	def __init__(self, uid, cfs_handle = '', erd_handle = ''):
+		
+	def __init__(self, uid, app_name = "forsit", cfs_handle = '', erd_handle = ''):
 		self.training_problems = {}
 		self.uid = str(uid)
 		self.cfs_url = "http://codeforces.com/api/user.status"
@@ -80,6 +96,8 @@ class user(base):
 			erd_handle = self.uid
 		self.cfs_handle = str(cfs_handle)
 		self.erd_handle = str(erd_handle)
+		self.conn=db.connect(app_name)
+		self.cursor = self.conn.cursor()
 		self.calculate_difficulty()
 
 	def fetch_user_info_cfs(self):
@@ -128,20 +146,17 @@ class user(base):
 	def fetch_user_activity_cfs(self, handle):
 		if handle == "":
 			handle = self.cfs_handle
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
 		payload = {}
 		payload['handle'] = handle
 		handle = 'cfs' + handle
 		sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
-		res = db.read(sql, cursor)
+		res = db.read(sql, self.cursor)
 		if res == ():
 			last_activity = 0
 		else:
 			last_activity = res[0][0]
 		last_activity = int(last_activity)
-		url = self.cfs_url
-		r = requests.get(url, params=payload)
+		r = requests.get(self.cfs_url, params=payload)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
 		else:
@@ -150,7 +165,7 @@ class user(base):
 			for act in result:
 				if int(act['creationTimeSeconds']) > last_activity:
 					sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
-					check = db.read(sql, cursor)
+					check = db.read(sql, self.cursor)
 					difficulty = 0
 					if act['verdict'] == "OK":
 						status = 1
@@ -163,6 +178,101 @@ class user(base):
 						sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['creationTimeSeconds']) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
 						db.write(sql, cursor, conn)
 
+	# @profile					
+	def fetch_all_user_activity_cfs(self, handle=""):
+		'''log each submission as a seperate entry to plot the concept trail'''
+		difficulty = 0
+		if handle == "":
+			handle = self.cfs_handle
+		payload = {}
+		payload['handle'] = handle
+		handle = 'cfs' + handle
+		sql = "SELECT created_at FROM activity_concept WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+		res = db.read(sql, self.cursor)
+		if res == ():
+			last_activity = 0
+		else:
+			last_activity = int(res[0][0])
+		r = requests.get(self.cfs_url, params=payload)
+		if(r.status_code != 200 ):
+			print r.status_code, " returned from ", r.url
+		else:
+			result = r.json()['result']
+			#profile reverse operation 
+			result.reverse()
+			count = 1
+			sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES "
+			for act in result:
+				#checking for min of the 2 values as for some cases, codeforces api is returning absured results for relatice time
+				relative_time = min(7200, int(act['relativeTimeSeconds']))
+				submission_time = int(act['creationTimeSeconds']) + relative_time
+				if submission_time > last_activity:
+					status = str(act['verdict'])
+					if(status == "OK"):
+						status = "1"
+					else:
+						status = "0"
+
+					sql+="(\'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + status + ", " + str(difficulty) + ", " + str(submission_time) +" ), "
+					count+=1;
+					if(count%5000 == 0):
+						sql = sql[:-2]
+						db.write(sql, self.cursor, self.conn)
+						print count, " entries made in the database"
+						sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES " 
+				else:
+					break
+			# print sql
+			# print count
+			if(sql[-2] == ","):
+				sql = sql[:-2]
+				db.write(sql, self.cursor, self.conn)							
+	
+	def plot_concept_cfs(self, handle, tag = "dp"):
+		'''plot the concept trail of the user using codeforces data'''
+		if(handle==""):
+			handle = self.cfs_handle
+		handle="cfs"+handle
+		# sql = "SELECT "
+		sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at DESC LIMIT 0,500"
+		result = db.read(sql, self.cursor)
+		tag_x = {}
+		tag_y = {}
+		time_x = []
+		#x and y coordinates for plotting tag occurence
+		start_time = int(result[-1][2])
+		time_x.append( (int(result[0][2]) - start_time) / (24*3600))
+		for i in result:
+			tag = str(i[1])
+			submission_time = (int(i[2]) - start_time)/(24*3600)
+			#rounded off to a day
+
+			if time_x[-1] != submission_time:
+				time_x.append(submission_time)
+			if tag not in tag_x:
+				tag_x[tag]=[]
+				tag_y[tag] = []
+				tag_x[tag].append(submission_time)
+				tag_y[tag].append(1)
+			else:
+				if(tag_x[tag][-1]!=submission_time):
+					tag_x[tag].append(submission_time)
+					tag_y[tag].append(1)
+		plt.figure()
+		count = 0
+		color = helper.generate_new_color(len(tag_x))
+		for tag in tag_x:
+			plt.plot(tag_x[tag], [y+count for y in tag_y[tag]], 's', color = color[count], label = tag)
+			count+=1
+		plt.axis(ymin = 0, ymax = count+2, xmax = time_x[0]+30 , xmin = time_x[-1]-1)
+		#offset to make space for legend
+		plt.grid(True, which = "both")
+		plt.yticks([i for i in range(1,count+1)])
+		# plt.xticks(time_x)
+		# print time_x
+		# plt.legend(loc='best')
+		plt.show()		
+			
 	def fetch_user_activity_erd(self, handle):
 		if handle == "":
 			handle = self.erd_handle
@@ -395,3 +505,4 @@ if __name__ == '__main__':
 	#sprint a.similar_users
 	print a.recommend_problems(1)
 	#print len(a.training_problems)
+

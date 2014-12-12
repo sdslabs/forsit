@@ -42,6 +42,7 @@ except ImportError as exc:
 
 
 class recommend():
+    """test"""
 
 	def __init__(self, pid, status, uid=""):
 		self.pid = pid
@@ -114,3 +115,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
