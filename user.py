@@ -383,16 +383,15 @@ class user(base):
 		return error
 
 
-
-
-a = user('tourist')
-#a.fetch_user_info_cfs()
-#print a.rating, a.rank
-#a.fetch_user_activity_erd("")
-#a.calculate_difficulty()
-#a.fetch_user_activity_cfs("deepalijain")
-#a.fetch_user_activity_all()
-#print a.find_correlation('cfstourist', 'cfsnew')
-#sprint a.similar_users
-print a.recommend_problems(1)
-#print len(a.training_problems)
+if __name__ == '__main__':
+	a = user('tourist')
+	#a.fetch_user_info_cfs()
+	#print a.rating, a.rank
+	#a.fetch_user_activity_erd("")
+	#a.calculate_difficulty()
+	#a.fetch_user_activity_cfs("deepalijain")
+	#a.fetch_user_activity_all()
+	#print a.find_correlation('cfstourist', 'cfsnew')
+	#sprint a.similar_users
+	print a.recommend_problems(1)
+	#print len(a.training_problems)
