@@ -4,22 +4,12 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import requests
+    import helper
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
     import operator
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
-    from base import base
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
-    import math
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
@@ -32,6 +22,12 @@ try:
     import matplotlib.pyplot as plt
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
+
+try:
+    import matplotlib.patches as mpatches
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
     
 
 def plot_points_distribution_cfs(max_flag = 1, min_flag = 0):
@@ -100,7 +96,6 @@ def plot_points_distribution_cfs(max_flag = 1, min_flag = 0):
 	cursor.close()
 	conn.close()	
 
-
 def plot_difficulty_distribution_cfs(cfs_max_score):
 	'''
 	|  Plot the distribution of number of problems vs difficulty level
@@ -150,3 +145,76 @@ def plot_difficulty_distribution_cfs(cfs_max_score):
 	plt.show()
 	cursor.close()
 	conn.close()	
+
+def plot_concept_cfs(handle, show_legend = 0, show_x_ticks = 0, order = "DESC", upper_limit = 500, lower_limit = 0):
+	
+	'''
+	|  Plot the distribution of tags attempted by the user for codeforces over time.
+
+	|  Input 
+	|  - *handle* : user handle on codeforces
+	|  - *show_legend* : since legend could be very large, it is shown only if this flag is set on
+	|  - *show_x_ticks* : since there are too many enteries along x-axis, a dotted line corresponing to each entry on x-axis is shown only if this flag is set on
+	|  - *order* : order in which results are to fetched
+	|  - *upper_limit* : upper limit on number of submissions to be fetched from the database. Set it to -1 to fetch all the submissions
+	|  - *lower_limit* : lower limit on number of submissions to be fetched from the database. Set it to -1 to fetch all the submissions
+
+	'''
+
+	handle="cfs"+handle
+	# sql = "SELECT "
+	sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at " + order 
+	if(lower_limit !=-1 or upper_limit !=-1):
+		sql+=" LIMIT "+str(lower_limit)+","+str(upper_limit)
+	conn = db.connect()
+	print sql
+	cursor = conn.cursor()
+	result = db.read(sql, cursor)
+	time_x = []
+	#list of all discrete times when a problem was submitted
+	tag_x = {}
+	tag_y = {}
+	#x and y coordinates for plotting tag occurence
+	start_time = int(result[-1][2])
+	time_x.append( (int(result[0][2]) - start_time) / (24*3600))
+	for i in result:
+		tag = str(i[1])
+		submission_time = (int(i[2]) - start_time)/(24*3600)
+		#rounded off to a day
+
+		if time_x[-1] != submission_time:
+			time_x.append(submission_time)
+		if tag not in tag_x:
+			tag_x[tag]=[]
+			tag_y[tag] = []
+			tag_x[tag].append(submission_time)
+			tag_y[tag].append(1)
+		else:
+			if(tag_x[tag][-1]!=submission_time):
+				tag_x[tag].append(submission_time)
+				tag_y[tag].append(1)
+	
+	count = 0
+	color = helper.generate_new_color(len(tag_x))
+	
+	plt.figure()
+
+	for tag in tag_x:
+		plt.plot(tag_x[tag], [y+count for y in tag_y[tag]], 's', color = color[count], label = tag)
+		count+=1
+	
+	plt.grid(True, which = "both")
+	plt.yticks([i for i in range(1,count+1)])
+	
+	if show_x_ticks == 1:
+		plt.xticks(time_x)
+		print time_x
+
+	if show_legend == 1:
+		plt.legend(loc='best')
+		plt.axis(ymin = 0, ymax = count+2, xmax = time_x[0]+30 , xmin = time_x[-1]-1)
+		#offset to make space for legend
+	else:
+		plt.axis(ymin = 0, ymax = count+2, xmax = time_x[0]+1 , xmin = time_x[-1]-1)
+	
+	plt.show()
