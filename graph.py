@@ -146,7 +146,7 @@ def plot_difficulty_distribution_cfs(cfs_max_score):
 	cursor.close()
 	conn.close()	
 
-def plot_concept_cfs(handle, show_legend = 0, show_x_ticks = 0, order = "DESC", upper_limit = 500, lower_limit = 0):
+def plot_concept_cfs(handle, show_legend = 0, show_x_ticks = 0, order = "DESC", upper_limit = 500, lower_limit = 0, tag_list = []):
 	
 	'''
 	|  Plot the distribution of tags attempted by the user for codeforces over time.
@@ -158,14 +158,16 @@ def plot_concept_cfs(handle, show_legend = 0, show_x_ticks = 0, order = "DESC", 
 	|  - *order* : order in which results are to fetched
 	|  - *upper_limit* : upper limit on number of submissions to be fetched from the database. Set it to -1 to fetch all the submissions
 	|  - *lower_limit* : lower limit on number of submissions to be fetched from the database. Set it to -1 to fetch all the submissions
+	|  - *tag_list* : list of tags to be considered. If empty list is passed then all the tags are considered.
 
 	'''
 
 	handle="cfs"+handle
 	# sql = "SELECT "
 	sql = "SELECT a.pid, p.tag, a.created_at FROM activity_concept as a, ptag as p WHERE a.pid = p.pid ORDER BY a.created_at " + order 
-	if(lower_limit !=-1 or upper_limit !=-1):
+	if(lower_limit !=-1 and upper_limit !=-1):
 		sql+=" LIMIT "+str(lower_limit)+","+str(upper_limit)
+		print upper_limit
 	conn = db.connect()
 	print sql
 	cursor = conn.cursor()
@@ -199,9 +201,14 @@ def plot_concept_cfs(handle, show_legend = 0, show_x_ticks = 0, order = "DESC", 
 	
 	plt.figure()
 
-	for tag in tag_x:
-		plt.plot(tag_x[tag], [y+count for y in tag_y[tag]], 's', color = color[count], label = tag)
-		count+=1
+	if not tag_list:
+		tag_list = tag_x.keys()
+
+	for tag in tag_x :
+		if tag in tag_list:
+			plt.plot(tag_x[tag], [y+count for y in tag_y[tag]], 's', color = color[count], label = tag)
+			count+=1
+			print tag
 	
 	plt.grid(True, which = "both")
 	plt.yticks([i for i in range(1,count+1)])
