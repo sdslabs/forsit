@@ -441,11 +441,11 @@ class user(base):
 		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
 		plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
-		print "error: " + str(self.evaluate_recommendation( plist_eval )) + "\n"
+		self.evaluate_recommendation( plist_eval )
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
-		error = 0
+		self.error = 0
 		for i in plist_eval:
 			predicted = i[1]
 
@@ -459,16 +459,15 @@ class user(base):
 				avg = self.cfs_avg
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
-			error += pow( (predicted - actual), 2 )
+			self.error += pow( (predicted - actual), 2 )
 			#print i[0] + " " + str(predicted) + " " + str(actual)
 		n = len(plist_eval)
-		error = error/n
-		error = math.sqrt( error )
-		return error
+		self.error = self.error/n
+		self.error = math.sqrt( self.error )
 
 if __name__ == '__main__':
 	a = user('tourist')
-	plot_concept_cfs(a.cfs_handle)
+	#plot_concept_cfs(a.cfs_handle)
 	#a.fetch_user_info_cfs()
 	#print a.rating, a.rank
 	#a.fetch_user_activity_erd("")
@@ -477,6 +476,6 @@ if __name__ == '__main__':
 	#a.fetch_user_activity_all()
 	#print a.find_correlation('cfstourist', 'cfsnew')
 	#sprint a.similar_users
-	print a.recommend_problems(1)
+	#print a.recommend_problems(1)
 	#print len(a.training_problems)
 

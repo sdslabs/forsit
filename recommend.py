@@ -16,33 +16,33 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    from math import exp
+	from math import exp
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import operator
+	import operator
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import db
+	import db
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import optparse
+	import optparse
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import sys
+	import sys
 except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+	print("Error: failed to import settings module ({})".format(exc))
 
 
 class recommend():
-    """test"""
+	"""test"""
 
 	def __init__(self, pid, status, uid=""):
 		self.pid = pid
@@ -62,8 +62,12 @@ class recommend():
 	def recommend_similar_users(self, mode):
 		a = user(self.uid)
 		a.find_similar_users()
-		print a.similar_users		
+		print "User similarity: "
+		print a.similar_users
+		print "Recommended problems: "
 		print a.recommend_problems(mode)
+		print "Estimated error in rating: "
+		print a.error
 
 
 	def fetch_activity(self):
