@@ -116,7 +116,7 @@ class user(base):
 
 	def fetch_user_info_erd(self):
 		'''
-		|  Fetch User's information from Codeforces
+		|  Fetch User's information from Erdos
 	    '''
 		url = self.erd_url + self.erd_handle + ".json"
 		r = requests.get(url)
@@ -142,7 +142,7 @@ class user(base):
 
 	def fetch_user_list_erd(self):
 		'''
-		|  Fetch List of all the users from Codeforces
+		|  Fetch List of all the users from Erdos
 		|  @todo : move to scrapper module 
 	    '''
 		self.erd_users = []
