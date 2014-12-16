@@ -34,7 +34,7 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    from graph import plot_concept_cfs
+    import graph
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
@@ -468,6 +468,7 @@ class user(base):
 if __name__ == '__main__':
 	a = user('tourist')
 	#plot_concept_cfs(a.cfs_handle)
+	graph.plot_difficulty_matrix(a.difficulty_matrix)
 	#a.fetch_user_info_cfs()
 	#print a.rating, a.rank
 	#a.fetch_user_activity_erd("")

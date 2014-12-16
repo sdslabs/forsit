@@ -28,8 +28,6 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
-    
-
 def plot_points_distribution_cfs(max_flag = 1, min_flag = 0):
 
 	'''
@@ -225,3 +223,24 @@ def plot_concept_cfs(handle, show_legend = 0, show_x_ticks = 0, order = "DESC", 
 		plt.axis(ymin = 0, ymax = count+2, xmax = time_x[0]+1 , xmin = time_x[-1]-1)
 	
 	plt.show()
+
+def plot_difficulty_matrix(difficulty_matrix):
+	user = xrange(len(difficulty_matrix.keys()))
+	problem = {}
+	colors = list("rgbcmyk")
+	# for i in xrange(len(difficulty_matrix.keys())):
+	# 	user[difficulty_matrix.keys()[i]] = i
+
+	plt.figure()
+	plt.legend(difficulty_matrix.keys())
+	i = 0
+	for plist in difficulty_matrix.values():
+		x = []
+	 	for p in plist:
+	 		if p not in problem:
+	 			problem[p] = i
+	 			i += 1
+	 		x.append(problem[p])
+	 	y = plist.values()
+	 	plt.scatter(x,y)
+	 	plt.show()
