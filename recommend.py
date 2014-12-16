@@ -36,10 +36,24 @@ except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-	import sys
+	import os
 except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
 
+try:
+	import time
+except ImportError as exc:
+	print("Error: failed to import settings module ({})".format(exc))
+
+try:
+	import pickle
+except ImportError as exc:
+	print("Error: failed to import settings module ({})".format(exc))
+
+try:
+	import json
+except ImportError as exc:
+	print("Error: failed to import settings module ({})".format(exc))
 
 class recommend():
 	"""test"""
@@ -48,26 +62,58 @@ class recommend():
 		self.pid = pid
 		self.status = status
 		self.uid = uid
+		self.log_file = os.open('Logs/log.txt', os.O_WRONLY|os.O_APPEND|os.O_CREAT)
+		self.result_file = os.open('result.json', os.O_WRONLY|os.O_CREAT)
+		os.write(self.log_file, "\n\n\n========================\n" + str(time.strftime("%d-%m-%Y %H:%M")))
 
 	def recommend_most_recent_erdos(self):
 		erdos = problem(self.pid)
-		res = erdos.find_similar_erdos(self.status)
+		res = "\nShowing recommendations for problem: " + self.pid + "\n"
+		os.write(self.log_file,res)
+		print res
+		res = json.dumps(erdos.find_similar_erdos(self.status), indent=4, separators=(',', ': '))
+		os.write(self.log_file,res)
+		os.write(self.result_file,res)
 		print res
 
 	def recommend_most_recent_cfs(self):
 		cfs = problem(self.pid)
-		res = cfs.find_similar_cfs(self.status)
+		res = "\nShowing recommendations for problem: " + self.pid + "\n"
+		os.write(self.log_file,res)
 		print res 
+		res = json.dumps(cfs.find_similar_cfs(self.status), indent=4, separators=(',', ': '))
+		os.write(self.log_file,res)
+		os.write(self.result_file,res)
+		print res
 
 	def recommend_similar_users(self, mode):
 		a = user(self.uid)
 		a.find_similar_users()
-		print "User similarity: "
-		print a.similar_users
-		print "Recommended problems: "
-		print a.recommend_problems(mode)
-		print "Estimated error in rating: "
-		print a.error
+		result = {}
+		su = a.similar_users
+		rp = a.recommend_problems(mode)
+		er = a.error
+		result['similar_users'] = su
+		result['recommended_problems'] = rp
+		result['error'] = er
+		result = json.dumps(result, indent=4, separators=(',', ': '))
+		os.write(self.result_file,result)
+		res = "\nShowing similar users and problem recommendations for: \n" + self.uid + "\nUser similarity: \n"
+		os.write(self.log_file,res)
+		print res
+		res = json.dumps(su, indent=4, separators=(',', ': '))
+		os.write(self.log_file,res)
+		print res
+		res = "\nRecommended problems: \n"
+		os.write(self.log_file,res)
+		print res
+		res = json.dumps(rp, indent=4, separators=(',', ': '))
+		os.write(self.log_file,res)
+		print res
+		res = "\nEstimated error in rating: \n" + str(er)
+		os.write(self.log_file,res)
+		print res
+		
 
 
 	def fetch_activity(self):
@@ -91,7 +137,6 @@ def main():
 	flag = 0
 
 	if options.problem:
-		print "Showing recommendations for problem: " + options.problem
 		if options.site == "erd":
 			pid = "erd" + options.problem
 			a = recommend(pid,options.status)
@@ -104,7 +149,6 @@ def main():
 		flag = 1
 
 	if options.user:
-		print "Showing similar users and problem recommendations for: " + options.user
 		a = recommend(0,0,options.user)
 		a.recommend_similar_users(options.difficulty_mode)
 		flag = 1
