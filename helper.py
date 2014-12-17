@@ -3,6 +3,12 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    from itertools import combinations
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+
 def get_random_color(pastel_factor = 0.5):
 	'''
 	|  Return a random color represented as a list of form [a,b,c] where a,b,c correspond to RGB values of the random color
@@ -37,3 +43,27 @@ def generate_new_color(N,pastel_factor = 0.5):
 				best_color = color
 		colors_ret.append(best_color)
 	return colors_ret
+
+def subset(arr):
+	'''
+	|  Return subsets of set arr
+	|  Subsets are returned in form of a list of frozensets
+	'''
+	ret = []
+	for i in range(1,len(arr)+1):
+		for j in combinations(arr, i):
+			ret.append(frozenset(j))
+	return ret
+
+def join_set(item_set, length):
+	'''
+	|  Return sets of size length by taking join of item_set with itself
+	|  Sets are returned in form of a set comprising of the new sets
+	'''
+	ret = []
+	for i in item_set:
+		for j in item_set:
+			temp_set = i.union(j)
+			if(len(temp_set) == length):
+				ret.append(temp_set)
+	return set(ret)
