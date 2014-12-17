@@ -465,10 +465,25 @@ class user(base):
 		self.error = self.error/n
 		self.error = math.sqrt( self.error )
 
+	def rank_erdos_users(self):
+		score = {}
+		for user in self.difficulty_matrix:
+			if( user[:3] == "erd" ):
+				score[user] = 0
+				#print user + ": "
+				for prob in self.difficulty_matrix[user]:
+					p = problem(prob)
+					if p.exists_in_db != -1:
+						score[user] += p.difficulty
+					#p.print_info()
+				#print "\n"
+		return sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
+
 if __name__ == '__main__':
-	a = user('tourist')
+	a = user('TheOrganicGypsy')
+	print a.rank_erdos_users()[:10]
 	#plot_concept_cfs(a.cfs_handle)
-	graph.plot_difficulty_matrix(a.difficulty_matrix)
+	#graph.plot_difficulty_matrix(a.difficulty_matrix)
 	#a.fetch_user_info_cfs()
 	#print a.rating, a.rank
 	#a.fetch_user_activity_erd("")
@@ -476,7 +491,12 @@ if __name__ == '__main__':
 	#a.fetch_user_activity_cfs("deepalijain")
 	#a.fetch_user_activity_all()
 	#print a.find_correlation('cfstourist', 'cfsnew')
-	#sprint a.similar_users
+	a.find_similar_users()
+	print a.similar_users[:10]
+	print a.difficulty_matrix['erdTheOrganicGypsy']
+	print a.difficulty_matrix['erdpriyanshu1994']
+	print a.difficulty_matrix['erdshubhamkansal']
+	print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 1)
+	print a.find_correlation('erdTheOrganicGypsy', 'erdshubhamkansal', 1)
 	#print a.recommend_problems(1)
 	#print len(a.training_problems)
-

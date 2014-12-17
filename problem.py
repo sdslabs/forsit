@@ -77,7 +77,6 @@ class problem(base):
 		# print sql
 		result = db.read(sql, self.cursor)
 		if result == ():
-			print "No Results Found!"
 			return -1
 
 		for i in result :
@@ -129,7 +128,7 @@ class problem(base):
 
 	def print_info(self):
 		'''Print problem information from *problem* table from the db'''
-		if self.exists_in_db:
+		if self.exists_in_db != -1:
 			print "pid = ", self.pid
 			print "points = ", self.points
 			print "correct_count = ", self.correct_count
