@@ -83,9 +83,23 @@ class user(base):
 	'''
 
 		
-	def __init__(self, uid, app_name = "forsit", cfs_handle = '', erd_handle = ''):
+	def __init__(self, uid, options = {}, app_name = "forsit", cfs_handle = '', erd_handle = ''):
 		self.training_problems = {}
 		self.uid = str(uid)
+		self.options = {}
+		self.options['tag_based'] = 0
+		self.options['normalize'] = 0
+		self.options['sample_data'] = 1
+		self.options['penalize'] = 1
+		if options.has_key('tag_based'):
+			self.options['tag_based'] = options['tag_based']
+		if options.has_key('normalize'):
+			self.options['normalize'] = options['normalize']
+		if options.has_key('sample_data'):
+			self.options['sample_data'] = options['sample_data']
+		if options.has_key('penalize'):
+			self.options['penalize'] = options['penalize']
+
 		self.cfs_url = "http://codeforces.com/api/user.status"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
 		if(cfs_handle == ''):
@@ -314,10 +328,26 @@ class user(base):
 		result = db.read(sql, self.cursor)
 		for i in result:
 			user = str(i[0].encode('utf8'))
-			problem = str(i[1].encode('utf8'))
+			prob = str(i[1].encode('utf8'))
+
 			if not self.difficulty_matrix.has_key(user):
 				self.difficulty_matrix[user] = {}
-			self.difficulty_matrix[user][problem] = i[4]
+
+			if self.options['tag_based']:
+				if user[:3] == "cfs":
+					break;
+
+				p = problem(prob)
+				if p.exists_in_db != -1:
+					tag_data = p.tag
+				for tag in tag_data:
+					if not self.difficulty_matrix[user].has_key(tag):
+						self.difficulty_matrix[user][tag] = 0
+					self.difficulty_matrix[user][tag] += tag_data[tag]
+
+			else:
+				self.difficulty_matrix[user][prob] = i[4]
+
 
 		self_handle = "erd" + self.erd_handle
 		if self.difficulty_matrix.has_key(self_handle):
@@ -331,7 +361,8 @@ class user(base):
 			s = sum(self.difficulty_matrix[self_handle][it] for it in self.difficulty_matrix[self_handle])
 			self.cfs_avg = s/n
 
-		self.normalize_difficulty_matrix()
+		if self.options['normalize']:
+			self.normalize_difficulty_matrix()
 
 	def normalize_difficulty_matrix(self, type = 0):
 		for u in self.difficulty_matrix:
@@ -347,9 +378,12 @@ class user(base):
 		n1 = len(self.difficulty_matrix[u1])
 		n2 = len(self.difficulty_matrix[u2])
 
+		if self.options['sample_data']:
+			n1 = n1 * 0.8
+
 		i = 0
 		for item in self.difficulty_matrix[u1]:
-			if item in self.difficulty_matrix[u2] and (i <= (n1*0.8)):
+			if item in self.difficulty_matrix[u2] and (i <= n1):
 				si[item] = 1
 				self.training_problems[item] = 1
 			i = i+1
@@ -386,7 +420,8 @@ class user(base):
 		penalizing_factor = float(min(n,gamma))/gamma
 
 		# Penalize rating of users with lesser common problems than the threshold, gamma
-		r = penalizing_factor*r
+		if self.options['penalize']:
+			r = penalizing_factor*r
 
 		#print u1, u2, n, r, num, den
 		# print n
@@ -428,6 +463,9 @@ class user(base):
 				self_handle = "cfs" + self.cfs_handle
 				avg = self.cfs_avg
 
+			if not options['normalize']:
+				avg = 0
+
 			for problem in self.difficulty_matrix[handle]:
 				if problem not in self.difficulty_matrix[self_handle]:
 					totals.setdefault(problem, 0)
@@ -435,24 +473,25 @@ class user(base):
 					simSum.setdefault(problem, 0)
 					simSum[problem] += score
 
-				# for evaluating the model
-				if problem in self.difficulty_matrix[self_handle] and problem not in self.training_problems:
-					totals_eval.setdefault(problem, 0)
-					totals_eval[problem] += ( avg + self.difficulty_matrix[handle][problem] ) * score
-					simSum_eval.setdefault(problem, 0)
-					simSum_eval[problem] += score
+				if self.options['sample_data']:
+					# for evaluating the model
+					if problem in self.difficulty_matrix[self_handle] and problem not in self.training_problems:
+						totals_eval.setdefault(problem, 0)
+						totals_eval[problem] += ( avg + self.difficulty_matrix[handle][problem] ) * score
+						simSum_eval.setdefault(problem, 0)
+						simSum_eval[problem] += score
 
 		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
-		plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
-		self.evaluate_recommendation( plist_eval )
+		if self.options['sample_data']:
+			plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
+			self.evaluate_recommendation( plist_eval )
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
 		self.error = 0
 		for i in plist_eval:
 			predicted = i[1]
-
 			if i[0][:3] == "erd":
 				self_handle = "erd" + self.erd_handle
 				avg = self.erd_avg
@@ -463,8 +502,16 @@ class user(base):
 				avg = self.cfs_avg
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
+			if self.options['tag_based']:
+				self_handle = "erd" + self.erd_handle
+				avg = self.erd_avg
+				actual = avg + self.difficulty_matrix[self_handle][i[0]]
+
+			if not self.options['normalize']:
+				avg = 0
+
 			self.error += pow( (predicted - actual), 2 )
-			# print i[0] + " " + str(predicted) + " " + str(actual)
+			print i[0] + " " + str(predicted) + " " + str(actual)
 		n = len(plist_eval)
 		self.error = self.error/n
 		self.error = math.sqrt( self.error )
@@ -484,8 +531,13 @@ class user(base):
 		return sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 
 if __name__ == '__main__':
-	a = user('TheOrganicGypsy')
-	print a.rank_erdos_users()[:10]
+	options = {}
+	options['tag_based'] = 1
+	options['normalize'] = 0
+	options['sample_data'] = 0
+	options['penalize'] = 1
+	a = user('TheOrganicGypsy', options)
+	# print a.rank_erdos_users()[:10]
 	#plot_concept_cfs(a.cfs_handle)
 	#graph.plot_difficulty_matrix(a.difficulty_matrix)
 	#a.fetch_user_info_cfs()
@@ -495,13 +547,12 @@ if __name__ == '__main__':
 	#a.fetch_user_activity_cfs("deepalijain")
 	#a.fetch_user_activity_all()
 	#print a.find_correlation('cfstourist', 'cfsnew')
-	a.find_similar_users()
+	# print a.difficulty_matrix['erdTheOrganicGypsy']
+	# print a.difficulty_matrix['erdamntri']
+	# print a.difficulty_matrix['erdvgupta']
+	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
+	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
+	print a.recommend_problems(1)
 	print a.similar_users
-	print a.difficulty_matrix['erdTheOrganicGypsy']
-	print a.difficulty_matrix['erdpriyanshu1994']
-	print a.difficulty_matrix['erdvgupta']
-	print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
-	print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
-	# print a.recommend_problems(1)
 	# print a.error
 	#print len(a.training_problems)
