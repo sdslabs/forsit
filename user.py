@@ -381,11 +381,15 @@ class user(base):
 
 		r = num/den
 
+		# Calculate penalizing factor relative to number of problems solved by u1
+		gamma = (gamma * n1) / 100
 		penalizing_factor = float(min(n,gamma))/gamma
+
+		# Penalize rating of users with lesser common problems than the threshold, gamma
 		r = penalizing_factor*r
 
 		#print u1, u2, n, r, num, den
-
+		# print n
 		return r
 		#return (r*n)/(n1+n2)
 
@@ -395,7 +399,7 @@ class user(base):
 		self_cfs_handle = 'cfs' + self.cfs_handle
 		for u in self.difficulty_matrix.keys():
 			if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
-				self.similar_users[u] = self.find_correlation(self_erd_handle, u, 5)
+				self.similar_users[u] = self.find_correlation(self_erd_handle, u, 50)
 			if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
 				self.similar_users[u] = self.find_correlation(self_cfs_handle, u, 50)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
@@ -460,7 +464,7 @@ class user(base):
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
 			self.error += pow( (predicted - actual), 2 )
-			#print i[0] + " " + str(predicted) + " " + str(actual)
+			# print i[0] + " " + str(predicted) + " " + str(actual)
 		n = len(plist_eval)
 		self.error = self.error/n
 		self.error = math.sqrt( self.error )
@@ -492,11 +496,12 @@ if __name__ == '__main__':
 	#a.fetch_user_activity_all()
 	#print a.find_correlation('cfstourist', 'cfsnew')
 	a.find_similar_users()
-	print a.similar_users[:10]
+	print a.similar_users
 	print a.difficulty_matrix['erdTheOrganicGypsy']
 	print a.difficulty_matrix['erdpriyanshu1994']
-	print a.difficulty_matrix['erdshubhamkansal']
-	print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 1)
-	print a.find_correlation('erdTheOrganicGypsy', 'erdshubhamkansal', 1)
-	#print a.recommend_problems(1)
+	print a.difficulty_matrix['erdvgupta']
+	print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
+	print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
+	# print a.recommend_problems(1)
+	# print a.error
 	#print len(a.training_problems)
