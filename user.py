@@ -116,7 +116,7 @@ class user(base):
 
 	def fetch_user_info_erd(self):
 		'''
-		|  Fetch User's information from Codeforces
+		|  Fetch User's information from Erdos
 	    '''
 		url = self.erd_url + self.erd_handle + ".json"
 		r = requests.get(url)
@@ -142,7 +142,7 @@ class user(base):
 
 	def fetch_user_list_erd(self):
 		'''
-		|  Fetch List of all the users from Codeforces
+		|  Fetch List of all the users from Erdos
 		|  @todo : move to scrapper module 
 	    '''
 		self.erd_users = []
@@ -189,10 +189,10 @@ class user(base):
 						status = 0
 					if check == ():
 						sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + ", " + str(act['creationTimeSeconds']) +" )"
-						db.write(sql, cursor, conn)
+						db.write(sql, self.cursor, self.conn)
 					else:
 						sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['creationTimeSeconds']) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
-						db.write(sql, cursor, conn)
+						db.write(sql, self.cursor, self.conn)
 
 	# @profile					
 	def fetch_all_user_activity_cfs(self, handle=""):
@@ -257,12 +257,10 @@ class user(base):
 	    '''
 		if handle == "":
 			handle = self.erd_handle
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
 		url = "http://erdos.sdslabs.co/activity/users/" + handle + ".json"
 		handle = 'erd' + handle
 		sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
-		res = db.read(sql, cursor)
+		res = db.read(sql, self.cursor)
 		if res == ():
 			last_activity = 0
 		else:
@@ -277,24 +275,24 @@ class user(base):
 			for act in result:
 				if int(act['created_at']) > last_activity:
 					sql = "SELECT * FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
-					check = db.read(sql, cursor)
+					check = db.read(sql, self.cursor)
 					difficulty = 0
 					if check == ():
 						sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + ", " + str(act['created_at']) + " )"
-						db.write(sql, cursor, conn)
+						db.write(sql, self.cursor, self.conn)
 					else:
 						sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['created_at']) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
-						db.write(sql, cursor, conn)
+						db.write(sql, self.cursor, self.conn)
 
 	def calculate_difficulty(self):
 		sql = "UPDATE activity SET difficulty = 3 WHERE status = 0"
-		db.write(sql, cursor, conn)
+		db.write(sql, self.cursor, self.conn)
 		sql = "UPDATE activity SET difficulty = 0 WHERE status = 1"
-		db.write(sql, cursor, conn)
+		db.write(sql, self.cursor, self.conn)
 		sql = "UPDATE activity SET difficulty = difficulty + 1 WHERE attempt_count <= 2"
-		db.write(sql, cursor, conn)
+		db.write(sql, self.cursor, self.conn)
 		sql = "UPDATE activity SET difficulty = difficulty + 2 WHERE attempt_count >= 3 AND attempt_count <= 5"
-		db.write(sql, cursor, conn)
+		db.write(sql, self.cursor, self.conn)
 		sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count > 5;"
 		db.write(sql, self.cursor, self.conn)
 		self.create_difficulty_matrix()
@@ -312,10 +310,8 @@ class user(base):
 
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
-		conn = db.connect('forsit')
-		cursor=conn.cursor()
 		sql = "SELECT * FROM activity"
-		result = db.read(sql, cursor)
+		result = db.read(sql, self.cursor)
 		for i in result:
 			user = str(i[0].encode('utf8'))
 			problem = str(i[1].encode('utf8'))
@@ -445,11 +441,11 @@ class user(base):
 		plist = [(problem, total/simSum[problem]) for problem,total in totals.items()]
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = mode)
 		plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
-		print "error: " + str(self.evaluate_recommendation( plist_eval )) + "\n"
+		self.evaluate_recommendation( plist_eval )
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
-		error = 0
+		self.error = 0
 		for i in plist_eval:
 			predicted = i[1]
 
@@ -463,16 +459,15 @@ class user(base):
 				avg = self.cfs_avg
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
-			error += pow( (predicted - actual), 2 )
+			self.error += pow( (predicted - actual), 2 )
 			#print i[0] + " " + str(predicted) + " " + str(actual)
 		n = len(plist_eval)
-		error = error/n
-		error = math.sqrt( error )
-		return error
+		self.error = self.error/n
+		self.error = math.sqrt( self.error )
 
 if __name__ == '__main__':
 	a = user('tourist')
-	plot_concept_cfs(a.cfs_handle)
+	#plot_concept_cfs(a.cfs_handle)
 	#a.fetch_user_info_cfs()
 	#print a.rating, a.rank
 	#a.fetch_user_activity_erd("")
@@ -481,6 +476,6 @@ if __name__ == '__main__':
 	#a.fetch_user_activity_all()
 	#print a.find_correlation('cfstourist', 'cfsnew')
 	#sprint a.similar_users
-	print a.recommend_problems(1)
+	#print a.recommend_problems(1)
 	#print len(a.training_problems)
 
