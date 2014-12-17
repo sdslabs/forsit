@@ -31,7 +31,7 @@ class apriori():
 	  So it looks like this : itemset = set ( set(pid1, pid2), set(pid3,pid4) )
 	- *frequency_itemset* : Mapping of itemset with its frequency. key is itemset, value is frequency
 	- *size_to_itemset* : Dictionary mapping size with itemsets ie size_to_itemset[1] = set(all itemsets of size 1)
-	- *size_one_candidate_set* : set of items of size 1
+	- *current_candidate_set* : Candidate set to be updated by prune method
 	- *max_iterations* : maximum number of iterations for the algorithm to run
 	- *count_transaction* : size of transaction list
 	- *Final_items* : List of items having support > min_support. Each entry in the list is of the form (item, support)
@@ -70,26 +70,23 @@ class apriori():
 				self.itemset.add(frozenset([j]))
 		self.count_transaction = len(self.transaction)
 
-	def prune(self, itemset):
+	def prune(self):
 		'''
 		|  Prune subset of itemset based on min_support
 		'''
-		result = set()
 		localset = defaultdict(int)
 		#default dict with all keys set to 0
 	    
-		for item in itemset:
+		for item in self.current_candidate_set:
 			for t in self.transaction:
 				if item.issubset(t):
 					self.frequency_itemset[item]+=1
 					localset[item]+=1
-
+		self.current_candidate_set = set()			
 		for item in localset:
 			support = float(localset[item])/self.count_transaction
 			if support >= self.min_support:
-				result.add(item)
-
-		return result
+				self.current_candidate_set.add(item)
 
 	def print_results(self):
 		'''
@@ -112,13 +109,13 @@ class apriori():
 		self.initialise()
 		self.frequency_itemset = defaultdict(int)
 		self.size_to_itemset = {}
-		self.size_one_candidate_set = self.prune(itemset = self.itemset)
-		current_candidate_set = self.size_one_candidate_set
+		self.current_candidate_set = self.itemset
+		self.prune()
 		k = 2
-		while(current_candidate_set != set([]) ): #or k!=self.max_iterations):
-			self.size_to_itemset[k-1] = current_candidate_set
-			current_candidate_set = helper.join_set(current_candidate_set, k)
-			current_candidate_set = self.prune(current_candidate_set)
+		while(self.current_candidate_set != set([]) ): #or k!=self.max_iterations):
+			self.size_to_itemset[k-1] = self.current_candidate_set
+			self.current_candidate_set = helper.join_set(self.current_candidate_set, k)
+			self.prune()
 			k+=1
 
 		print "Number of iterations = ",k-1
