@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>db module &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="graph module" href="graph.html" />
+    <link rel="prev" title="base module" href="base.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="graph.html" title="graph module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="base.html" title="base module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-db">
+<span id="db-module"></span><h1>db module<a class="headerlink" href="#module-db" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="db.add_column">
+<tt class="descclassname">db.</tt><tt class="descname">add_column</tt><big>(</big><em>sql</em>, <em>cursor</em><big>)</big><a class="reference internal" href="_modules/db.html#add_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.add_column" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Used to add columns into tables</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.add_table">
+<tt class="descclassname">db.</tt><tt class="descname">add_table</tt><big>(</big><em>sql</em>, <em>cursor</em><big>)</big><a class="reference internal" href="_modules/db.html#add_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.add_table" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Used to create a new table in the db</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.check_column">
+<tt class="descclassname">db.</tt><tt class="descname">check_column</tt><big>(</big><em>table</em>, <em>column</em>, <em>cursor</em><big>)</big><a class="reference internal" href="_modules/db.html#check_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.check_column" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Used to check if <em>column</em> exists in <em>table</em></div>
+<div class="line">Need to pass the cursor object as a parameter</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.connect">
+<tt class="descclassname">db.</tt><tt class="descname">connect</tt><big>(</big><em>app_name='forsit'</em><big>)</big><a class="reference internal" href="_modules/db.html#connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.connect" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Open database connection to <em>app_name</em></div>
+<div class="line">Return <em>conn</em> object to perform database operations for succesful connection</div>
+<div class="line">Return 0 for unsucessful connection</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.drop">
+<tt class="descclassname">db.</tt><tt class="descname">drop</tt><big>(</big><em>table_name</em>, <em>cursor</em><big>)</big><a class="reference internal" href="_modules/db.html#drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.drop" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">drop <em>table_name</em></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.read">
+<tt class="descclassname">db.</tt><tt class="descname">read</tt><big>(</big><em>sql</em>, <em>cursor</em><big>)</big><a class="reference internal" href="_modules/db.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.read" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Perform read operations on the database.</div>
+<div class="line">Need to pass the cursor object as a parameter</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.truncate">
+<tt class="descclassname">db.</tt><tt class="descname">truncate</tt><big>(</big><em>table_name</em>, <em>cursor</em><big>)</big><a class="reference internal" href="_modules/db.html#truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.truncate" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">truncate <em>table_name</em></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.write">
+<tt class="descclassname">db.</tt><tt class="descname">write</tt><big>(</big><em>sql</em>, <em>cursor</em>, <em>conn</em><big>)</big><a class="reference internal" href="_modules/db.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.write" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Perform insert and update operations on the database.</div>
+<div class="line">Need to pass the cursor object as a parameter</div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="base.html"
+                        title="previous chapter">base module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="graph.html"
+                        title="next chapter">graph module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/db.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="graph.html" title="graph module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="base.html" title="base module"
+             >previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

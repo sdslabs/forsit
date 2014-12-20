@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>helper module &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="problem module" href="problem.html" />
+    <link rel="prev" title="graph module" href="graph.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="problem.html" title="problem module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="graph.html" title="graph module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-helper">
+<span id="helper-module"></span><h1>helper module<a class="headerlink" href="#module-helper" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="helper.color_distance">
+<tt class="descclassname">helper.</tt><tt class="descname">color_distance</tt><big>(</big><em>c1</em>, <em>c2</em><big>)</big><a class="reference internal" href="_modules/helper.html#color_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helper.color_distance" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Return a distance-like measure given 2 colors c1 and c2</div>
+<div class="line">Colors are represented as a list of form [a,b,c] where a,b,c correspond to RGB values</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="helper.generate_new_color">
+<tt class="descclassname">helper.</tt><tt class="descname">generate_new_color</tt><big>(</big><em>N</em>, <em>pastel_factor=0.5</em><big>)</big><a class="reference internal" href="_modules/helper.html#generate_new_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helper.generate_new_color" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Input </dt>
+<dd><ul class="first last simple">
+<li>N : Number of colors of be returned</li>
+<li>pastel_factor : pastel factor of the colors</li>
+</ul>
+</dd>
+</dl>
+<p>Return a list of n colors where each color is represented as a list of form [a,b,c] where a,b,c correspond to RGB values</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="helper.get_random_color">
+<tt class="descclassname">helper.</tt><tt class="descname">get_random_color</tt><big>(</big><em>pastel_factor=0.5</em><big>)</big><a class="reference internal" href="_modules/helper.html#get_random_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helper.get_random_color" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Return a random color represented as a list of form [a,b,c] where a,b,c correspond to RGB values of the random color</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="helper.join_set">
+<tt class="descclassname">helper.</tt><tt class="descname">join_set</tt><big>(</big><em>item_set</em>, <em>length</em><big>)</big><a class="reference internal" href="_modules/helper.html#join_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helper.join_set" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Return sets of size length by taking join of item_set with itself</div>
+<div class="line">Sets are returned in form of a set comprising of the new sets</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="helper.subset">
+<tt class="descclassname">helper.</tt><tt class="descname">subset</tt><big>(</big><em>arr</em><big>)</big><a class="reference internal" href="_modules/helper.html#subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#helper.subset" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Return subsets of set arr</div>
+<div class="line">Subsets are returned in form of a list of frozensets</div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="graph.html"
+                        title="previous chapter">graph module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="problem.html"
+                        title="next chapter">problem module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/helper.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="problem.html" title="problem module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="graph.html" title="graph module"
+             >previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

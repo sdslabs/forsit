@@ -1,0 +1,477 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>problem &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for problem</h1><div class="highlight"><pre>
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">db</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">requests</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">operator</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">math</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">time</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">graph</span> <span class="kn">import</span> <span class="n">plot_points_distribution_cfs</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+    
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">graph</span> <span class="kn">import</span> <span class="n">plot_difficulty_distribution_cfs</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="problem"><a class="viewcode-back" href="../problem.html#problem.problem">[docs]</a><span class="k">class</span> <span class="nc">problem</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	- *pid* : problem id. For erdos problems, it starts with *erd* and for codeforces problems it starts with *cfs*</span>
+<span class="sd">	- *app_name* : Name of the app ie forsit</span>
+<span class="sd">	- *cfs_max_score* : Defines the default max score for a competiton on codeforces. </span>
+<span class="sd">	  The codeforces API has some bugs and it does not return all the problems.</span>
+<span class="sd">	  So for some contests, the max score is returned incorrect. That error is accounted by taking max of cfs_max_score and actual max score of a contest </span>
+<span class="sd">	- *lower_threshold* : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side. </span>
+<span class="sd">	- *upper_threshold* : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side. </span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;forsit&quot;</span><span class="p">,</span> <span class="n">cfs_max_score</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">,</span> <span class="n">lower_threshold</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">upper_threshold</span> <span class="o">=</span> <span class="mi">25</span><span class="p">):</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cfs_max_score</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cfs_max_score</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">app_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">exists_in_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_info</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">lower_threshold</span> <span class="o">=</span> <span class="n">lower_threshold</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">upper_threshold</span> <span class="o">=</span> <span class="n">upper_threshold</span>
+		<span class="c"># self.create_difficulty_matrix()</span>
+
+<div class="viewcode-block" id="problem.fetch_info"><a class="viewcode-back" href="../problem.html#problem.problem.fetch_info">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch problem information from *problem* table from the db</span>
+<span class="sd">		|  Return 1 if corresponding entry was found in the db. The variables are initialised as well.</span>
+<span class="sd">		|  Return -1 if no results found</span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT points, correct_count, attempt_count, (SELECT MAX(points) FROM problem </span><span class="se">\</span>
+<span class="s">			   WHERE contestId = P.contestId ) AS max_points FROM problem P </span><span class="se">\</span>
+<span class="s">			   WHERE pid = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+		
+		<span class="c"># print sql</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="p">():</span>
+			<span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span> <span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">correct_count</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">attempt_count</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+			<span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">/</span><span class="p">(</span> <span class="nb">max</span> <span class="p">(</span><span class="mf">3000.0</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span> <span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correct_count</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">attempt_count</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+		
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT count(*) FROM problem WHERE MID(pid,1,3) = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+		
+		<span class="c"># print sql</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>				
+		<span class="n">number_of_problems</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="p">{}</span>
+
+		<span class="c"># using tf-idf approach for assigning weights to tags</span>
+		<span class="c"># tf(tag, problem) = 1/(number of tags in the given problem)</span>
+		<span class="c"># idf(tag, problem) = log(total number of problems/number of problems with that tag)</span>
+		<span class="c"># tf tells how important a tag is for a given problem.</span>
+		<span class="c"># idf tell how common a tag is across all the problems</span>
+
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT ptag.tag, ROUND( LOG2(&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number_of_problems</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;/count), 6) FROM ptag, tag WHERE </span><span class="se">\</span>
+<span class="s">		       ptag.tag = tag.tag AND pid = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+		
+		<span class="c"># print sql</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="n">number_of_tags</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+		<span class="n">normalisation_factor</span> <span class="o">=</span> <span class="mi">0</span> 
+		<span class="c">#Since the weights are exceeding 1, we normalise using sum of weights of tags</span>
+
+		<span class="n">checksum</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="c">#a redundant checksum to make sure that the weights add up to 1</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span> <span class="p">:</span>
+			<span class="n">tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">number_of_tags</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">],</span><span class="mi">6</span><span class="p">)</span>
+			<span class="n">normalisation_factor</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
+		<span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="o">/=</span><span class="n">normalisation_factor</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">],</span><span class="mi">6</span><span class="p">)</span>
+			<span class="n">checksum</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+		<span class="c"># print &quot;the final checksum = &quot;, checksum	</span>
+		<span class="k">return</span> <span class="mi">1</span>
+</div>
+<div class="viewcode-block" id="problem.print_info"><a class="viewcode-back" href="../problem.html#problem.problem.print_info">[docs]</a>	<span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;Print problem information from *problem* table from the db&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exists_in_db</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;pid = &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span>
+			<span class="k">print</span> <span class="s">&quot;points = &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span>
+			<span class="k">print</span> <span class="s">&quot;correct_count = &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">correct_count</span>
+			<span class="k">print</span> <span class="s">&quot;attempt_count = &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attempt_count</span>
+			<span class="k">print</span> <span class="s">&quot;difficulty = &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span> 
+			<span class="k">print</span> <span class="s">&quot;Tag count : &quot;</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+				<span class="k">print</span> <span class="n">i</span><span class="p">,</span> <span class="s">&quot;    &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;No Results Found!&quot;</span>
+</div>
+<div class="viewcode-block" id="problem.reco_algo"><a class="viewcode-back" href="../problem.html#problem.problem.reco_algo">[docs]</a>	<span class="k">def</span> <span class="nf">reco_algo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    	Input </span>
+<span class="sd">		- *sql* : sql query which would generate the set of candidates for which similarity would be computed. It is generated via the find_similar_cfs() or find_similar_erdos()</span>
+<span class="sd">    	Return a list of recommended problems. Each entry in the list is a tuple of the </span>
+<span class="sd">    	form (pid, score) where more score means better results. The list is sorted in desc order</span>
+<span class="sd">    	by score.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="n">problem</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="c">#mapping of problem code with a list of tags</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="c">#mapping of score of problem code with its score </span>
+		<span class="n">difficulty</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="c">#mapping of problem code with difficulty</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+			<span class="n">code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+			<span class="n">tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+			<span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">problem</span><span class="p">:</span>
+				<span class="n">problem</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="n">score</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+				<span class="n">difficulty</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
+			<span class="n">problem</span><span class="p">[</span><span class="n">code</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">problem</span><span class="p">:</span>
+			<span class="c"># instead of using nfactor as the number of tags, we should normalise only for those </span>
+			<span class="c"># tags which do not occur in self.tag else the results are biased towards the highest</span>
+			<span class="c"># weighted tag. We can still improve the normalisation factor by using a slow</span>
+			<span class="c"># growing function. Also currently the common tags are being penalised just once </span>
+			<span class="c"># ie while calculating the idf score for the problem.</span>
+
+			<span class="n">nfactor</span> <span class="o">=</span> <span class="mi">1</span>
+			<span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">problem</span><span class="p">[</span><span class="n">code</span><span class="p">]:</span>
+				<span class="k">if</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+					<span class="n">nfactor</span><span class="o">+=</span><span class="mi">1</span>
+					<span class="k">continue</span>
+				<span class="n">score</span><span class="p">[</span><span class="n">code</span><span class="p">]</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+			<span class="n">score</span><span class="p">[</span><span class="n">code</span><span class="p">]</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span> <span class="p">(</span><span class="n">score</span><span class="p">[</span><span class="n">code</span><span class="p">]</span><span class="o">/</span><span class="n">nfactor</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span>
+		<span class="n">sorted_score</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>	
+		<span class="k">print</span> <span class="s">&quot;top 15 results : &quot;</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">15</span><span class="p">):</span>
+			<span class="k">print</span> <span class="s">&quot;problem id, score : &quot;</span><span class="p">,</span> <span class="n">sorted_score</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+			<span class="k">print</span> <span class="s">&quot;tags : &quot;</span><span class="p">,</span> <span class="n">problem</span><span class="p">[</span><span class="n">sorted_score</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+		<span class="k">return</span> <span class="n">sorted_score</span>
+</div>
+<div class="viewcode-block" id="problem.find_similar_erdos"><a class="viewcode-back" href="../problem.html#problem.problem.find_similar_erdos">[docs]</a>	<span class="k">def</span> <span class="nf">find_similar_erdos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    	Input </span>
+<span class="sd">		- *status* : status = 1 if problem was solved correctly else 0 </span>
+<span class="sd">    	Generate an sql query (which would generate the set of candidates for which similarity would be computed) </span>
+<span class="sd">    	and then calls the reco_algo() with the sql as input.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty </span><span class="se">\</span>
+<span class="s">			   	FROM problem, ptag </span><span class="se">\</span>
+<span class="s">			   	WHERE problem.pid != </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> AND problem.pid = ptag.pid  </span><span class="se">\</span>
+<span class="s">				AND problem.pid IN </span><span class="se">\</span>
+<span class="s">				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN </span><span class="se">\</span>
+<span class="s">				(SELECT tag FROM ptag where pid = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">) AND MID(problem.pid,1,3)=</span><span class="se">\&#39;</span><span class="s">erd</span><span class="se">\&#39;</span><span class="s"> ) </span><span class="se">\</span>
+<span class="s">				HAVING difficulty BETWEEN &quot;</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+			<span class="c">#correct submission</span>
+			<span class="n">sql</span><span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; - 0.3 AND &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; + 0.5 &quot;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">sql</span><span class="o">+=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; - 0.5 AND &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; + 0.3 &quot;</span>
+		<span class="n">sql</span><span class="o">+=</span><span class="s">&quot; AND difficulty &gt; 0&quot;</span>
+		<span class="k">print</span> <span class="n">sql</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reco_algo</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+	</div>
+<div class="viewcode-block" id="problem.find_similar_cfs"><a class="viewcode-back" href="../problem.html#problem.problem.find_similar_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">find_similar_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    	Input </span>
+<span class="sd">		- *status* : status = 1 if problem was solved correctly else 0 </span>
+<span class="sd">    	Generate an sql query (which would generate the set of candidates for which similarity would be computed) </span>
+<span class="sd">    	and then calls the reco_algo() with the sql as input.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gen_window_cfs</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+		<span class="c"># print res</span>
+		<span class="n">upper</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">lower</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;	SELECT ptag.pid, ptag.tag, P.points/GREATEST(3000, (SELECT MAX(points) FROM problem </span><span class="se">\</span>
+<span class="s">			    WHERE contestId = P.contestId)) as difficulty FROM problem P, ptag </span><span class="se">\</span>
+<span class="s">			   	WHERE P.pid != </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> AND P.pid = ptag.pid AND P.pid IN </span><span class="se">\</span>
+<span class="s">				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN </span><span class="se">\</span>
+<span class="s">				(SELECT tag FROM ptag where pid = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">) </span><span class="se">\</span>
+<span class="s">				AND MID(problem.pid,1,3)=</span><span class="se">\&#39;</span><span class="s">cfs</span><span class="se">\&#39;</span><span class="s"> ) </span><span class="se">\</span>
+<span class="s">				HAVING difficulty BETWEEN &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; AND &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
+		<span class="c"># print sql</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reco_algo</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="problem.gen_window_cfs"><a class="viewcode-back" href="../problem.html#problem.problem.gen_window_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">gen_window_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    	Input </span>
+<span class="sd">		- *status* : status = 1 if problem was solved correctly else 0 </span>
+<span class="sd">    	Return a difficulty window to be used by find_similar_cfs(). </span>
+<span class="sd">    	The window is returned as a tuple of form (upper_limit,lower_limit)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT P.points/GREATEST(&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">cfs_max_score</span><span class="o">+</span><span class="s">&quot;, (SELECT MAX(points) FROM problem </span><span class="se">\</span>
+<span class="s">			WHERE contestId = P.contestId)) as difficulty FROM problem P </span><span class="se">\</span>
+<span class="s">			WHERE MID(P.pid,1,3) = </span><span class="se">\&quot;</span><span class="s">cfs</span><span class="se">\&quot;</span><span class="s"> AND P.points&gt;0&quot;</span>
+		<span class="c"># print sql</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="n">difficulty</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+			<span class="n">point</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+			<span class="k">if</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">difficulty</span><span class="p">:</span>
+				<span class="n">difficulty</span><span class="p">[</span><span class="n">point</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">difficulty</span><span class="p">[</span><span class="n">point</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="n">sorted_difficulty</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">difficulty</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+		
+		<span class="c"># print len(sorted_difficulty)</span>
+		<span class="c"># for i in sorted_difficulty:</span>
+		<span class="c"># 	print i</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">imax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_difficulty</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+		<span class="n">hi</span> <span class="o">=</span> <span class="n">imax</span>
+		<span class="n">lo</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">hi</span><span class="o">+</span><span class="n">lo</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+		<span class="k">while</span><span class="p">(</span><span class="n">hi</span><span class="o">&gt;=</span><span class="n">lo</span><span class="p">):</span>
+			<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">hi</span><span class="o">+</span><span class="n">lo</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+			<span class="n">a</span> <span class="o">=</span> <span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span>
+			<span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+				<span class="n">hi</span> <span class="o">=</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+			<span class="k">elif</span><span class="p">(</span><span class="n">a</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
+				<span class="n">lo</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">break</span>
+		<span class="c"># print i</span>
+		<span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="c">#correct submission</span>
+			<span class="n">upper</span> <span class="o">=</span> <span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">j</span> <span class="o">=</span> <span class="n">i</span>
+			<span class="c">#increase the right end of the window till the upper threshold is met</span>
+			<span class="k">while</span><span class="p">(</span><span class="n">upper</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_threshold</span><span class="p">):</span>
+				<span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+				<span class="n">upper</span><span class="o">+=</span><span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">x</span> <span class="o">=</span> <span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span>
+			<span class="c"># print x</span>
+			<span class="c"># how much deviation we allowed on the right side of self.difficulty</span>
+			<span class="c"># we allow only half of this deviation on the left hand side</span>
+			<span class="c"># the reason is that the difficulty of the problem will lie either </span>
+			<span class="c"># on one of the peaks in which case x = 0 or near a right peak in which case </span>
+			<span class="c"># we wont need many values on the left or near a left peak in which case our x</span>
+			<span class="c"># would be large enough to cover the left peak as well. Same logic for the next</span>
+			<span class="c"># part of the condition</span>
+			<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="o">-</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c">#incorrect submission</span>
+			<span class="n">lower</span> <span class="o">=</span> <span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+			<span class="k">print</span> <span class="n">lower</span>
+			<span class="k">print</span> <span class="n">i</span>
+			<span class="k">print</span> <span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+			<span class="k">while</span><span class="p">(</span><span class="n">lower</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_threshold</span><span class="p">):</span>
+				<span class="n">k</span><span class="o">-=</span><span class="mi">1</span>
+				<span class="n">lower</span><span class="o">+=</span><span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+				<span class="k">print</span> <span class="n">lower</span>
+			<span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span> <span class="o">-</span> <span class="n">sorted_difficulty</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+			<span class="c"># print x</span>
+			<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty</span><span class="o">+</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="problem.create_difficulty_matrix"><a class="viewcode-back" href="../problem.html#problem.problem.create_difficulty_matrix">[docs]</a>	<span class="k">def</span> <span class="nf">create_difficulty_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">conn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;forsit&#39;</span><span class="p">)</span>
+		<span class="n">cursor</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM activity&quot;</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">cursor</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+			<span class="n">user</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+			<span class="n">problem</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">problem</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">problem</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">problem</span><span class="p">][</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="problem.find_correlation"><a class="viewcode-back" href="../problem.html#problem.problem.find_correlation">[docs]</a>	<span class="k">def</span> <span class="nf">find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">):</span>
+
+		<span class="n">si</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">]:</span>
+				<span class="n">si</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">si</span><span class="p">)</span>
+
+		<span class="n">n1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">])</span>
+		<span class="n">n2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">])</span>
+
+		<span class="c"># if there are no common users, return 0</span>
+		<span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="mi">0</span>
+
+		<span class="n">sum1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+		<span class="n">sum2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+
+		<span class="c"># Sum up the squares</span>
+		<span class="n">sum1Sq</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">][</span><span class="n">it</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+		<span class="n">sum2Sq</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">][</span><span class="n">it</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+
+		<span class="c"># Sum up the products</span>
+		<span class="n">pSum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+
+		<span class="c"># Calculate Pearson score</span>
+		<span class="n">num</span> <span class="o">=</span> <span class="n">pSum</span> <span class="o">-</span> <span class="p">(</span><span class="n">sum1</span><span class="o">*</span><span class="n">sum2</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+		<span class="n">den</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">sum1Sq</span><span class="o">-</span><span class="nb">pow</span><span class="p">(</span><span class="n">sum1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">sum2Sq</span><span class="o">-</span><span class="nb">pow</span><span class="p">(</span><span class="n">sum2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">den</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="mi">0</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">num</span><span class="o">/</span><span class="n">den</span>
+		<span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">n</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">n1</span><span class="o">+</span><span class="n">n2</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="problem.find_correlated_problems"><a class="viewcode-back" href="../problem.html#problem.problem.find_correlated_problems">[docs]</a>	<span class="k">def</span> <span class="nf">find_correlated_problems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">correlated_problems</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">correlated_problems</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">correlated_problems</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">correlated_problems</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+
+	<span class="n">a</span> <span class="o">=</span> <span class="n">problem</span><span class="p">(</span><span class="s">&#39;cfs175E&#39;</span><span class="p">)</span>
+	<span class="k">print</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s">-%m-%Y %H:%M&quot;</span><span class="p">)</span>
+	<span class="n">a</span><span class="o">.</span><span class="n">print_info</span><span class="p">()</span>
+	<span class="n">a</span><span class="o">.</span><span class="n">find_similar_cfs</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+	<span class="c"># a.find_similar_erdos()</span>
+	<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n\n\n\n</span><span class="s">&quot;</span>
+	<span class="c"># plot_points_distribution_cfs(max_flag=1, min_flag = 1)</span>
+	<span class="n">plot_difficulty_distribution_cfs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">cfs_max_score</span><span class="p">)</span>
+	<span class="c"># a.gen_window_cfs()</span>
+
+	<span class="c"># print &quot;\n&quot;</span>
+	<span class="c"># print &quot;\n&quot;</span>
+	<span class="c"># for item in a.find_similar_cfs(1)[:10]:</span>
+	<span class="c"># 	print item</span>
+	<span class="c"># 	b = problem(item[0])</span>
+	<span class="c"># 	b.print_info()</span>
+	<span class="c"># 	print &quot;\n&quot;</span>
+	<span class="c"># a.find_correlated_problems()</span>
+	<span class="c"># print &quot;\n&quot;</span>
+	<span class="c"># print &quot;\n&quot;</span>
+	<span class="c"># print &quot;\n&quot;</span>
+	<span class="c"># for item in a.correlated_problems[:10]:</span>
+	<span class="c"># 	print item</span>
+	<span class="c"># 	b = problem(item[0])</span>
+	<span class="c"># 	b.print_info()</span>
+	<span class="c"># 	print &quot;\n&quot;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

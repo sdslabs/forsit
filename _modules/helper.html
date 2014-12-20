@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>helper &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for helper</h1><div class="highlight"><pre>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">random</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="get_random_color"><a class="viewcode-back" href="../helper.html#helper.get_random_color">[docs]</a><span class="k">def</span> <span class="nf">get_random_color</span><span class="p">(</span><span class="n">pastel_factor</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	|  Return a random color represented as a list of form [a,b,c] where a,b,c correspond to RGB values of the random color</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">return</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">pastel_factor</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">pastel_factor</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]]</span>
+</div>
+<div class="viewcode-block" id="color_distance"><a class="viewcode-back" href="../helper.html#helper.color_distance">[docs]</a><span class="k">def</span> <span class="nf">color_distance</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	|  Return a distance-like measure given 2 colors c1 and c2</span>
+<span class="sd">	|  Colors are represented as a list of form [a,b,c] where a,b,c correspond to RGB values</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">)])</span>
+</div>
+<div class="viewcode-block" id="generate_new_color"><a class="viewcode-back" href="../helper.html#helper.generate_new_color">[docs]</a><span class="k">def</span> <span class="nf">generate_new_color</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">pastel_factor</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Input </span>
+<span class="sd">	- N : Number of colors of be returned</span>
+<span class="sd">	- pastel_factor : pastel factor of the colors</span>
+<span class="sd">    Return a list of n colors where each color is represented as a list of form [a,b,c] where a,b,c correspond to RGB values</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">colors_ret</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">color</span> <span class="o">=</span> <span class="n">get_random_color</span><span class="p">(</span><span class="n">pastel_factor</span> <span class="o">=</span> <span class="n">pastel_factor</span><span class="p">)</span>
+	<span class="n">colors_ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+		<span class="n">max_distance</span> <span class="o">=</span> <span class="bp">None</span>
+		<span class="n">best_color</span> <span class="o">=</span> <span class="bp">None</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">):</span>
+			<span class="n">color</span> <span class="o">=</span> <span class="n">get_random_color</span><span class="p">(</span><span class="n">pastel_factor</span> <span class="o">=</span> <span class="n">pastel_factor</span><span class="p">)</span>
+			<span class="n">best_distance</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">color_distance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colors_ret</span><span class="p">])</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">max_distance</span> <span class="ow">or</span> <span class="n">best_distance</span> <span class="o">&gt;</span> <span class="n">max_distance</span><span class="p">:</span>
+				<span class="n">max_distance</span> <span class="o">=</span> <span class="n">best_distance</span>
+				<span class="n">best_color</span> <span class="o">=</span> <span class="n">color</span>
+		<span class="n">colors_ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_color</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">colors_ret</span>
+</div>
+<div class="viewcode-block" id="subset"><a class="viewcode-back" href="../helper.html#helper.subset">[docs]</a><span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	|  Return subsets of set arr</span>
+<span class="sd">	|  Subsets are returned in form of a list of frozensets</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+			<span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
+	<span class="k">return</span> <span class="n">ret</span>
+</div>
+<div class="viewcode-block" id="join_set"><a class="viewcode-back" href="../helper.html#helper.join_set">[docs]</a><span class="k">def</span> <span class="nf">join_set</span><span class="p">(</span><span class="n">item_set</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	|  Return sets of size length by taking join of item_set with itself</span>
+<span class="sd">	|  Sets are returned in form of a set comprising of the new sets</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item_set</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">item_set</span><span class="p">:</span>
+			<span class="n">temp_set</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+			<span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">temp_set</span><span class="p">)</span> <span class="o">==</span> <span class="n">length</span><span class="p">):</span>
+				<span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_set</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

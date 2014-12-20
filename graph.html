@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>graph module &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="helper module" href="helper.html" />
+    <link rel="prev" title="db module" href="db.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="helper.html" title="helper module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="db.html" title="db module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-graph">
+<span id="graph-module"></span><h1>graph module<a class="headerlink" href="#module-graph" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="graph.plot_concept_cfs">
+<tt class="descclassname">graph.</tt><tt class="descname">plot_concept_cfs</tt><big>(</big><em>handle</em>, <em>show_legend=0</em>, <em>show_x_ticks=0</em>, <em>order='DESC'</em>, <em>upper_limit=500</em>, <em>lower_limit=0</em>, <em>tag_list=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/graph.html#plot_concept_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graph.plot_concept_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the distribution of tags attempted by the user for codeforces over time.</div>
+</div>
+<div class="line-block">
+<div class="line">Input </div>
+<div class="line">- <em>handle</em> : user handle on codeforces</div>
+<div class="line">- <em>show_legend</em> : since legend could be very large, it is shown only if this flag is set on</div>
+<div class="line">- <em>show_x_ticks</em> : since there are too many enteries along x-axis, a dotted line corresponing to each entry on x-axis is shown only if this flag is set on</div>
+<div class="line">- <em>order</em> : order in which results are to fetched</div>
+<div class="line">- <em>upper_limit</em> : upper limit on number of submissions to be fetched from the database. Set it to -1 to fetch all the submissions</div>
+<div class="line">- <em>lower_limit</em> : lower limit on number of submissions to be fetched from the database. Set it to -1 to fetch all the submissions</div>
+<div class="line">- <em>tag_list</em> : list of tags to be considered. If empty list is passed then all the tags are considered.</div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="graph.plot_difficulty_distribution_cfs">
+<tt class="descclassname">graph.</tt><tt class="descname">plot_difficulty_distribution_cfs</tt><big>(</big><em>cfs_max_score</em><big>)</big><a class="reference internal" href="_modules/graph.html#plot_difficulty_distribution_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graph.plot_difficulty_distribution_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the distribution of number of problems vs difficulty level</div>
+</div>
+<p>max and min points for a competiton for codeforces</p>
+<div class="line-block">
+<div class="line">Input </div>
+<div class="line">- <em>cfs_max_score</em> : Defines the default max score for a competiton on codeforces.
+For further information on this variable, check problem module  </div>
+<div class="line">- <em>app_name</em> : Name of the app ie forsit</div>
+</div>
+<div class="line-block">
+<div class="line">Conclusion from the plots when used with codeforces data : </div>
+</div>
+<div class="line-block">
+<div class="line">-  Not all the problems can be fetched by the codeforces API. So the initial plots had some outliers.
+Similar results were discovered using plots from <em>plot_points_distribution_cfs()</em>. 
+Using <em>cfs_max_score</em> variable cleared these outliers. </div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="graph.plot_difficulty_matrix">
+<tt class="descclassname">graph.</tt><tt class="descname">plot_difficulty_matrix</tt><big>(</big><em>difficulty_matrix</em><big>)</big><a class="reference internal" href="_modules/graph.html#plot_difficulty_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graph.plot_difficulty_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="graph.plot_points_distribution_cfs">
+<tt class="descclassname">graph.</tt><tt class="descname">plot_points_distribution_cfs</tt><big>(</big><em>max_flag=1</em>, <em>min_flag=0</em><big>)</big><a class="reference internal" href="_modules/graph.html#plot_points_distribution_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#graph.plot_points_distribution_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Plot the distribution of max and min points for a competiton for codeforces</div>
+</div>
+<div class="line-block">
+<div class="line">Input </div>
+<div class="line">- <em>max_flag</em> : if max_flag = 1 then print the distribution of max points else do not print</div>
+<div class="line">- <em>min_flag</em> : if min_flag = 1 then print the distribution of min points else do not print</div>
+<div class="line">- <em>app_name</em> : Name of the app ie forsit</div>
+</div>
+<div class="line-block">
+<div class="line">Conclusion from the plots when used with codeforces data : </div>
+</div>
+<div class="line-block">
+<div class="line">-  Not all the problems can be fetched by the codeforces API. </div>
+<div class="line">There are many problems with max score as 500 or 1000. Manually checking those problems </div>
+<div class="line">revealed that only problems with code D or E were missing for such contests. </div>
+<div class="line">The same situation exists in reverse as well where problems with code A or B are missing.</div>
+</div>
+<div class="line-block">
+<div class="line">-  There are few contests which do not follow the standard codeforces scoring criteria. </div>
+<div class="line">These contests had scores in the range 20 to 70 (manually checked)</div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="db.html"
+                        title="previous chapter">db module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="helper.html"
+                        title="next chapter">helper module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/graph.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="helper.html" title="helper module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="db.html" title="db module"
+             >previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

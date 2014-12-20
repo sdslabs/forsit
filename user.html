@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>user module &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="prev" title="recommend module" href="recommend.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="recommend.html" title="recommend module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-user">
+<span id="user-module"></span><h1>user module<a class="headerlink" href="#module-user" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="user.user">
+<em class="property">class </em><tt class="descclassname">user.</tt><tt class="descname">user</tt><big>(</big><em>uid</em>, <em>options={}</em>, <em>app_name='forsit'</em>, <em>cfs_handle=''</em>, <em>erd_handle=''</em><big>)</big><a class="reference internal" href="_modules/user.html#user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.base" title="base.base"><tt class="xref py py-class docutils literal"><span class="pre">base.base</span></tt></a></p>
+<ul class="simple">
+<li><em>uid</em> : user id. To serve as default value of <em>cfs_handle</em> and <em>erd_handle</em></li>
+<li><em>app_name</em> : Name of the app ie forsit</li>
+<li><em>cfs_handle</em> : User&#8217;s handle on Codeforces.</li>
+<li><em>erd_handle</em> : User&#8217;s handle on Erdos.</li>
+</ul>
+<dl class="method">
+<dt id="user.user.calculate_difficulty">
+<tt class="descname">calculate_difficulty</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.calculate_difficulty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.calculate_difficulty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.create_difficulty_matrix">
+<tt class="descname">create_difficulty_matrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.create_difficulty_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.create_difficulty_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.evaluate_recommendation">
+<tt class="descname">evaluate_recommendation</tt><big>(</big><em>plist_eval</em><big>)</big><a class="reference internal" href="_modules/user.html#user.evaluate_recommendation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.evaluate_recommendation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_all_user_activity_cfs">
+<tt class="descname">fetch_all_user_activity_cfs</tt><big>(</big><em>handle=''</em><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_all_user_activity_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_all_user_activity_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch User&#8217;s activity from Codeforces</div>
+<div class="line">It is different from <em>fetch_user_activity_cfs()</em> as it logs each submission as a seperate entry to plot the concept trail</div>
+<div class="line">&#64;todo : move to scrapper module </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_activity_all">
+<tt class="descname">fetch_user_activity_all</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_activity_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_activity_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_activity_cfs">
+<tt class="descname">fetch_user_activity_cfs</tt><big>(</big><em>handle=''</em><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_activity_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_activity_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch User&#8217;s activity from Codeforces</div>
+<div class="line">&#64;todo : move to scrapper module </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_activity_erd">
+<tt class="descname">fetch_user_activity_erd</tt><big>(</big><em>handle=''</em><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_activity_erd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_activity_erd" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch User&#8217;s activity from Erdos</div>
+<div class="line">&#64;todo : move to scrapper module </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_info_cfs">
+<tt class="descname">fetch_user_info_cfs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_info_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_info_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch User&#8217;s information from Codeforces</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_info_erd">
+<tt class="descname">fetch_user_info_erd</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_info_erd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_info_erd" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch User&#8217;s information from Erdos</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_list_cfs">
+<tt class="descname">fetch_user_list_cfs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_list_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_list_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch List of all the users from Codeforces</div>
+<div class="line">&#64;todo : move to scrapper module </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.fetch_user_list_erd">
+<tt class="descname">fetch_user_list_erd</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.fetch_user_list_erd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.fetch_user_list_erd" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch List of all the users from Erdos</div>
+<div class="line">&#64;todo : move to scrapper module </div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="user.user.find_correlation">
+<tt class="descname">find_correlation</tt><big>(</big><em>u1</em>, <em>u2</em>, <em>gamma=100</em><big>)</big><a class="reference internal" href="_modules/user.html#user.find_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.find_correlation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.find_similar_users">
+<tt class="descname">find_similar_users</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.find_similar_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.find_similar_users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.normalize_difficulty_matrix">
+<tt class="descname">normalize_difficulty_matrix</tt><big>(</big><em>type=0</em><big>)</big><a class="reference internal" href="_modules/user.html#user.normalize_difficulty_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.normalize_difficulty_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.rank_erdos_users">
+<tt class="descname">rank_erdos_users</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/user.html#user.rank_erdos_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.rank_erdos_users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="user.user.recommend_problems">
+<tt class="descname">recommend_problems</tt><big>(</big><em>mode</em><big>)</big><a class="reference internal" href="_modules/user.html#user.recommend_problems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#user.user.recommend_problems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="recommend.html"
+                        title="previous chapter">recommend module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/user.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="recommend.html" title="recommend module"
+             >previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

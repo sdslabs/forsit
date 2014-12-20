@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>apriori &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for apriori</h1><div class="highlight"><pre>
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">db</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">helper</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">time</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="apriori"><a class="viewcode-back" href="../apriori.html#apriori.apriori">[docs]</a><span class="k">class</span> <span class="nc">apriori</span><span class="p">():</span>
+
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	- *list_pid* : list of pids for which association rules and frequent itemsets are to be mined</span>
+<span class="sd">	- *app_name* : Name of the app ie forsit</span>
+<span class="sd">	- *min_support* : The minimum support for generating frequent itemse</span>
+<span class="sd">	- *min_confidence* : The minimum number for generating association rules.</span>
+<span class="sd">	- *transaction* : List of all the transactions involving the pids</span>
+<span class="sd">	- *itemset* : set of items. Each item is itself a set(frozenset to be more precise) of pids. </span>
+<span class="sd">	  So it looks like this : itemset = set ( set(pid1, pid2), set(pid3,pid4) )</span>
+<span class="sd">	- *frequency_itemset* : Mapping of itemset with its frequency. key is itemset, value is frequency</span>
+<span class="sd">	- *size_to_itemset* : Dictionary mapping size with itemsets ie size_to_itemset[1] = set(all itemsets of size 1)</span>
+<span class="sd">	- *current_candidate_set* : Candidate set to be updated by prune method</span>
+<span class="sd">	- *max_iterations* : maximum number of iterations for the algorithm to run</span>
+<span class="sd">	- *count_transaction* : size of transaction list</span>
+<span class="sd">	- *Final_items* : List of items having support &gt; min_support. Each entry in the list is of the form (item, support)</span>
+<span class="sd">	- *Final_rules* : List of rules having confidence &gt; min_confidence. Each entry in the list is of the form ( (X,Y), confidence) where rule itself is of the form X -&gt; Y</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_pid</span><span class="p">,</span> <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;forsit&quot;</span><span class="p">,</span> <span class="n">min_support</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="p">,</span> <span class="n">min_confidence</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">max_iterations</span> <span class="o">=</span> <span class="mi">50</span><span class="p">):</span>	
+			
+		<span class="bp">self</span><span class="o">.</span><span class="n">min_support</span> <span class="o">=</span> <span class="n">min_support</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">min_confidence</span> <span class="o">=</span> <span class="n">min_confidence</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">app_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">list_pid</span> <span class="o">=</span> <span class="n">list_pid</span>
+
+<div class="viewcode-block" id="apriori.initialise"><a class="viewcode-back" href="../apriori.html#apriori.apriori.initialise">[docs]</a>	<span class="k">def</span> <span class="nf">initialise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Generate set of items and list of transactions</span>
+<span class="sd">		|  Initialise self.transaction and self.item</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">transaction</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">itemset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT handle, pid FROM activity WHERE &quot;</span>
+		<span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_pid</span><span class="p">:</span>
+			<span class="n">sql</span><span class="o">+=</span><span class="s">&quot;pid = </span><span class="se">\&#39;</span><span class="s">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> OR &quot;</span>
+		<span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> 
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="n">Trans</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span> <span class="p">:</span>
+			<span class="n">Trans</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Trans</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">transaction</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">Trans</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+			<span class="c">#frozenset as it can be used as key for dicts</span>
+			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">Trans</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">itemset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="n">j</span><span class="p">]))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">count_transaction</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transaction</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="apriori.prune"><a class="viewcode-back" href="../apriori.html#apriori.apriori.prune">[docs]</a>	<span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Prune subset of itemset based on min_support</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="n">localset</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+		<span class="c">#default dict with all keys set to 0</span>
+	    
+		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">frequency_itemset</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+					<span class="n">localset</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>			
+		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">localset</span><span class="p">:</span>
+			<span class="n">support</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">localset</span><span class="p">[</span><span class="n">item</span><span class="p">])</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count_transaction</span>
+			<span class="k">if</span> <span class="n">support</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_support</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="apriori.print_results"><a class="viewcode-back" href="../apriori.html#apriori.apriori.print_results">[docs]</a>	<span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Print generated Itemsets and Confidence Rules</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+
+		<span class="k">print</span> <span class="s">&quot;----Itemset----&quot;</span>
+		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Final_items</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;item : </span><span class="si">%s</span><span class="s">  support : </span><span class="si">%0.6f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+		<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+		<span class="k">print</span> <span class="s">&quot;----Rules----&quot;</span>
+		<span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Final_rules</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> -&gt; </span><span class="si">%s</span><span class="s">  confidence = </span><span class="si">%0.6f</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="n">rule</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="apriori.run"><a class="viewcode-back" href="../apriori.html#apriori.apriori.run">[docs]</a>	<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Run the Apriori algorithm</span>
+<span class="sd">		|  Return frequent itemsets and association rules</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">initialise</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">frequency_itemset</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">size_to_itemset</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemset</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+		<span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+		<span class="k">while</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">([])</span> <span class="p">):</span> <span class="c">#or k!=self.max_iterations):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">size_to_itemset</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">join_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_candidate_set</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+			<span class="n">k</span><span class="o">+=</span><span class="mi">1</span>
+
+		<span class="k">print</span> <span class="s">&quot;Number of iterations = &quot;</span><span class="p">,</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span>
+		<span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+			<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">			|  Return the support of an item</span>
+<span class="sd">			|  Defining function within a function as python does not have macros by default </span>
+<span class="sd">			&#39;&#39;&#39;</span>
+			<span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency_itemset</span><span class="p">[</span><span class="n">item</span><span class="p">])</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">count_transaction</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">Final_items</span> <span class="o">=</span> <span class="p">[]</span>
+
+		<span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_to_itemset</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_to_itemset</span><span class="p">[</span><span class="n">size</span><span class="p">]:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">Final_items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">support</span><span class="p">(</span><span class="n">item</span><span class="p">)))</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">Final_rules</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_to_itemset</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_to_itemset</span><span class="p">[</span><span class="n">size</span><span class="p">]:</span>
+				<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">helper</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>	
+					<span class="n">y</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+					<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+						<span class="n">confidence</span> <span class="o">=</span> <span class="n">support</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">/</span><span class="n">support</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+						<span class="k">if</span> <span class="n">confidence</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_confidence</span><span class="p">:</span>
+							<span class="bp">self</span><span class="o">.</span><span class="n">Final_rules</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> <span class="n">confidence</span><span class="p">))</span>
+
+
+</div></div>
+<span class="n">list_pid</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;cfs2B&#39;</span><span class="p">,</span> <span class="s">&#39;cfs2A&#39;</span><span class="p">]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">apriori</span><span class="p">(</span><span class="n">list_pid</span> <span class="o">=</span> <span class="n">list_pid</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">print_results</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

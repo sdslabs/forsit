@@ -1,0 +1,650 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>user &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for user</h1><div class="highlight"><pre>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">requests</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">problem</span> <span class="kn">import</span> <span class="n">problem</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">exp</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">operator</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">db</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">graph</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="c">#generated using http://codeforces.com/blog/entry/3064</span>
+
+<span class="c"># 2600+	Red	International grandmaster	1</span>
+<span class="c"># 2200 - 2599	red	Grandmaster	1</span>
+<span class="c"># 2050 - 2199	Orange	International master	1</span>
+<span class="c"># 1900 - 2049	Orange	Master	1</span>
+<span class="c"># 1700 - 1899	Violet	Candidate master	1</span>
+<span class="c"># 1500 - 1699	Blue	Expert	2</span>
+<span class="c"># 1350 - 1499	Green	Specialist	2</span>
+<span class="c"># 1200 - 1349	Green	Pupil	2</span>
+<span class="c"># 0 - 1199	Gray	Newbie	2</span>
+
+<span class="n">rating</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">rank</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;international grandmaster&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;grandmaster&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;international master&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;master&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.7</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;candidate master&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;expert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;specialist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;pupil&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">rank</span><span class="p">[</span><span class="s">&#39;newbie&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.2</span>
+
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;international grandmaster&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2600</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;grandmaster&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2200</span><span class="p">,</span><span class="mi">2599</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;international master&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2050</span><span class="p">,</span><span class="mi">2199</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;master&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1900</span><span class="p">,</span><span class="mi">2049</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;candidate master&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1700</span><span class="p">,</span><span class="mi">1899</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;expert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1500</span><span class="p">,</span><span class="mi">1699</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;specialist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1350</span><span class="p">,</span><span class="mi">1499</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;pupil&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1200</span><span class="p">,</span><span class="mi">1349</span><span class="p">)</span>
+<span class="n">rating</span><span class="p">[</span><span class="s">&#39;newbie&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1199</span><span class="p">)</span>
+
+<div class="viewcode-block" id="user"><a class="viewcode-back" href="../user.html#user.user">[docs]</a><span class="k">class</span> <span class="nc">user</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+	
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	- *uid* : user id. To serve as default value of *cfs_handle* and *erd_handle*</span>
+<span class="sd">	- *app_name* : Name of the app ie forsit</span>
+<span class="sd">	- *cfs_handle* : User&#39;s handle on Codeforces.</span>
+<span class="sd">	- *erd_handle* : User&#39;s handle on Erdos.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+		
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">app_name</span> <span class="o">=</span> <span class="s">&quot;forsit&quot;</span><span class="p">,</span> <span class="n">cfs_handle</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">erd_handle</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">training_problems</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;tag_based&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;penalize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;tag_based&#39;</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;tag_based&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s">&#39;tag_based&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;normalize&#39;</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;sample_data&#39;</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;penalize&#39;</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;penalize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">options</span><span class="p">[</span><span class="s">&#39;penalize&#39;</span><span class="p">]</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">cfs_url</span> <span class="o">=</span> <span class="s">&quot;http://codeforces.com/api/user.status&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">erd_url</span> <span class="o">=</span> <span class="s">&quot;http://erdos.sdslabs.co/users/&quot;</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">cfs_handle</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">):</span>
+			<span class="n">cfs_handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">erd_handle</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">):</span>
+			<span class="n">erd_handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cfs_handle</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">erd_handle</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">app_name</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">calculate_difficulty</span><span class="p">()</span>
+
+<div class="viewcode-block" id="user.fetch_user_info_cfs"><a class="viewcode-back" href="../user.html#user.user.fetch_user_info_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_info_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch User&#39;s information from Codeforces</span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">payload</span><span class="p">[</span><span class="s">&#39;handles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://codeforces.com/api/user.info&quot;</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">res</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;result&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s">&#39;rank&#39;</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">rating</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s">&#39;rating&#39;</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">score</span>  <span class="o">=</span> <span class="n">rating</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="user.fetch_user_info_erd"><a class="viewcode-back" href="../user.html#user.user.fetch_user_info_erd">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_info_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch User&#39;s information from Erdos</span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_url</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span> <span class="o">+</span> <span class="s">&quot;.json&quot;</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">solved_problems</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;solved_problems&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="user.fetch_user_list_cfs"><a class="viewcode-back" href="../user.html#user.user.fetch_user_list_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_list_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch List of all the users from Codeforces</span>
+<span class="sd">		|  @todo : move to scrapper module </span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">cfs_users</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://codeforces.com/api/user.ratedList?activeOnly=true&quot;</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;result&#39;</span><span class="p">]</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">cfs_users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;handle&#39;</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="user.fetch_user_list_erd"><a class="viewcode-back" href="../user.html#user.user.fetch_user_list_erd">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_list_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch List of all the users from Erdos</span>
+<span class="sd">		|  @todo : move to scrapper module </span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">erd_users</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://erdos.sdslabs.co/users.json&quot;</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;list&#39;</span><span class="p">]</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">erd_users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="user.fetch_user_activity_cfs"><a class="viewcode-back" href="../user.html#user.user.fetch_user_activity_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_activity_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch User&#39;s activity from Codeforces</span>
+<span class="sd">		|  @todo : move to scrapper module </span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">handle</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+			<span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span>
+		<span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">payload</span><span class="p">[</span><span class="s">&#39;handle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
+		<span class="n">handle</span> <span class="o">=</span> <span class="s">&#39;cfs&#39;</span> <span class="o">+</span> <span class="n">handle</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT created_at FROM activity WHERE handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> ORDER BY created_at DESC LIMIT 1;&quot;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="p">():</span>
+			<span class="n">last_activity</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">last_activity</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">last_activity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_activity</span><span class="p">)</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfs_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;result&#39;</span><span class="p">]</span>
+			<span class="n">result</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+			<span class="k">for</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;creationTimeSeconds&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">last_activity</span><span class="p">:</span>
+					<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM activity WHERE pid = </span><span class="se">\&#39;</span><span class="s">cfs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;contestId&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;index&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> AND handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+					<span class="n">check</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+					<span class="n">difficulty</span> <span class="o">=</span> <span class="mi">0</span>
+					<span class="k">if</span> <span class="n">act</span><span class="p">[</span><span class="s">&#39;verdict&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;OK&quot;</span><span class="p">:</span>
+						<span class="n">status</span> <span class="o">=</span> <span class="mi">1</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">status</span> <span class="o">=</span> <span class="mi">0</span>
+					<span class="k">if</span> <span class="n">check</span> <span class="o">==</span> <span class="p">():</span>
+						<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">, </span><span class="se">\&#39;</span><span class="s">cfs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;contestId&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;index&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">, &#39;1&#39;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;creationTimeSeconds&#39;</span><span class="p">])</span> <span class="o">+</span><span class="s">&quot; )&quot;</span>
+						<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET attempt_count = attempt_count + 1, status = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, difficulty = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, created_at = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;creationTimeSeconds&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; WHERE pid = </span><span class="se">\&#39;</span><span class="s">cfs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;contestId&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;index&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> AND handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+						<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+
+	<span class="c"># @profile					</span></div>
+<div class="viewcode-block" id="user.fetch_all_user_activity_cfs"><a class="viewcode-back" href="../user.html#user.user.fetch_all_user_activity_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_all_user_activity_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch User&#39;s activity from Codeforces</span>
+<span class="sd">		|  It is different from *fetch_user_activity_cfs()* as it logs each submission as a seperate entry to plot the concept trail</span>
+<span class="sd">		|  @todo : move to scrapper module </span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="n">difficulty</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">if</span> <span class="n">handle</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+			<span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span>
+		<span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">payload</span><span class="p">[</span><span class="s">&#39;handle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
+		<span class="n">handle</span> <span class="o">=</span> <span class="s">&#39;cfs&#39;</span> <span class="o">+</span> <span class="n">handle</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT created_at FROM activity_concept WHERE handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> ORDER BY created_at DESC LIMIT 1;&quot;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="p">():</span>
+			<span class="n">last_activity</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">last_activity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfs_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;result&#39;</span><span class="p">]</span>
+			<span class="c">#profile reverse operation </span>
+			<span class="n">result</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+			<span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
+			<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES &quot;</span>
+			<span class="k">for</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+				<span class="c">#checking for min of the 2 values as for some cases, codeforces api is returning absured results for relatice time</span>
+				<span class="n">relative_time</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">7200</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;relativeTimeSeconds&#39;</span><span class="p">]))</span>
+				<span class="n">submission_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;creationTimeSeconds&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="n">relative_time</span>
+				<span class="k">if</span> <span class="n">submission_time</span> <span class="o">&gt;</span> <span class="n">last_activity</span><span class="p">:</span>
+					<span class="n">status</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;verdict&#39;</span><span class="p">])</span>
+					<span class="k">if</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="s">&quot;OK&quot;</span><span class="p">):</span>
+						<span class="n">status</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">status</span> <span class="o">=</span> <span class="s">&quot;0&quot;</span>
+
+					<span class="n">sql</span><span class="o">+=</span><span class="s">&quot;(</span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">, </span><span class="se">\&#39;</span><span class="s">cfs&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;contestId&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;problem&#39;</span><span class="p">][</span><span class="s">&#39;index&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">, &#39;1&#39;, &quot;</span> <span class="o">+</span> <span class="n">status</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">submission_time</span><span class="p">)</span> <span class="o">+</span><span class="s">&quot; ), &quot;</span>
+					<span class="n">count</span><span class="o">+=</span><span class="mi">1</span><span class="p">;</span>
+					<span class="k">if</span><span class="p">(</span><span class="n">count</span><span class="o">%</span><span class="mi">5000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+						<span class="n">sql</span> <span class="o">=</span> <span class="n">sql</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+						<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+						<span class="k">print</span> <span class="n">count</span><span class="p">,</span> <span class="s">&quot; entries made in the database&quot;</span>
+						<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES &quot;</span> 
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">break</span>
+			<span class="c"># print sql</span>
+			<span class="c"># print count</span>
+			<span class="k">if</span><span class="p">(</span><span class="n">sql</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;,&quot;</span><span class="p">):</span>
+				<span class="n">sql</span> <span class="o">=</span> <span class="n">sql</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+				<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>							
+	
+			
+			</div>
+<div class="viewcode-block" id="user.fetch_user_activity_erd"><a class="viewcode-back" href="../user.html#user.user.fetch_user_activity_erd">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_activity_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		|  Fetch User&#39;s activity from Erdos</span>
+<span class="sd">		|  @todo : move to scrapper module </span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">handle</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+			<span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+		<span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://erdos.sdslabs.co/activity/users/&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;.json&quot;</span>
+		<span class="n">handle</span> <span class="o">=</span> <span class="s">&#39;erd&#39;</span> <span class="o">+</span> <span class="n">handle</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT created_at FROM activity WHERE handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> ORDER BY created_at DESC LIMIT 1;&quot;</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="p">():</span>
+			<span class="n">last_activity</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">last_activity</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">last_activity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_activity</span><span class="p">)</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span> <span class="p">):</span>
+			<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="s">&quot; returned from &quot;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&#39;list&#39;</span><span class="p">]</span>
+			<span class="n">result</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+			<span class="k">for</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;created_at&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">last_activity</span><span class="p">:</span>
+					<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM activity WHERE pid = </span><span class="se">\&#39;</span><span class="s">erd&quot;</span> <span class="o">+</span> <span class="n">act</span><span class="p">[</span><span class="s">&#39;problem_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> AND handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+					<span class="n">check</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+					<span class="n">difficulty</span> <span class="o">=</span> <span class="mi">0</span>
+					<span class="k">if</span> <span class="n">check</span> <span class="o">==</span> <span class="p">():</span>
+						<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">, </span><span class="se">\&#39;</span><span class="s">erd&quot;</span> <span class="o">+</span> <span class="n">act</span><span class="p">[</span><span class="s">&#39;problem_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">, &#39;1&#39;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;created_at&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; )&quot;</span>
+						<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET attempt_count = attempt_count + 1, status = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;, difficulty = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">difficulty</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, created_at = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">act</span><span class="p">[</span><span class="s">&#39;created_at&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; WHERE pid = </span><span class="se">\&#39;</span><span class="s">erd&quot;</span> <span class="o">+</span> <span class="n">act</span><span class="p">[</span><span class="s">&#39;problem_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s"> AND handle = </span><span class="se">\&#39;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">handle</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+						<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="user.calculate_difficulty"><a class="viewcode-back" href="../user.html#user.user.calculate_difficulty">[docs]</a>	<span class="k">def</span> <span class="nf">calculate_difficulty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET difficulty = 3 WHERE status = 0&quot;</span>
+		<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET difficulty = 0 WHERE status = 1&quot;</span>
+		<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET difficulty = difficulty + 1 WHERE attempt_count &lt;= 2&quot;</span>
+		<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET difficulty = difficulty + 2 WHERE attempt_count &gt;= 3 AND attempt_count &lt;= 5&quot;</span>
+		<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count &gt; 5;&quot;</span>
+		<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">create_difficulty_matrix</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="user.fetch_user_activity_all"><a class="viewcode-back" href="../user.html#user.user.fetch_user_activity_all">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_user_activity_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fetch_user_list_erd</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fetch_user_list_cfs</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_users</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">fetch_user_activity_erd</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+			<span class="k">print</span> <span class="s">&quot;User activity for &quot;</span> <span class="o">+</span> <span class="n">handle</span>
+		<span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_users</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">fetch_user_activity_cfs</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+			<span class="k">print</span> <span class="s">&quot;User activity for &quot;</span> <span class="o">+</span> <span class="n">handle</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">calculate_difficulty</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="user.create_difficulty_matrix"><a class="viewcode-back" href="../user.html#user.user.create_difficulty_matrix">[docs]</a>	<span class="k">def</span> <span class="nf">create_difficulty_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM activity&quot;</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+			<span class="n">user</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+			<span class="n">prob</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">))</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;tag_based&#39;</span><span class="p">]:</span>
+				<span class="k">if</span> <span class="n">user</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;cfs&quot;</span><span class="p">:</span>
+					<span class="k">break</span><span class="p">;</span>
+
+				<span class="n">p</span> <span class="o">=</span> <span class="n">problem</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists_in_db</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+					<span class="n">tag_data</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">tag</span>
+				<span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tag_data</span><span class="p">:</span>
+					<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">user</span><span class="p">]</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="n">tag</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tag_data</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
+			<span class="k">else</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="n">prob</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+
+		<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;erd&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">self_handle</span><span class="p">):</span>
+			<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">])</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">erd_avg</span> <span class="o">=</span> <span class="n">s</span><span class="o">/</span><span class="n">n</span>
+
+		<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;cfs&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">self_handle</span><span class="p">):</span>
+			<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">])</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">])</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">cfs_avg</span> <span class="o">=</span> <span class="n">s</span><span class="o">/</span><span class="n">n</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">normalize_difficulty_matrix</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="user.normalize_difficulty_matrix"><a class="viewcode-back" href="../user.html#user.user.normalize_difficulty_matrix">[docs]</a>	<span class="k">def</span> <span class="nf">normalize_difficulty_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">:</span>
+			<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u</span><span class="p">])</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u</span><span class="p">])</span>
+			<span class="n">avg</span> <span class="o">=</span> <span class="n">s</span><span class="o">/</span><span class="n">n</span>
+			<span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="o">-</span> <span class="n">avg</span>
+</div>
+<div class="viewcode-block" id="user.find_correlation"><a class="viewcode-back" href="../user.html#user.user.find_correlation">[docs]</a>	<span class="k">def</span> <span class="nf">find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+
+		<span class="n">si</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">n1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">])</span>
+		<span class="n">n2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">])</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]:</span>
+			<span class="n">n1</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">*</span> <span class="mf">0.8</span>
+
+		<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n1</span><span class="p">):</span>
+				<span class="n">si</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">training_problems</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+			<span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+
+		<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">si</span><span class="p">)</span>
+
+		<span class="c"># if there are no common problems, return 0</span>
+		<span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="mi">0</span>
+
+		<span class="n">sum1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+		<span class="n">sum2</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+
+		<span class="c"># Sum up the squares</span>
+		<span class="n">sum1Sq</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">][</span><span class="n">it</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+		<span class="n">sum2Sq</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">][</span><span class="n">it</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+
+		<span class="c"># Sum up the products</span>
+		<span class="n">pSum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u1</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">u2</span><span class="p">][</span><span class="n">it</span><span class="p">]</span> <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">si</span><span class="p">])</span>
+
+		<span class="c"># Calculate Pearson score</span>
+		<span class="n">num</span> <span class="o">=</span> <span class="n">pSum</span> <span class="o">-</span> <span class="p">(</span><span class="n">sum1</span><span class="o">*</span><span class="n">sum2</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+		<span class="n">den</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum1Sq</span><span class="o">-</span><span class="nb">pow</span><span class="p">(</span><span class="n">sum1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">sum2Sq</span><span class="o">-</span><span class="nb">pow</span><span class="p">(</span><span class="n">sum2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">den</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="mi">0</span>
+
+		<span class="n">den</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">den</span> <span class="p">)</span>
+
+		<span class="n">r</span> <span class="o">=</span> <span class="n">num</span><span class="o">/</span><span class="n">den</span>
+
+		<span class="c"># Calculate penalizing factor relative to number of problems solved by u1</span>
+		<span class="n">gamma</span> <span class="o">=</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">n1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
+		<span class="n">penalizing_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">gamma</span><span class="p">))</span><span class="o">/</span><span class="n">gamma</span>
+
+		<span class="c"># Penalize rating of users with lesser common problems than the threshold, gamma</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;penalize&#39;</span><span class="p">]:</span>
+			<span class="n">r</span> <span class="o">=</span> <span class="n">penalizing_factor</span><span class="o">*</span><span class="n">r</span>
+
+		<span class="c">#print u1, u2, n, r, num, den</span>
+		<span class="c"># print n</span>
+		<span class="k">return</span> <span class="n">r</span>
+		<span class="c">#return (r*n)/(n1+n2)</span>
+</div>
+<div class="viewcode-block" id="user.find_similar_users"><a class="viewcode-back" href="../user.html#user.user.find_similar_users">[docs]</a>	<span class="k">def</span> <span class="nf">find_similar_users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">similar_users</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">self_erd_handle</span> <span class="o">=</span> <span class="s">&#39;erd&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+		<span class="n">self_cfs_handle</span> <span class="o">=</span> <span class="s">&#39;cfs&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span>
+		<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">u</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;erd&quot;</span> <span class="ow">and</span> <span class="n">u</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span> <span class="ow">and</span> <span class="n">self_erd_handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">similar_users</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_correlation</span><span class="p">(</span><span class="n">self_erd_handle</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">u</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;cfs&quot;</span> <span class="ow">and</span> <span class="n">u</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span> <span class="ow">and</span> <span class="n">self_cfs_handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">similar_users</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_correlation</span><span class="p">(</span><span class="n">self_cfs_handle</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">similar_users</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">similar_users</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="user.recommend_problems"><a class="viewcode-back" href="../user.html#user.user.recommend_problems">[docs]</a>	<span class="k">def</span> <span class="nf">recommend_problems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+		<span class="c"># mode = 1 for difficult problems and 0 for easy problems</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">find_similar_users</span><span class="p">()</span>
+		<span class="n">top_similar_users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">similar_users</span>
+		<span class="n">totals</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">simSum</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">totals_eval</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">simSum_eval</span> <span class="o">=</span> <span class="p">{}</span>
+
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_similar_users</span><span class="p">:</span>
+
+			<span class="n">handle</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">score</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+			<span class="k">if</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">continue</span>
+
+			<span class="k">if</span> <span class="n">handle</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;erd&quot;</span><span class="p">:</span>
+				<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;erd&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_avg</span>
+			<span class="k">if</span> <span class="n">handle</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;cfs&quot;</span><span class="p">:</span>
+				<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;cfs&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_handle</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_avg</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]:</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="mi">0</span>
+
+			<span class="k">for</span> <span class="n">problem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">handle</span><span class="p">]:</span>
+				<span class="k">if</span> <span class="n">problem</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">]:</span>
+					<span class="n">totals</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+					<span class="n">totals</span><span class="p">[</span><span class="n">problem</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span> <span class="n">avg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">handle</span><span class="p">][</span><span class="n">problem</span><span class="p">]</span> <span class="p">)</span> <span class="o">*</span> <span class="n">score</span>
+					<span class="n">simSum</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+					<span class="n">simSum</span><span class="p">[</span><span class="n">problem</span><span class="p">]</span> <span class="o">+=</span> <span class="n">score</span>
+
+				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]:</span>
+					<span class="c"># for evaluating the model</span>
+					<span class="k">if</span> <span class="n">problem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">]</span> <span class="ow">and</span> <span class="n">problem</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_problems</span><span class="p">:</span>
+						<span class="n">totals_eval</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+						<span class="n">totals_eval</span><span class="p">[</span><span class="n">problem</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span> <span class="n">avg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">handle</span><span class="p">][</span><span class="n">problem</span><span class="p">]</span> <span class="p">)</span> <span class="o">*</span> <span class="n">score</span>
+						<span class="n">simSum_eval</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+						<span class="n">simSum_eval</span><span class="p">[</span><span class="n">problem</span><span class="p">]</span> <span class="o">+=</span> <span class="n">score</span>
+
+		<span class="n">plist</span> <span class="o">=</span> <span class="p">[(</span><span class="n">problem</span><span class="p">,</span> <span class="n">total</span><span class="o">/</span><span class="n">simSum</span><span class="p">[</span><span class="n">problem</span><span class="p">])</span> <span class="k">for</span> <span class="n">problem</span><span class="p">,</span><span class="n">total</span> <span class="ow">in</span> <span class="n">totals</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+		<span class="n">plist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="n">mode</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]:</span>
+			<span class="n">plist_eval</span> <span class="o">=</span> <span class="p">[(</span><span class="n">problem</span><span class="p">,</span> <span class="n">total</span><span class="o">/</span><span class="n">simSum_eval</span><span class="p">[</span><span class="n">problem</span><span class="p">])</span> <span class="k">for</span> <span class="n">problem</span><span class="p">,</span><span class="n">total</span> <span class="ow">in</span> <span class="n">totals_eval</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">evaluate_recommendation</span><span class="p">(</span> <span class="n">plist_eval</span> <span class="p">)</span>
+		<span class="k">return</span> <span class="n">plist</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="user.evaluate_recommendation"><a class="viewcode-back" href="../user.html#user.user.evaluate_recommendation">[docs]</a>	<span class="k">def</span> <span class="nf">evaluate_recommendation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plist_eval</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">plist_eval</span><span class="p">:</span>
+			<span class="n">predicted</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+			<span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;erd&quot;</span><span class="p">:</span>
+				<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;erd&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_avg</span>
+				<span class="n">actual</span> <span class="o">=</span> <span class="n">avg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">][</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+			<span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;cfs&quot;</span><span class="p">:</span>
+				<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;cfs&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfs_avg</span>
+				<span class="n">actual</span> <span class="o">=</span> <span class="n">avg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">][</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;tag_based&#39;</span><span class="p">]:</span>
+				<span class="n">self_handle</span> <span class="o">=</span> <span class="s">&quot;erd&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_handle</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">erd_avg</span>
+				<span class="n">actual</span> <span class="o">=</span> <span class="n">avg</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">self_handle</span><span class="p">][</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]:</span>
+				<span class="n">avg</span> <span class="o">=</span> <span class="mi">0</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">+=</span> <span class="nb">pow</span><span class="p">(</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">-</span> <span class="n">actual</span><span class="p">),</span> <span class="mi">2</span> <span class="p">)</span>
+			<span class="k">print</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span>
+		<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plist_eval</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="o">/</span><span class="n">n</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="user.rank_erdos_users"><a class="viewcode-back" href="../user.html#user.user.rank_erdos_users">[docs]</a>	<span class="k">def</span> <span class="nf">rank_erdos_users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">score</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">:</span>
+			<span class="k">if</span><span class="p">(</span> <span class="n">user</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;erd&quot;</span> <span class="p">):</span>
+				<span class="n">score</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+				<span class="c">#print user + &quot;: &quot;</span>
+				<span class="k">for</span> <span class="n">prob</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">difficulty_matrix</span><span class="p">[</span><span class="n">user</span><span class="p">]:</span>
+					<span class="n">p</span> <span class="o">=</span> <span class="n">problem</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span>
+					<span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists_in_db</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+						<span class="n">score</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">+=</span> <span class="n">p</span><span class="o">.</span><span class="n">difficulty</span>
+					<span class="c">#p.print_info()</span>
+				<span class="c">#print &quot;\n&quot;</span>
+		<span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="n">options</span><span class="p">[</span><span class="s">&#39;tag_based&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">options</span><span class="p">[</span><span class="s">&#39;normalize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">options</span><span class="p">[</span><span class="s">&#39;sample_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">options</span><span class="p">[</span><span class="s">&#39;penalize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">a</span> <span class="o">=</span> <span class="n">user</span><span class="p">(</span><span class="s">&#39;TheOrganicGypsy&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+	<span class="c"># print a.rank_erdos_users()[:10]</span>
+	<span class="c">#plot_concept_cfs(a.cfs_handle)</span>
+	<span class="c">#graph.plot_difficulty_matrix(a.difficulty_matrix)</span>
+	<span class="c">#a.fetch_user_info_cfs()</span>
+	<span class="c">#print a.rating, a.rank</span>
+	<span class="c">#a.fetch_user_activity_erd(&quot;&quot;)</span>
+	<span class="c">#a.calculate_difficulty()</span>
+	<span class="c">#a.fetch_user_activity_cfs(&quot;deepalijain&quot;)</span>
+	<span class="c">#a.fetch_user_activity_all()</span>
+	<span class="c">#print a.find_correlation(&#39;cfstourist&#39;, &#39;cfsnew&#39;)</span>
+	<span class="c"># print a.difficulty_matrix[&#39;erdTheOrganicGypsy&#39;]</span>
+	<span class="c"># print a.difficulty_matrix[&#39;erdamntri&#39;]</span>
+	<span class="c"># print a.difficulty_matrix[&#39;erdvgupta&#39;]</span>
+	<span class="c"># print a.find_correlation(&#39;erdTheOrganicGypsy&#39;, &#39;erdpriyanshu1994&#39;, 50)</span>
+	<span class="c"># print a.find_correlation(&#39;erdTheOrganicGypsy&#39;, &#39;erdvgupta&#39;, 50)</span>
+	<span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">recommend_problems</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">similar_users</span>
+	<span class="c"># print a.error</span>
+	<span class="c">#print len(a.training_problems)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

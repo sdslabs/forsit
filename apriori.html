@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>apriori module &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="base module" href="base.html" />
+    <link rel="prev" title="Modules" href="modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="base.html" title="base module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-apriori">
+<span id="apriori-module"></span><h1>apriori module<a class="headerlink" href="#module-apriori" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="apriori.apriori">
+<em class="property">class </em><tt class="descclassname">apriori.</tt><tt class="descname">apriori</tt><big>(</big><em>list_pid</em>, <em>app_name='forsit'</em>, <em>min_support=0.15</em>, <em>min_confidence=0.6</em>, <em>max_iterations=50</em><big>)</big><a class="reference internal" href="_modules/apriori.html#apriori"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apriori.apriori" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li><em>list_pid</em> : list of pids for which association rules and frequent itemsets are to be mined</li>
+<li><em>app_name</em> : Name of the app ie forsit</li>
+<li><em>min_support</em> : The minimum support for generating frequent itemse</li>
+<li><em>min_confidence</em> : The minimum number for generating association rules.</li>
+<li><em>transaction</em> : List of all the transactions involving the pids</li>
+<li><em>itemset</em> : set of items. Each item is itself a set(frozenset to be more precise) of pids. 
+So it looks like this : itemset = set ( set(pid1, pid2), set(pid3,pid4) )</li>
+<li><em>frequency_itemset</em> : Mapping of itemset with its frequency. key is itemset, value is frequency</li>
+<li><em>size_to_itemset</em> : Dictionary mapping size with itemsets ie size_to_itemset[1] = set(all itemsets of size 1)</li>
+<li><em>current_candidate_set</em> : Candidate set to be updated by prune method</li>
+<li><em>max_iterations</em> : maximum number of iterations for the algorithm to run</li>
+<li><em>count_transaction</em> : size of transaction list</li>
+<li><em>Final_items</em> : List of items having support &gt; min_support. Each entry in the list is of the form (item, support)</li>
+<li><em>Final_rules</em> : List of rules having confidence &gt; min_confidence. Each entry in the list is of the form ( (X,Y), confidence) where rule itself is of the form X -&gt; Y</li>
+</ul>
+<dl class="method">
+<dt id="apriori.apriori.initialise">
+<tt class="descname">initialise</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/apriori.html#apriori.initialise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apriori.apriori.initialise" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Generate set of items and list of transactions</div>
+<div class="line">Initialise self.transaction and self.item</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="apriori.apriori.print_results">
+<tt class="descname">print_results</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/apriori.html#apriori.print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apriori.apriori.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Print generated Itemsets and Confidence Rules</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="apriori.apriori.prune">
+<tt class="descname">prune</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/apriori.html#apriori.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apriori.apriori.prune" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Prune subset of itemset based on min_support</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="apriori.apriori.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/apriori.html#apriori.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apriori.apriori.run" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Run the Apriori algorithm</div>
+<div class="line">Return frequent itemsets and association rules</div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="base.html"
+                        title="next chapter">base module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/apriori.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="base.html" title="base module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

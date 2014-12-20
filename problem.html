@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>problem module &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="index.html" />
+    <link rel="up" title="Modules" href="modules.html" />
+    <link rel="next" title="recommend module" href="recommend.html" />
+    <link rel="prev" title="helper module" href="helper.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="recommend.html" title="recommend module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="helper.html" title="helper module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" accesskey="U">Modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-problem">
+<span id="problem-module"></span><h1>problem module<a class="headerlink" href="#module-problem" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="problem.problem">
+<em class="property">class </em><tt class="descclassname">problem.</tt><tt class="descname">problem</tt><big>(</big><em>pid</em>, <em>app_name='forsit'</em>, <em>cfs_max_score=3000</em>, <em>lower_threshold=25</em>, <em>upper_threshold=25</em><big>)</big><a class="reference internal" href="_modules/problem.html#problem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.base" title="base.base"><tt class="xref py py-class docutils literal"><span class="pre">base.base</span></tt></a></p>
+<ul class="simple">
+<li><em>pid</em> : problem id. For erdos problems, it starts with <em>erd</em> and for codeforces problems it starts with <em>cfs</em></li>
+<li><em>app_name</em> : Name of the app ie forsit</li>
+<li><em>cfs_max_score</em> : Defines the default max score for a competiton on codeforces. 
+The codeforces API has some bugs and it does not return all the problems.
+So for some contests, the max score is returned incorrect. That error is accounted by taking max of cfs_max_score and actual max score of a contest</li>
+<li><em>lower_threshold</em> : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side.</li>
+<li><em>upper_threshold</em> : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side.</li>
+</ul>
+<dl class="method">
+<dt id="problem.problem.create_difficulty_matrix">
+<tt class="descname">create_difficulty_matrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/problem.html#problem.create_difficulty_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.create_difficulty_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.fetch_info">
+<tt class="descname">fetch_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/problem.html#problem.fetch_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.fetch_info" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Fetch problem information from <em>problem</em> table from the db</div>
+<div class="line">Return 1 if corresponding entry was found in the db. The variables are initialised as well.</div>
+<div class="line">Return -1 if no results found</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.find_correlated_problems">
+<tt class="descname">find_correlated_problems</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/problem.html#problem.find_correlated_problems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.find_correlated_problems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.find_correlation">
+<tt class="descname">find_correlation</tt><big>(</big><em>u1</em>, <em>u2</em><big>)</big><a class="reference internal" href="_modules/problem.html#problem.find_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.find_correlation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.find_similar_cfs">
+<tt class="descname">find_similar_cfs</tt><big>(</big><em>status=0</em><big>)</big><a class="reference internal" href="_modules/problem.html#problem.find_similar_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.find_similar_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Input </dt>
+<dd><ul class="first last simple">
+<li><em>status</em> : status = 1 if problem was solved correctly else 0</li>
+</ul>
+</dd>
+</dl>
+<p>Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
+and then calls the reco_algo() with the sql as input.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.find_similar_erdos">
+<tt class="descname">find_similar_erdos</tt><big>(</big><em>status=0</em><big>)</big><a class="reference internal" href="_modules/problem.html#problem.find_similar_erdos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.find_similar_erdos" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Input </dt>
+<dd><ul class="first last simple">
+<li><em>status</em> : status = 1 if problem was solved correctly else 0</li>
+</ul>
+</dd>
+</dl>
+<p>Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
+and then calls the reco_algo() with the sql as input.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.gen_window_cfs">
+<tt class="descname">gen_window_cfs</tt><big>(</big><em>status=0</em><big>)</big><a class="reference internal" href="_modules/problem.html#problem.gen_window_cfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.gen_window_cfs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Input </dt>
+<dd><ul class="first last simple">
+<li><em>status</em> : status = 1 if problem was solved correctly else 0</li>
+</ul>
+</dd>
+</dl>
+<p>Return a difficulty window to be used by find_similar_cfs(). 
+The window is returned as a tuple of form (upper_limit,lower_limit)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.print_info">
+<tt class="descname">print_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/problem.html#problem.print_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.print_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print problem information from <em>problem</em> table from the db</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="problem.problem.reco_algo">
+<tt class="descname">reco_algo</tt><big>(</big><em>sql</em><big>)</big><a class="reference internal" href="_modules/problem.html#problem.reco_algo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#problem.problem.reco_algo" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Input </dt>
+<dd><ul class="first last simple">
+<li><em>sql</em> : sql query which would generate the set of candidates for which similarity would be computed. It is generated via the find_similar_cfs() or find_similar_erdos()</li>
+</ul>
+</dd>
+</dl>
+<p>Return a list of recommended problems. Each entry in the list is a tuple of the 
+form (pid, score) where more score means better results. The list is sorted in desc order
+by score.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="helper.html"
+                        title="previous chapter">helper module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="recommend.html"
+                        title="next chapter">recommend module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/problem.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="recommend.html" title="recommend module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="helper.html" title="helper module"
+             >previous</a> |</li>
+        <li><a href="index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >Modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

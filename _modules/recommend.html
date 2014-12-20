@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>recommend &mdash; forsit 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="forsit 1.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for recommend</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">requests</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">problem</span> <span class="kn">import</span> <span class="n">problem</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">user</span> <span class="kn">import</span> <span class="n">user</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">exp</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">operator</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">db</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">optparse</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">os</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">time</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">json</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&quot;Error: failed to import settings module ({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+<div class="viewcode-block" id="recommend"><a class="viewcode-back" href="../recommend.html#recommend.recommend">[docs]</a><span class="k">class</span> <span class="nc">recommend</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;test&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">uid</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="n">pid</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">uid</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;Logs/log.txt&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">O_WRONLY</span><span class="o">|</span><span class="n">os</span><span class="o">.</span><span class="n">O_APPEND</span><span class="o">|</span><span class="n">os</span><span class="o">.</span><span class="n">O_CREAT</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">result_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;result.json&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">O_WRONLY</span><span class="o">|</span><span class="n">os</span><span class="o">.</span><span class="n">O_CREAT</span><span class="p">)</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n\n\n</span><span class="s">========================</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%d</span><span class="s">-%m-%Y %H:%M&quot;</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="recommend.recommend_most_recent_erdos"><a class="viewcode-back" href="../recommend.html#recommend.recommend.recommend_most_recent_erdos">[docs]</a>	<span class="k">def</span> <span class="nf">recommend_most_recent_erdos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">erdos</span> <span class="o">=</span> <span class="n">problem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Showing recommendations for problem: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">erdos</span><span class="o">.</span><span class="n">find_similar_erdos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;: &#39;</span><span class="p">))</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="recommend.recommend_most_recent_cfs"><a class="viewcode-back" href="../recommend.html#recommend.recommend.recommend_most_recent_cfs">[docs]</a>	<span class="k">def</span> <span class="nf">recommend_most_recent_cfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">cfs</span> <span class="o">=</span> <span class="n">problem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Showing recommendations for problem: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span> 
+		<span class="n">res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfs</span><span class="o">.</span><span class="n">find_similar_cfs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;: &#39;</span><span class="p">))</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="recommend.recommend_similar_users"><a class="viewcode-back" href="../recommend.html#recommend.recommend.recommend_similar_users">[docs]</a>	<span class="k">def</span> <span class="nf">recommend_similar_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="n">user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+		<span class="n">a</span><span class="o">.</span><span class="n">find_similar_users</span><span class="p">()</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">su</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">similar_users</span>
+		<span class="n">rp</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">recommend_problems</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+		<span class="n">er</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">error</span>
+		<span class="n">result</span><span class="p">[</span><span class="s">&#39;similar_users&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">su</span>
+		<span class="n">result</span><span class="p">[</span><span class="s">&#39;recommended_problems&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rp</span>
+		<span class="n">result</span><span class="p">[</span><span class="s">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">er</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;: &#39;</span><span class="p">))</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_file</span><span class="p">,</span><span class="n">result</span><span class="p">)</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Showing similar users and problem recommendations for: </span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">User similarity: </span><span class="se">\n</span><span class="s">&quot;</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">su</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;: &#39;</span><span class="p">))</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Recommended problems: </span><span class="se">\n</span><span class="s">&quot;</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;: &#39;</span><span class="p">))</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Estimated error in rating: </span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">er</span><span class="p">)</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span><span class="n">res</span><span class="p">)</span>
+		<span class="k">print</span> <span class="n">res</span>
+		
+
+</div>
+<div class="viewcode-block" id="recommend.fetch_activity"><a class="viewcode-back" href="../recommend.html#recommend.recommend.fetch_activity">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="n">user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+		<span class="n">a</span><span class="o">.</span><span class="n">fetch_user_activity_all</span><span class="p">()</span>
+
+
+</div></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../recommend.html#recommend.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+	<span class="n">p</span> <span class="o">=</span> <span class="n">optparse</span><span class="o">.</span><span class="n">OptionParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&quot;Cross platform recommendation system for Erdos and Codeforces&quot;</span><span class="p">)</span>
+
+	<span class="n">p</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--problem&quot;</span><span class="p">,</span> <span class="s">&quot;-p&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Get list of problems similar to given problem through content based ( tag matching ) algorithm.&quot;</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--site&quot;</span><span class="p">,</span> <span class="s">&quot;-s&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Site to give recommendations for. Choose from &#39;erd&#39; and &#39;cfs&#39;.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;erd&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;choice&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;site&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;erd&quot;</span><span class="p">,</span><span class="s">&quot;cfs&quot;</span><span class="p">])</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--status&quot;</span><span class="p">,</span> <span class="s">&quot;-t&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Status of the given problem. 1 for correct submission and 0 otherwise.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;choice&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;status&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--user&quot;</span><span class="p">,</span> <span class="s">&quot;-u&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Get list of users similar to given user and list of recommended problems through collaborative filtering ( neighbourhood matching ) algorithm.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--difficulty_mode&quot;</span><span class="p">,</span> <span class="s">&quot;-d&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s">&quot;Difficulty mode of problems recommended for a user. 1 for difficult problems and 0 for easy problems.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;choice&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;difficulty_mode&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">p</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--fetch_activity&quot;</span><span class="p">,</span> <span class="s">&quot;-f&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s">&quot;Fetch latest user activity and populate the database.&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+	<span class="n">options</span><span class="p">,</span> <span class="n">arguments</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+	<span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+
+	<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">problem</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">site</span> <span class="o">==</span> <span class="s">&quot;erd&quot;</span><span class="p">:</span>
+			<span class="n">pid</span> <span class="o">=</span> <span class="s">&quot;erd&quot;</span> <span class="o">+</span> <span class="n">options</span><span class="o">.</span><span class="n">problem</span>
+			<span class="n">a</span> <span class="o">=</span> <span class="n">recommend</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">options</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+			<span class="n">a</span><span class="o">.</span><span class="n">recommend_most_recent_erdos</span><span class="p">()</span>
+
+		<span class="k">elif</span> <span class="n">options</span><span class="o">.</span><span class="n">site</span> <span class="o">==</span> <span class="s">&quot;cfs&quot;</span><span class="p">:</span>
+			<span class="n">pid</span> <span class="o">=</span> <span class="s">&quot;cfs&quot;</span> <span class="o">+</span> <span class="n">options</span><span class="o">.</span><span class="n">problem</span>
+			<span class="n">a</span> <span class="o">=</span> <span class="n">recommend</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="n">options</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+			<span class="n">a</span><span class="o">.</span><span class="n">recommend_most_recent_cfs</span><span class="p">()</span>
+		<span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="n">recommend</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">options</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="n">a</span><span class="o">.</span><span class="n">recommend_similar_users</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">difficulty_mode</span><span class="p">)</span>
+		<span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch_activity</span><span class="p">:</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="n">recommend</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+		<span class="n">a</span><span class="o">.</span><span class="n">fetch_activity</span><span class="p">()</span>
+		<span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+
+	<span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">p</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">forsit 1.0 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, SDSLabs.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>
