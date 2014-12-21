@@ -49,9 +49,11 @@ class problem(base):
 	  So for some contests, the max score is returned incorrect. That error is accounted by taking max of cfs_max_score and actual max score of a contest 
 	- *lower_threshold* : The minimum number of problems, of difficulty less that of pid, which are to be considered for recommendation. It defines the candidate set on lower side. 
 	- *upper_threshold* : The maximum number of problems, of difficulty more than or equal to that of pid, which are to be considered for recommendation. It defines the candidate set on upper side. 
+	- *number_to_recommend* : Number of problems to recommend. 
+
 	'''
 	
-	def __init__(self, pid, app_name = "forsit", cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25):
+	def __init__(self, pid, app_name = "forsit", cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
 		
 		self.pid = str(pid)
 		self.cfs_max_score = str(cfs_max_score)
@@ -60,6 +62,7 @@ class problem(base):
 		self.exists_in_db = self.fetch_info()
 		self.lower_threshold = lower_threshold
 		self.upper_threshold = upper_threshold
+		self.number_to_recommend = number_to_recommend
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
@@ -178,8 +181,10 @@ class problem(base):
 				score[code]+=self.tag[tag]
 			score[code]=round( (score[code]/nfactor), 6)
 		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)	
-		print "top 15 results : "
-		for i in range(1,15):
+		# print "top results : "
+		k = min(len(sorted_score), self.number_to_recommend)
+		# sql = "INSE"
+		for i in range(0,k):
 			print "problem id, score : ", sorted_score[i]
 			print "tags : ", problem[sorted_score[i][0]]
 		return sorted_score
@@ -207,7 +212,7 @@ class problem(base):
 		print sql
 		return self.reco_algo(sql)
 	
-	def find_similar_cfs(self, status = 0):
+	def find_similar_cfs(self, status = 0, uid = 0):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0 
@@ -224,8 +229,9 @@ class problem(base):
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') \
 				AND MID(problem.pid,1,3)=\'cfs\' ) \
+				AND P.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'cfs\' AND uid = \'"+str(uid)+"\')\
 				HAVING difficulty BETWEEN " + str(upper) + " AND " + str(lower)
-		# print sql
+		print sql
 		return self.reco_algo(sql)
 
 	def gen_window_cfs(self, status = 0):
@@ -364,7 +370,7 @@ if __name__ == "__main__":
 	# a.find_similar_erdos()
 	print "\n\n\n\n"
 	# plot_points_distribution_cfs(max_flag=1, min_flag = 1)
-	plot_difficulty_distribution_cfs(a.cfs_max_score)
+	# plot_difficulty_distribution_cfs(a.cfs_max_score)
 	# a.gen_window_cfs()
 
 	# print "\n"
