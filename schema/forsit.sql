@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10deb1
+-- version 3.5.8.1deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 21, 2014 at 11:23 PM
--- Server version: 5.5.40-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.5
+-- Generation Time: Dec 22, 2014 at 12:02 AM
+-- Server version: 5.5.34-0ubuntu0.13.04.1
+-- PHP Version: 5.4.9-4ubuntu2.4
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -118,6 +118,21 @@ CREATE TABLE IF NOT EXISTS `tag` (
   PRIMARY KEY (`tag`),
   UNIQUE KEY `tag` (`tag`,`description`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `erd_handle` varchar(50) NOT NULL,
+  `cfs_handle` varchar(50) NOT NULL,
+  `erd_rank` int(11) NOT NULL,
+  `cfs_rank` int(11) NOT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
