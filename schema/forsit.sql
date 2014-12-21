@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 03, 2014 at 10:48 AM
--- Server version: 5.5.38-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.4
+-- Generation Time: Dec 21, 2014 at 11:23 PM
+-- Server version: 5.5.40-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,18 +23,72 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `activity`
+--
+
+CREATE TABLE IF NOT EXISTS `activity` (
+  `handle` varchar(100) NOT NULL,
+  `pid` varchar(100) NOT NULL,
+  `attempt_count` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `difficulty` double NOT NULL DEFAULT '0',
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `created_at` int(12) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `activity_concept`
+--
+
+CREATE TABLE IF NOT EXISTS `activity_concept` (
+  `handle` varchar(100) NOT NULL,
+  `pid` varchar(100) NOT NULL,
+  `attempt_count` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `difficulty` double NOT NULL DEFAULT '0',
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `created_at` bigint(20) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `problem`
 --
 
 CREATE TABLE IF NOT EXISTS `problem` (
   `pid` varchar(50) NOT NULL,
   `name` varchar(200) NOT NULL,
+  `contestId` varchar(50) NOT NULL,
   `points` int(11) NOT NULL,
   `correct_count` int(11) NOT NULL,
   `attempt_count` int(11) NOT NULL DEFAULT '-1',
   `time` int(11) NOT NULL,
   `isdeleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`pid`)
+  PRIMARY KEY (`pid`),
+  KEY `name` (`name`),
+  KEY `pid` (`pid`),
+  KEY `contestId` (`contestId`),
+  KEY `points` (`points`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `problem_reco`
+--
+
+CREATE TABLE IF NOT EXISTS `problem_reco` (
+  `uid` varchar(100) NOT NULL,
+  `base_pid` varchar(100) NOT NULL,
+  `status` int(11) NOT NULL,
+  `reco_pid` varchar(100) NOT NULL,
+  `time_created` int(11) NOT NULL,
+  `time_updated` int(11) NOT NULL,
+  `is_deleted` int(11) NOT NULL,
+  `state` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -63,6 +117,21 @@ CREATE TABLE IF NOT EXISTS `tag` (
   `count` int(11) NOT NULL,
   PRIMARY KEY (`tag`),
   UNIQUE KEY `tag` (`tag`,`description`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_reco`
+--
+
+CREATE TABLE IF NOT EXISTS `user_reco` (
+  `uid` varchar(100) NOT NULL,
+  `pid` varchar(100) NOT NULL,
+  `time_created` int(11) NOT NULL,
+  `time_updated` int(11) NOT NULL,
+  `is_deleted` int(11) NOT NULL,
+  `state` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
