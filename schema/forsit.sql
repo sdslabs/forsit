@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.8.1deb1
+-- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 22, 2014 at 12:02 AM
--- Server version: 5.5.34-0ubuntu0.13.04.1
--- PHP Version: 5.4.9-4ubuntu2.4
+-- Generation Time: Dec 22, 2014 at 04:28 PM
+-- Server version: 5.5.40-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4.5
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS `problem_reco` (
   `base_pid` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
   `reco_pid` varchar(100) NOT NULL,
+  `score` double NOT NULL,
   `time_created` int(11) NOT NULL,
   `time_updated` int(11) NOT NULL,
   `is_deleted` int(11) NOT NULL,

@@ -201,12 +201,15 @@ class problem(base):
 		- *status* : status = 1 if problem was solved correctly else 0
 		- *uid* : user for whom these recommendations are being generated 
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
-    	and then calls the reco_algo() with the sql as input.
+    	and then calls the reco_algo() with the sql as input. The top k results from this function are then logged
+    	into mysql with appropriate insertions/updates/deletions
 		'''
 		sql = "SELECT difficulty FROM user where uid = \'"+str(uid)+"\'"
-		# result = db.read(sql, self.cursor)
-		# user_difficulty = float(result[0][0])
+		result = db.read(sql, self.cursor)
 		user_difficulty = 0
+		if result:
+			user_difficulty = float(result[0][0])
+		
 		res = self.gen_window_cfs(status, user_difficulty)
 		# print res
 		upper = res[0]
