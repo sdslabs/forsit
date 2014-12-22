@@ -332,6 +332,116 @@ def update_problem():
     result = db.write(sql, cursor, conn)
     cursor.close()
 
+def fetch_user_list_cfs():
+    '''
+    |  Fetch List of all the users from Codeforces
+    '''
+    cfs_users = []
+    url = "http://codeforces.com/api/user.ratedList?activeOnly=true"
+    r = requests.get(url)
+    if(r.status_code != 200 ):
+        print r.status_code, " returned from ", r.url
+    else:
+        result = r.json()['result']
+        for i in result:
+            cfs_users.append(i['handle'])
+    return cfs_users
+
+def fetch_user_activity_cfs(handle=""):
+    '''
+    |  Fetch User's activity from Codeforces
+    '''
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    payload = {}
+    payload['handle'] = handle
+    handle = 'cfs' + handle
+    sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+    res = db.read(sql, cursor)
+    if res == ():
+        last_activity = 0
+    else:
+        last_activity = res[0][0]
+    last_activity = int(last_activity)
+    r = requests.get(cfs_url, params=payload)
+    if(r.status_code != 200 ):
+        print r.status_code, " returned from ", r.url
+    else:
+        result = r.json()['result']
+        result.reverse()
+        for act in result:
+            if int(act['creationTimeSeconds']) > last_activity:
+                sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+                check = db.read(sql, cursor)
+                difficulty = 0
+                if act['verdict'] == "OK":
+                    status = 1
+                else:
+                    status = 0
+                if check == ():
+                    sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + ", " + str(act['creationTimeSeconds']) +" )"
+                    db.write(sql, cursor, conn)
+                else:
+                    sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['creationTimeSeconds']) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+                    db.write(sql, cursor, conn)
+
+# @profile                  
+def fetch_all_user_activity_cfs(handle=""):
+    '''
+    |  Fetch User's activity from Codeforces
+    |  It is different from *fetch_user_activity_cfs()* as it logs each submission as a seperate entry to plot the concept trail
+    '''
+    difficulty = 0
+    payload = {}
+    payload['handle'] = handle
+    handle = 'cfs' + handle
+    sql = "SELECT created_at FROM activity_concept WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+    res = db.read(sql, cursor)
+    if res == ():
+        last_activity = 0
+    else:
+        last_activity = int(res[0][0])
+    r = requests.get(cfs_url, params=payload)
+    if(r.status_code != 200 ):
+        print r.status_code, " returned from ", r.url
+    else:
+        result = r.json()['result']
+        #profile reverse operation 
+        result.reverse()
+        count = 1
+        sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES "
+        for act in result:
+            #checking for min of the 2 values as for some cases, codeforces api is returning absured results for relatice time
+            relative_time = min(7200, int(act['relativeTimeSeconds']))
+            submission_time = int(act['creationTimeSeconds']) + relative_time
+            if submission_time > last_activity:
+                status = str(act['verdict'])
+                if(status == "OK"):
+                    status = "1"
+                else:
+                    status = "0"
+
+                sql+="(\'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + status + ", " + str(difficulty) + ", " + str(submission_time) +" ), "
+                count+=1;
+                if(count%5000 == 0):
+                    sql = sql[:-2]
+                    db.write(sql, cursor, conn)
+                    print count, " entries made in the database"
+                    sql = "INSERT INTO activity_concept (handle, pid, attempt_count, status, difficulty, created_at) VALUES " 
+            else:
+                break
+        # print sql
+        # print count
+        if(sql[-2] == ","):
+            sql = sql[:-2]
+            db.write(sql, cursor, conn)
+
+def fetch_user_activity_all():
+    cfs_users = fetch_user_list_erd()
+    for handle in cfs_users:
+        fetch_user_activity_cfs(handle)
+        print "User activity for " + handle
+
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()

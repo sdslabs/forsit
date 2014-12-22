@@ -114,6 +114,59 @@ def fetch_all():
             db.write(ptag_sql, cursor, conn)
         cursor.close()
 
-    sleep(3)        
+    sleep(3)
+
+def fetch_user_list_erd():
+    '''
+    |  Fetch List of all the users from Erdos
+    '''
+    erd_users = []
+    url = "http://erdos.sdslabs.co/users.json"
+    r = requests.get(url)
+    if(r.status_code != 200 ):
+        print r.status_code, " returned from ", r.url
+    else:
+        result = r.json()['list']
+        for i in result:
+            erd_users.append(i['username'])    
+    return erd_users
+
+def fetch_user_activity_erd(handle=""):
+    '''
+    |  Fetch User's activity from Erdos
+    '''
+    conn = db.connect('forsit')
+    cursor=conn.cursor()
+    url = "http://erdos.sdslabs.co/activity/users/" + handle + ".json"
+    handle = 'erd' + handle
+    sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
+    res = db.read(sql, cursor)
+    if res == ():
+        last_activity = 0
+    else:
+        last_activity = res[0][0]
+    last_activity = int(last_activity)
+    r = requests.get(url)
+    if(r.status_code != 200 ):
+        print r.status_code, " returned from ", r.url
+    else:
+        result = r.json()['list']
+        result.reverse()
+        for act in result:
+            if int(act['created_at']) > last_activity:
+                sql = "SELECT * FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+                check = db.read(sql, cursor)
+                difficulty = 0
+                if check == ():
+                    sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + ", " + str(act['created_at']) + " )"
+                    db.write(sql, cursor, conn)
+                else:
+                    sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['created_at']) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+
+def fetch_user_activity_all():
+    erd_users = fetch_user_list_erd()
+    for handle in erd_users:
+        fetch_user_activity_erd(handle)
+        print "User activity for " + handle
 
 fetch_all()
