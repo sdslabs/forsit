@@ -9,22 +9,7 @@ except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
 
 try:
-	import operator
-except ImportError as exc:
-	print("Error: failed to import settings module ({})".format(exc))
-
-try:
 	from base import base
-except ImportError as exc:
-	print("Error: failed to import settings module ({})".format(exc))
-
-try:
-	import math
-except ImportError as exc:
-	print("Error: failed to import settings module ({})".format(exc))
-
-try:
-	import time
 except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
 
@@ -37,6 +22,10 @@ try:
 	from graph import plot_difficulty_distribution_cfs
 except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
+
+import math
+import time
+import operator
 
 
 class problem(base):
@@ -180,13 +169,7 @@ class problem(base):
 					continue
 				score[code]+=self.tag[tag]
 			score[code]=round( (score[code]/nfactor), 6)
-		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)	
-		# print "top results : "
-		k = min(len(sorted_score), self.number_to_recommend)
-		# sql = "INSE"
-		for i in range(0,k):
-			print "problem id, score : ", sorted_score[i]
-			print "tags : ", problem[sorted_score[i][0]]
+		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 		return sorted_score
 
 	def find_similar_erdos(self, status = 0):
@@ -215,11 +198,12 @@ class problem(base):
 	def find_similar_cfs(self, status = 0, uid = 0):
 		'''
     	Input 
-		- *status* : status = 1 if problem was solved correctly else 0 
+		- *status* : status = 1 if problem was solved correctly else 0
+		- *uid* : user for whom these recommendations are being generated 
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
     	and then calls the reco_algo() with the sql as input.
 		'''
-		res = self.gen_window_cfs(status)
+		res = self.gen_window_cfs(status, uid)
 		# print res
 		upper = res[0]
 		lower = res[1]
@@ -232,12 +216,35 @@ class problem(base):
 				AND P.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'cfs\' AND uid = \'"+str(uid)+"\')\
 				HAVING difficulty BETWEEN " + str(upper) + " AND " + str(lower)
 		print sql
-		return self.reco_algo(sql)
+		sorted_score = self.reco_algo(sql)
+		status = str(status)
+		sql = "SELECT * FROM problem_reco WHERE uid = \'"+str(uid)+"\'AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0"
+		results = db.read(sql, self.cursor)
+		if not results:
+			#Making entry for the first time
+			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, time_created, time_updated, is_deleted, state) VALUES "
+			k = min(len(sorted_score), self.number_to_recommend)
+			for i in range(0,k):
+				a = str(int(time.time()))
+				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(sorted_score[i][0])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+			sql = sql[:-2]
+			db.write(sql, self.cursor, self.conn)
+		else:
+			#Enteries to be updated as well
 
-	def gen_window_cfs(self, status = 0):
+
+		# print "top results : "
+			k = min(len(sorted_score), self.number_to_recommend)
+			# sql = "INSE"
+			for i in range(0,k):
+				print "problem id, score : ", sorted_score[i]
+				print "tags : ", problem[sorted_score[i][0]]
+
+	def gen_window_cfs(self, status = 0, user_difficulty = 0):
 		'''
     	Input 
-		- *status* : status = 1 if problem was solved correctly else 0 
+		- *status* : status = 1 if problem was solved correctly else 0
+		- *user_difficulty* : difficulty rating for the user
     	Return a difficulty window to be used by find_similar_cfs(). 
     	The window is returned as a tuple of form (upper_limit,lower_limit)
 		'''
@@ -281,7 +288,7 @@ class problem(base):
 			while(upper < self.upper_threshold):
 				j+=1
 				upper+=sorted_difficulty[j][1]
-			x = sorted_difficulty[j][0] - self.difficulty
+			x = float(sorted_difficulty[j][0] - self.difficulty)
 			# print x
 			# how much deviation we allowed on the right side of self.difficulty
 			# we allow only half of this deviation on the left hand side
@@ -290,7 +297,10 @@ class problem(base):
 			# we wont need many values on the left or near a left peak in which case our x
 			# would be large enough to cover the left peak as well. Same logic for the next
 			# part of the condition
-			return (self.difficulty+x, self.difficulty-x/2)
+			if (self.difficulty+x > user_difficulty):
+				return (self.difficulty+x, self.difficulty-x/2)
+			else:
+				return(user_difficulty, self.difficulty-x/2)	
 
 		else:
 			#incorrect submission
@@ -305,8 +315,11 @@ class problem(base):
 				print lower
 			x = self.difficulty - sorted_difficulty[k][0]
 			# print x
-			return (self.difficulty-x, self.difficulty+x/2)
-
+			if (self.difficulty+x/2 < user_difficulty):
+				return (self.difficulty+x/2, self.difficulty-x)
+			else:
+				return (user_difficulty, self.difficulty-x)
+					
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
 		conn = db.connect('forsit')
