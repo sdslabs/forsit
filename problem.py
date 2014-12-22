@@ -176,24 +176,32 @@ class problem(base):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0 
+    	- *uid* : user for whom these recommendations are being generated 
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
-    	and then calls the reco_algo() with the sql as input.
+    	and then calls the reco_algo() with the sql as input. The top k results from this function are then logged
+    	into mysql with appropriate insertions/updates/deletions
 		'''
+		sql = "SELECT difficulty FROM user where uid = \'"+str(uid)+"\'"
+		result = db.read(sql, self.cursor)
+		user_difficulty = 0
+		if result:
+			user_difficulty = float(result[0][0])
+		res = self.gen_window_erd(status, user_difficulty)
+		# print res
+		upper = res[0]
+		lower = res[1]
+			
 		sql = "	SELECT ptag.pid, ptag.tag, correct_count/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
 				AND problem.pid IN \
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
-				HAVING difficulty BETWEEN "
-		if(status == 1):
-			#correct submission
-			sql+= str(self.difficulty) + " - 0.3 AND " + str(self.difficulty) + " + 0.5 "
-		else:
-			sql+=str(self.difficulty) + " - 0.5 AND " + str(self.difficulty) + " + 0.3 "
-		sql+=" AND difficulty > 0"
+				AND P.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'erd\' AND uid = \'"+str(uid)+"\')\
+				HAVING difficulty BETWEEN " + str(lower) + " AND " + str(upper)				
 		print sql
-		return self.reco_algo(sql)
+		self.log_results_db(sql, status, uid, "cfs")
+
 	
 	def find_similar_cfs(self, status = 0, uid = 0):
 		'''
@@ -205,13 +213,14 @@ class problem(base):
     	into mysql with appropriate insertions/updates/deletions
 		'''
 		sql = "SELECT difficulty FROM user where uid = \'"+str(uid)+"\'"
+		print sql
 		result = db.read(sql, self.cursor)
 		user_difficulty = 0
 		if result:
 			user_difficulty = float(result[0][0])
 		
 		res = self.gen_window_cfs(status, user_difficulty)
-		# print res
+		print res
 		upper = res[0]
 		lower = res[1]
 		sql = "	SELECT ptag.pid, ptag.tag, P.points/GREATEST(3000, (SELECT MAX(points) FROM problem \
@@ -223,10 +232,15 @@ class problem(base):
 				AND P.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'cfs\' AND uid = \'"+str(uid)+"\')\
 				HAVING difficulty BETWEEN " + str(lower) + " AND " + str(upper)
 		# print sql
-		sorted_score = self.reco_algo(sql)
+		self.log_results_db(sql, status, uid, "cfs")
 
+
+	def log_results_db(self, sql, status = 0, uid = 0, app = "erd"):
+
+		sorted_score = self.reco_algo(sql)
 		status = str(status)
-		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\'AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0"
+		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\'AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0 AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
+		print sql
 		results = db.read(sql, self.cursor)
 		if not results:
 			#Making entry for the first time
@@ -278,7 +292,6 @@ class problem(base):
 				sql_insert = sql_insert[:-2]
 				db.write(sql_insert, self.cursor, self.conn)
 
-
 	def gen_window_cfs(self, status = 0, user_difficulty = 0):
 		'''
     	Input 
@@ -290,7 +303,7 @@ class problem(base):
 		sql = "SELECT P.points/GREATEST("+self.cfs_max_score+", (SELECT MAX(points) FROM problem \
 			WHERE contestId = P.contestId)) as difficulty FROM problem P \
 			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
-		# print sql
+		print sql
 		result = db.read(sql, self.cursor)
 		difficulty = {}
 		for i in result:
