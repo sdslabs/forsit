@@ -203,7 +203,11 @@ class problem(base):
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
     	and then calls the reco_algo() with the sql as input.
 		'''
-		res = self.gen_window_cfs(status, uid)
+		sql = "SELECT difficulty FROM user where uid = \'"+str(uid)+"\'"
+		# result = db.read(sql, self.cursor)
+		# user_difficulty = float(result[0][0])
+		user_difficulty = 0
+		res = self.gen_window_cfs(status, user_difficulty)
 		# print res
 		upper = res[0]
 		lower = res[1]
@@ -214,37 +218,69 @@ class problem(base):
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') \
 				AND MID(problem.pid,1,3)=\'cfs\' ) \
 				AND P.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'cfs\' AND uid = \'"+str(uid)+"\')\
-				HAVING difficulty BETWEEN " + str(upper) + " AND " + str(lower)
-		print sql
+				HAVING difficulty BETWEEN " + str(lower) + " AND " + str(upper)
+		# print sql
 		sorted_score = self.reco_algo(sql)
+
 		status = str(status)
-		sql = "SELECT * FROM problem_reco WHERE uid = \'"+str(uid)+"\'AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0"
+		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\'AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0"
 		results = db.read(sql, self.cursor)
 		if not results:
 			#Making entry for the first time
-			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, time_created, time_updated, is_deleted, state) VALUES "
+			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, is_deleted, state) VALUES "
 			k = min(len(sorted_score), self.number_to_recommend)
 			for i in range(0,k):
 				a = str(int(time.time()))
-				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(sorted_score[i][0])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 			sql = sql[:-2]
 			db.write(sql, self.cursor, self.conn)
 		else:
-			#Enteries to be updated as well
-
-
-		# print "top results : "
+			to_delete = []
+			for i in results:
+				to_delete.append(i[0])
+			to_update = []
+			to_insert = []
 			k = min(len(sorted_score), self.number_to_recommend)
-			# sql = "INSE"
 			for i in range(0,k):
-				print "problem id, score : ", sorted_score[i]
-				print "tags : ", problem[sorted_score[i][0]]
+				if sorted_score[i][0] not in to_delete:
+					to_insert.append(sorted_score[i])
+				else:
+					to_update.append(sorted_score[i])
+					to_delete.remove(sorted_score[i][0])
+
+			if to_delete:					
+				sql_delete = "UPDATE problem_reco SET is_deleted = 1, time_updated = "+str(int(time.time()))+" WHERE uid = \'"+str(uid)+"\' AND reco_pid IN ("
+				for i in to_delete:
+					sql_delete+="\'"+str(i)+"\',"
+				sql_delete=sql_delete[:-1]
+				sql_delete=sql_delete+")"
+				db.write(sql_delete, self.cursor, self.conn)
+
+			if to_update:		
+				sql_update = "UPDATE problem_reco SET score = CASE reco_pid "
+				where_clause = " WHERE uid = \'"+str(uid)+"\' AND reco_pid IN ("
+				for i in to_update:
+					sql_update+="WHEN \'"+str(i[0])+"\' THEN "+str(i[1])+"\n"
+					where_clause+="\'"+str(i[0])+"\',"
+				sql_update+=" END, time_updated = "+str(int(time.time()))
+				sql_update+=where_clause[:-1]
+				sql_update=sql_update+")"
+				db.write(sql_update, self.cursor, self.conn)
+
+			if to_insert:					
+				sql_insert = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, is_deleted, state) VALUES "
+				for i in to_insert:
+					a = str(int(time.time()))
+					sql_insert+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+				sql_insert = sql_insert[:-2]
+				db.write(sql_insert, self.cursor, self.conn)
+
 
 	def gen_window_cfs(self, status = 0, user_difficulty = 0):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0
-		- *user_difficulty* : difficulty rating for the user
+		- *user_difficulty* : difficulty rating for the user. difficulty = 0 means the user has not attempted any problem so far
     	Return a difficulty window to be used by find_similar_cfs(). 
     	The window is returned as a tuple of form (upper_limit,lower_limit)
 		'''
@@ -315,11 +351,11 @@ class problem(base):
 				print lower
 			x = self.difficulty - sorted_difficulty[k][0]
 			# print x
-			if (self.difficulty+x/2 < user_difficulty):
+			if (self.difficulty+x/2 < user_difficulty or user_difficulty == 0):
 				return (self.difficulty+x/2, self.difficulty-x)
 			else:
 				return (user_difficulty, self.difficulty-x)
-					
+
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
 		conn = db.connect('forsit')
