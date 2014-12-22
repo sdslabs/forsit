@@ -1,14 +1,7 @@
 #! /usr/bin/python
 
-try:
-    import os
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
-    import sys
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+import os
+import sys
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -36,15 +29,8 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
-try:
-    from time import sleep
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
-    from time import time
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
+from time import sleep
+from time import time
 
 try:
     import string
@@ -53,13 +39,34 @@ except ImportError as exc:
 
 print "script was run at ", time()
 
+conn = db.connect('forsit')
+cursor=conn.cursor()
+
 tags = {}
+#Maps problems to tags
 precise = {}
+#Maps problems to their meta-data
 problem_list = []
+
 new_problem = {}
 tag_data = {}
 
+def fetch_all_tags():
+    '''Function to fetch all the tags''' 
+    pageno = 1        
+    fetch_tag_from_page(pageno)
+    pageno+=1
+    while(1):
+        if(fetch_tag_from_page(pageno)<0):
+            break        
+        pageno+=1
+
 def fetch_tag_from_page(pageno):
+    '''
+        Input
+        - *pageno* : page on codeforces from which tags are fetched
+        Return : -1 in case of an error or when it is the last page so that the caller function may terminate else return 0
+        '''
     url = "http://codeforces.com/problemset/page/"
     r = requests.get(url+str(pageno))
     if(r.status_code != 200):
@@ -79,16 +86,8 @@ def fetch_tag_from_page(pageno):
             return -1
         return 0
 
-def fetch_all_tags():
-    pageno = 1        
-    fetch_tag_from_page(pageno)
-    pageno+=1
-    while(1):
-        if(fetch_tag_from_page(pageno)<0):
-            break        
-        pageno+=1
-
 def insert_all_tags():
+    '''Function to insert all the tags in the db'''
     sql = "INSERT INTO tag (tag, description, time) VALUES "
     for i in tags.keys():
         a = str(i).replace('"','\\"')
@@ -97,17 +96,51 @@ def insert_all_tags():
         b = str(tags[i]).replace("'","\\'")
         sql+="('" + str(b) + "','" + str(a) + "','" + str(int(time())) + "'), "
     sql = sql[:-2]
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     result = db.write(sql, cursor, conn)
-    cursor.close()
     
-def fetch_all_problems():
+def increment_tags():
+    '''Function to add new tags to db'''
+    fetch_all_tags()
+    new_tags = []
+    tag_list = []
     sql = "SELECT tag from tag"
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     a = db.read(sql, cursor)
-    cursor.close()
+    for i in a:
+        # print i
+        tag = str(i[0].encode('utf8'))
+        tag_list.append(tag)
+
+    for i in tags.keys():
+        if tags[i] not in tag_list:
+            new_tags.append(i)
+
+    if(len(new_tags)>0):
+        sql = "INSERT INTO tag (tag, description, time) VALUES "
+        for i in new_tags:
+            a = str(i).replace('"','\\"')
+            a = a.replace("'","\\'")
+            b = str(tags[i]).replace('"','\\"')
+            b = str(tags[i]).replace("'","\\'")
+            sql+="('" + str(b) + "','" + str(a) + "','" + str(int(time())) + "'), "
+        sql = sql[:-2]
+        result = db.write(sql, cursor, conn)
+
+def update_tag_count():
+    '''Function to update count of problems for each tag in the db'''
+    sql = "SELECT tag FROM tag"
+    a = db.read(sql, cursor)
+    # sql = ""
+    for i in a:
+        tag = str(i[0].encode('utf8'))
+        sql = "UPDATE tag SET count = (SELECT COUNT(*) FROM ptag WHERE tag = \'" + str(tag) + "\' ) WHERE tag = \'" + tag + "\'" 
+        #todo - optimise this sql
+        # print sql
+        result = db.write(sql, cursor, conn)
+
+def fetch_all_problems():
+    '''Function to fetch all the problems'''
+    sql = "SELECT tag from tag"
+    a = db.read(sql, cursor)
     for i in a:
         url = "http://codeforces.com/api/problemset.problems"
         payload = {'tags':str(i[0].encode('utf8'))}
@@ -119,8 +152,8 @@ def fetch_all_problems():
             res = r.json()
             problems = res['result']['problems']    
             problemStatistics = res['result']['problemStatistics']  
-            print problems
-            print "\n\n\n"      
+            # print problems
+            # print "\n\n\n"      
             for j in problems:
                 code = str(j['contestId'])+str(j['index'].encode('utf8'))
                 if(code not in precise.keys()):
@@ -142,6 +175,7 @@ def fetch_all_problems():
                 precise[code].append(j['solvedCount'])
 
 def insert_all_problems():
+    '''Function to insert problems in db'''
     sql = "INSERT INTO problem (pid, name, points, correct_count, time, contestId) VALUES "
     for j in precise:
         i = precise[j]
@@ -157,39 +191,32 @@ def insert_all_problems():
 
     sql = sql[:-2]
     # print sql
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     result = db.write(sql, cursor, conn)
-    cursor.close()
 
-def increment_tags():
-    fetch_all_tags()
-    new_tags = []
-    tag_list = []
-    sql = "SELECT tag from tag"
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
+def increment_problem():
+    '''function to fetch newly added problems'''
+    sql = "SELECT pid FROM `problem` WHERE MID(pid, 1, 3) = \"cfs\""
     a = db.read(sql, cursor)
+    problem_list = []
     for i in a:
-        print i
-        tag = str(i[0].encode('utf8'))
-        tag_list.append(tag)
-
-    for i in tags.keys():
-        if tags[i] not in tag_list:
-            new_tags.append(i)
-
-    if(len(new_tags)>0):
-        sql = "INSERT INTO tag (tag, description, time) VALUES "
-        for i in new_tags:
-            a = str(i).replace('"','\\"')
+        pid = str(i[0].encode('utf8'))
+        problem_list.append(pid)
+    pageno = 1        
+    while(increment_problem_from_page(pageno, problem_list)==0):
+        pageno+=1
+    if(len(new_problem)>0):
+        sql = "INSERT INTO problem (pid, name, time) VALUES "
+        for i in new_problem.keys():
+            j = new_problem[i]
+            a = str(j[0]).replace('"','\\"')
             a = a.replace("'","\\'")
-            b = str(tags[i]).replace('"','\\"')
-            b = str(tags[i]).replace("'","\\'")
-            sql+="('" + str(b) + "','" + str(a) + "','" + str(int(time())) + "'), "
+            b = j[1].encode('utf8')
+            b = str(b).replace('"','\\"')
+            b = b.replace("'","\\'")
+            sql+="('" + str(a) + "','" + str(b) + "','" + str(int(time())) + "'), "
+
         sql = sql[:-2]
         result = db.write(sql, cursor, conn)
-    cursor.close()
 
 def increment_problem_from_page(pageno, problem_list):
     url = "http://codeforces.com/problemset/page/"
@@ -219,41 +246,10 @@ def increment_problem_from_page(pageno, problem_list):
         print pageno, " pages done"
         return 0
 
-def increment_problem():
-    # function to fetch newly added problems
-    sql = "SELECT pid FROM `problem` WHERE MID(pid, 1, 3) = \"cfs\""
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
-    a = db.read(sql, cursor)
-    problem_list = []
-    for i in a:
-        pid = str(i[0].encode('utf8'))
-        problem_list.append(pid)
-    pageno = 1        
-    while(increment_problem_from_page(pageno, problem_list)==0):
-        pageno+=1
 
-    if(len(new_problem)>0):
-        sql = "INSERT INTO problem (pid, name, time) VALUES "
-        for i in new_problem.keys():
-            j = new_problem[i]
-            a = str(j[0]).replace('"','\\"')
-            a = a.replace("'","\\'")
-            b = j[1].encode('utf8')
-            b = str(b).replace('"','\\"')
-            b = b.replace("'","\\'")
-            sql+="('" + str(a) + "','" + str(b) + "','" + str(int(time())) + "'), "
-
-        sql = sql[:-2]
-        conn = db.connect('forsit')
-        cursor=conn.cursor()
-        result = db.write(sql, cursor, conn)
-        cursor.close()
 
 def fetch_tags_problems():
     sql = "SELECT DISTINCT(pid) from ptag"
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     res = db.read(sql, cursor)
     problem_list = []
     for i in res:
@@ -262,8 +258,6 @@ def fetch_tags_problems():
             problem_list.append(problem)
 
     sql = "SELECT tag from tag"
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     a = db.read(sql, cursor)
     for i in a:
         url = "http://codeforces.com/api/problemset.problems"
@@ -288,25 +282,7 @@ def fetch_tags_problems():
                 sql = sql[:-2]
                 sql = "INSERT INTO ptag (pid, tag) VALUES " + sql
                 print sql
-                conn = db.connect('forsit')
-                cursor=conn.cursor()
                 result = db.write(sql, cursor, conn)
-    cursor.close()
-
-def update_tag_count():
-    sql = "SELECT tag FROM tag"
-
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
-    a = db.read(sql, cursor)
-    for i in a:
-        tag = str(i[0].encode('utf8'))
-        sql = "UPDATE tag SET count = (SELECT COUNT(*) FROM ptag WHERE tag = \'" + str(tag) + "\' ) WHERE tag = \'" + tag + "\'" 
-
-        print sql
-        conn = db.connect('forsit')
-        cursor=conn.cursor()
-        result = db.write(sql, cursor, conn)
 
 def update_problem():
 
@@ -327,10 +303,7 @@ def update_problem():
     sql = sql[:-2]
     sql+="ON DUPLICATE KEY UPDATE points=VALUES(points),correct_count=VALUES(correct_count),time=VALUES(time);"
     print sql
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     result = db.write(sql, cursor, conn)
-    cursor.close()
 
 def fetch_user_list_cfs():
     '''
@@ -351,8 +324,6 @@ def fetch_user_activity_cfs(handle=""):
     '''
     |  Fetch User's activity from Codeforces
     '''
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     payload = {}
     payload['handle'] = handle
     handle = 'cfs' + handle
@@ -452,3 +423,5 @@ fetch_tags_problems()
 update_tag_count()
 # fetch_tags_problems()
 # update_problem()
+
+cursor.close()
