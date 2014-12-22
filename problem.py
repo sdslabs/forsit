@@ -202,7 +202,6 @@ class problem(base):
 		print sql
 		self.log_results_db(sql, status, uid, "cfs")
 
-	
 	def find_similar_cfs(self, status = 0, uid = 0):
 		'''
     	Input 
@@ -219,7 +218,10 @@ class problem(base):
 		if result:
 			user_difficulty = float(result[0][0])
 		
-		res = self.gen_window_cfs(status, user_difficulty)
+		sql = "SELECT P.points/GREATEST("+self.cfs_max_score+", (SELECT MAX(points) FROM problem \
+			WHERE contestId = P.contestId)) as difficulty FROM problem P \
+			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
+		res = self.gen_window_cfs(sql, status, user_difficulty)
 		print res
 		upper = res[0]
 		lower = res[1]
@@ -233,7 +235,6 @@ class problem(base):
 				HAVING difficulty BETWEEN " + str(lower) + " AND " + str(upper)
 		# print sql
 		self.log_results_db(sql, status, uid, "cfs")
-
 
 	def log_results_db(self, sql, status = 0, uid = 0, app = "erd"):
 
@@ -292,7 +293,7 @@ class problem(base):
 				sql_insert = sql_insert[:-2]
 				db.write(sql_insert, self.cursor, self.conn)
 
-	def gen_window_cfs(self, status = 0, user_difficulty = 0):
+	def gen_window(self, sql, status = 0, user_difficulty = 0):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0
@@ -300,10 +301,8 @@ class problem(base):
     	Return a difficulty window to be used by find_similar_cfs(). 
     	The window is returned as a tuple of form (upper_limit,lower_limit)
 		'''
-		sql = "SELECT P.points/GREATEST("+self.cfs_max_score+", (SELECT MAX(points) FROM problem \
-			WHERE contestId = P.contestId)) as difficulty FROM problem P \
-			WHERE MID(P.pid,1,3) = \"cfs\" AND P.points>0"
-		print sql
+		
+		# print sql
 		result = db.read(sql, self.cursor)
 		difficulty = {}
 		for i in result:
