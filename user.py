@@ -154,13 +154,15 @@ class user(base):
 
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
-		sql = "SELECT * FROM activity"
+		# sql = "SELECT * FROM activity"
+		sql = "SELECT handle, pid, difficulty FROM activity"
 		result = db.read(sql, self.cursor)
 		for i in result:
 			user = str(i[0].encode('utf8'))
 			prob = str(i[1].encode('utf8'))
 
-			if not self.difficulty_matrix.has_key(user):
+			if user not in self.difficulty:
+			# if not self.difficulty_matrix.has_key(user):
 				self.difficulty_matrix[user] = {}
 
 			if self.options['tag_based']:
@@ -171,32 +173,34 @@ class user(base):
 				if p.exists_in_db != -1:
 					tag_data = p.tag
 				for tag in tag_data:
-					if not self.difficulty_matrix[user].has_key(tag):
+					if tag not in self.difficulty_matrix[user]:
 						self.difficulty_matrix[user][tag] = 0
-					self.difficulty_matrix[user][tag] += tag_data[tag]
+					self.difficulty_matrix[user][tag]+= tag_data[tag]
 
 			else:
-				self.difficulty_matrix[user][prob] = i[4]
-
+				self.difficulty_matrix[user][prob] = i[2]
 
 		self_handle = "erd" + self.erd_handle
-		if self.difficulty_matrix.has_key(self_handle):
-			n = len(self.difficulty_matrix[self_handle])
+		# if self.difficulty_matrix.has_key(self_handle):
+		if self_handle in self.difficulty_matrix:
+			n = float(len(self.difficulty_matrix[self_handle]))
 			s = sum(self.difficulty_matrix[self_handle][it] for it in self.difficulty_matrix[self_handle])
 			self.erd_avg = s/n
 
 		self_handle = "cfs" + self.cfs_handle
-		if self.difficulty_matrix.has_key(self_handle):
-			n = len(self.difficulty_matrix[self_handle])
+		if self_handle in self.difficulty_matrix:
+		# if self.difficulty_matrix.has_key(self_handle):
+			n = float(len(self.difficulty_matrix[self_handle]))
 			s = sum(self.difficulty_matrix[self_handle][it] for it in self.difficulty_matrix[self_handle])
 			self.cfs_avg = s/n
 
 		if self.options['normalize']:
 			self.normalize_difficulty_matrix()
 
-	def normalize_difficulty_matrix(self, type = 0):
+	# def normalize_difficulty_matrix(self, type = 0):
+	def normalize_difficulty_matrix(self):
 		for u in self.difficulty_matrix:
-			n = len(self.difficulty_matrix[u])
+			n = float(len(self.difficulty_matrix[u]))
 			s = sum(self.difficulty_matrix[u][it] for it in self.difficulty_matrix[u])
 			avg = s/n
 			for it in self.difficulty_matrix[u]:
@@ -262,10 +266,13 @@ class user(base):
 		self.similar_users = {}
 		self_erd_handle = 'erd' + self.erd_handle
 		self_cfs_handle = 'cfs' + self.cfs_handle
-		for u in self.difficulty_matrix.keys():
-			if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
+		# for u in self.difficulty_matrix.keys():
+		for u in self.difficulty_matrix:
+			# if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
+			if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix:
 				self.similar_users[u] = self.find_correlation(self_erd_handle, u, 50)
-			if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
+			# if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
+			if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix:
 				self.similar_users[u] = self.find_correlation(self_cfs_handle, u, 50)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
