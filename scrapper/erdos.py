@@ -27,6 +27,11 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
+    import cfscrape
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
+try:
     from time import time
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
@@ -38,15 +43,19 @@ except ImportError as exc:
 
 print "script was run at ", time()
 
+scraper = cfscrape.create_scraper()
+
+
 tags = []
 problem = []
 problem_db = []
 
+conn = db.connect('forsit')
+cursor=conn.cursor()
+
 def fetch_all():
 
     sql = "SELECT pid from problem WHERE MID(pid,1,3)=\"erd\""
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
     a = db.read(sql, cursor)
     for i in a:
         temp = str(i[0].encode('utf8'))
@@ -61,7 +70,7 @@ def fetch_all():
     ptag_sql = ""
     problem_sql = "INSERT INTO problem (pid, name, attempt_count, correct_count, time) VALUES "
     tag_url = "http://erdos.sdslabs.co/tags.json"
-    tag_r = requests.get(tag_url)
+    tag_r = scrapper.get(tag_url)
     if(tag_r.status_code != 200 ):
         print tag_r.status_code, " returned from ", tag_url
     else:
@@ -72,7 +81,7 @@ def fetch_all():
             if(tag not in tags):
                 tag_sql+="('" + tag + "','','"  + str(int(time())) + "'), "
             ptag_url = "http://erdos.sdslabs.co/tags/"+tag+".json"
-            ptag_r = requests.get(ptag_url)
+            ptag_r = scrapper.get(ptag_url)
             if(ptag_r.status_code != 200 ):
                 print ptag_r.status_code, " returned from ", ptag_url
             else:
@@ -82,7 +91,7 @@ def fetch_all():
                     code = code.replace('"','\\"')
                     code = code.replace("'","\\'")
                     problem_url = "http://erdos.sdslabs.co/problems/"+code+".json"
-                    prob = requests.get(problem_url)
+                    prob = scrapper.get(problem_url)
                     prob = prob.json()['submissions']
                     correct = prob['correct']
                     total = prob['total']
@@ -112,8 +121,39 @@ def fetch_all():
             ptag_sql = "INSERT INTO ptag (pid, tag) VALUES " + ptag_sql
             print ptag_sql
             db.write(ptag_sql, cursor, conn)
-        cursor.close()
 
+    sql_user = "SELECT cfs_handle FROM user"
+    result = db.read(sql_user, cursor)
+    user_list = {}
+    #using dict for fast lookup
+    for i in result:
+        user_list[i[0]]=0
+    new_user = []
+
+    user_url = "http://erdos.sdslabs.co/users.json"
+    user_r = scrapper.get(user_url)
+    if(user_r.status_code != 200 ):
+        print user_r.status_code, " returned from ", user_url
+    else:
+        user_res = user_r.json()['list']
+        for i in user_res:
+            if(i['username'] not in user_list):
+                new_user.append(i['username'])
+
+    if new_user:            
+        sql = "INSERT INTO user (erd_handle) VALUES "
+        for i in new_user:
+            sql+="("+str(i)+"), "
+        sql=sql[:-2]
+        db.write(sql, cursor, conn)
+    
+    sql = "UPDATE user SET erd_score = \
+          (SELECT SUM((correct_count-3)/attempt_count) FROM problem WHERE pid IN \
+          (SELECT DISTINCT(pid) FROM activity WHERE uid = user.uid AND MID(pid,1,3)=\'erd\' AND status = 1)\
+          AND correct_count>3)"
+
+    print sql
+    db.write(sql, cursor, conn)  
     sleep(3)
 
 def fetch_user_list_erd():
@@ -122,7 +162,7 @@ def fetch_user_list_erd():
     '''
     erd_users = []
     url = "http://erdos.sdslabs.co/users.json"
-    r = requests.get(url)
+    r = scrapper.get(url)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
@@ -135,8 +175,7 @@ def fetch_user_activity_erd(handle=""):
     '''
     |  Fetch User's activity from Erdos
     '''
-    conn = db.connect('forsit')
-    cursor=conn.cursor()
+
     url = "http://erdos.sdslabs.co/activity/users/" + handle + ".json"
     handle = 'erd' + handle
     sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
@@ -146,7 +185,7 @@ def fetch_user_activity_erd(handle=""):
     else:
         last_activity = res[0][0]
     last_activity = int(last_activity)
-    r = requests.get(url)
+    r = scrapper.get(url)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
@@ -170,3 +209,4 @@ def fetch_user_activity_all():
         print "User activity for " + handle
 
 fetch_all()
+cursor.close()
