@@ -413,6 +413,17 @@ def fetch_user_activity_all():
         fetch_user_activity_cfs(handle)
         print "User activity for " + handle
 
+def update_user_score():
+
+    sql = "UPDATE user SET cfs_score = \
+           (SELECT SUM(points/GREATEST("+self.cfs_max_score+", (SELECT MAX(P.points) FROM problem P \
+            WHERE P.contestId = contestId))) FROM problem WHERE pid IN \
+          (SELECT DISTINCT(pid) FROM activity WHERE uid = user.uid AND MID(pid,1,3)=\'cfs\' AND status = 1)\
+          AND points>0)"
+
+    print sql
+    db.write(sql, cursor, conn)
+
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()

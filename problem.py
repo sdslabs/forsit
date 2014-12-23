@@ -172,11 +172,12 @@ class problem(base):
 		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 		return sorted_score
 
-	def find_similar_erdos(self, status = 0):
+	def find_similar_erdos(self, status = 0, uid = 0, user_difficulty = 0):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0 
-    	- *uid* : user for whom these recommendations are being generated 
+    	- *uid* : user for whom these recommendations are being generated
+    	- *user_difficulty* : difficulty rating for the user. difficulty = 0 means the user has not attempted any problem so far 
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
     	and then calls the reco_algo() with the sql as input. The top k results from this function are then logged
     	into mysql with appropriate insertions/updates/deletions
@@ -205,21 +206,17 @@ class problem(base):
 		# print sql
 		self.log_results_db(sql, status, uid, "erd")
 
-	def find_similar_cfs(self, status = 0, uid = 0):
+	def find_similar_cfs(self, status = 0, uid = 0, user_difficulty = 0):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0
 		- *uid* : user for whom these recommendations are being generated 
+    	- *user_difficulty* : difficulty rating for the user. difficulty = 0 means the user has not attempted any problem so far
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
     	and then calls the reco_algo() with the sql as input. The top k results from this function are then logged
     	into mysql with appropriate insertions/updates/deletions
 		'''
-		sql = "SELECT cfs_score FROM user where uid = \'"+str(uid)+"\'"
-		print sql
-		result = db.read(sql, self.cursor)
-		user_difficulty = 0
-		if result:
-			user_difficulty = float(result[0][0])
+		
 		
 		sql = "SELECT P.points/GREATEST("+self.cfs_max_score+", (SELECT MAX(points) FROM problem \
 			WHERE contestId = P.contestId)) as difficulty FROM problem P \
@@ -443,6 +440,14 @@ if __name__ == "__main__":
 	print time.strftime("%d-%m-%Y %H:%M")
 	a.print_info()
 	a.find_similar_cfs(0)
+
+	# sql = "SELECT cfs_score FROM user where uid = \'"+str(uid)+"\'"
+	# 	print sql
+	# 	result = db.read(sql, self.cursor)
+	# 	user_difficulty = 0
+	# 	if result:
+	# 		user_difficulty = float(result[0][0])
+
 	# a.find_similar_erdos()
 	print "\n\n\n\n"
 	# plot_points_distribution_cfs(max_flag=1, min_flag = 1)
