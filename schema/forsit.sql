@@ -150,6 +150,18 @@ CREATE TABLE IF NOT EXISTS `user_reco` (
   `state` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_tag_score`
+--
+
+CREATE TABLE IF NOT EXISTS `user_tag_score` (
+  `handle` varchar(100) NOT NULL,
+  `tag` varchar(100) NOT NULL,
+  `score` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 --
 -- Constraints for dumped tables
 --
