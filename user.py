@@ -91,23 +91,23 @@ class user(base):
 		self.options['normalize'] = 0
 		self.options['sample_data'] = 1
 		self.options['penalize'] = 1
-		if options.has_key('tag_based'):
+		if 'tag_based' in options:
 			self.options['tag_based'] = options['tag_based']
-		if options.has_key('normalize'):
+		if 'normalize' in options:
 			self.options['normalize'] = options['normalize']
-		if options.has_key('sample_data'):
+		if 'sample_data' in options:
 			self.options['sample_data'] = options['sample_data']
-		if options.has_key('penalize'):
+		if 'penalize' in options:
 			self.options['penalize'] = options['penalize']
 
 		self.cfs_url = "http://codeforces.com/api/user.status"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
-		if(cfs_handle == ''):
-			cfs_handle = self.uid
-		if(erd_handle == ''):
-			erd_handle = self.uid
-		self.cfs_handle = str(cfs_handle)
-		self.erd_handle = str(erd_handle)
+		# if(cfs_handle == ''):
+		# 	cfs_handle = self.uid
+		# if(erd_handle == ''):
+		# 	erd_handle = self.uid
+		self.cfs_handle = 'cfs' + str(cfs_handle)
+		self.erd_handle = 'erd' + str(erd_handle)
 		self.conn=db.connect(app_name)
 		self.cursor = self.conn.cursor()
 		self.calculate_difficulty()
@@ -117,7 +117,7 @@ class user(base):
 		|  Fetch User's information from Codeforces
 	    '''
 		payload = {}
-		payload['handles'] = self.cfs_handle
+		payload['handles'] = self.cfs_handle[3:]
 		url = "http://codeforces.com/api/user.info"
 		r = requests.get(url, params=payload)
 		if(r.status_code != 200 ):
@@ -132,7 +132,7 @@ class user(base):
 		'''
 		|  Fetch User's information from Erdos
 	    '''
-		url = self.erd_url + self.erd_handle + ".json"
+		url = self.erd_url + self.erd_handle[3:] + ".json"
 		r = requests.get(url)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
@@ -180,14 +180,14 @@ class user(base):
 			else:
 				self.difficulty_matrix[user][prob] = i[2]
 
-		self_handle = "erd" + self.erd_handle
+		self_handle = self.erd_handle
 		# if self.difficulty_matrix.has_key(self_handle):
 		if self_handle in self.difficulty_matrix:
 			n = float(len(self.difficulty_matrix[self_handle]))
 			s = sum(self.difficulty_matrix[self_handle][it] for it in self.difficulty_matrix[self_handle])
 			self.erd_avg = s/n
 
-		self_handle = "cfs" + self.cfs_handle
+		self_handle = self.cfs_handle
 		if self_handle in self.difficulty_matrix:
 		# if self.difficulty_matrix.has_key(self_handle):
 			n = float(len(self.difficulty_matrix[self_handle]))
@@ -264,15 +264,13 @@ class user(base):
 
 	def find_similar_users(self):
 		self.similar_users = {}
-		self_erd_handle = 'erd' + self.erd_handle
-		self_cfs_handle = 'cfs' + self.cfs_handle
 		# for u in self.difficulty_matrix.keys():
 		for u in self.difficulty_matrix:
 			# if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
-			if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix:
+			if u[:3] == "erd" and u != self.erd_handle and self.erd_handle in self.difficulty_matrix:
 				self.similar_users[u] = self.find_correlation(self_erd_handle, u, 50)
 			# if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
-			if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix:
+			if u[:3] == "cfs" and u != self.cfs_handle and self.cfs_handle in self.difficulty_matrix:
 				self.similar_users[u] = self.find_correlation(self_cfs_handle, u, 50)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
@@ -294,10 +292,10 @@ class user(base):
 				continue
 
 			if handle[:3] == "erd":
-				self_handle = "erd" + self.erd_handle
+				self_handle = self.erd_handle
 				avg = self.erd_avg
 			if handle[:3] == "cfs":
-				self_handle = "cfs" + self.cfs_handle
+				self_handle = self.cfs_handle
 				avg = self.cfs_avg
 
 			if not options['normalize']:
@@ -330,17 +328,17 @@ class user(base):
 		for i in plist_eval:
 			predicted = i[1]
 			if i[0][:3] == "erd":
-				self_handle = "erd" + self.erd_handle
+				self_handle = self.erd_handle
 				avg = self.erd_avg
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
 			if i[0][:3] == "cfs":
-				self_handle = "cfs" + self.erd_handle
+				self_handle = self.erd_handle
 				avg = self.cfs_avg
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
 			if self.options['tag_based']:
-				self_handle = "erd" + self.erd_handle
+				self_handle = self.erd_handle
 				avg = self.erd_avg
 				actual = avg + self.difficulty_matrix[self_handle][i[0]]
 
