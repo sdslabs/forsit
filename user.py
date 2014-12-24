@@ -156,29 +156,19 @@ class user(base):
 		self.difficulty_matrix = {}
 		# sql = "SELECT * FROM activity"
 		sql = "SELECT handle, pid, difficulty FROM activity"
+		if self.options['tag_based']:
+			sql = "SELECT handle, tag, score FROM user_tag_score"
 		result = db.read(sql, self.cursor)
 		for i in result:
 			user = str(i[0].encode('utf8'))
-			prob = str(i[1].encode('utf8'))
+			item = str(i[1].encode('utf8'))
 
-			if user not in self.difficulty:
+			if user not in self.difficulty_matrix:
 			# if not self.difficulty_matrix.has_key(user):
 				self.difficulty_matrix[user] = {}
 
-			if self.options['tag_based']:
-				if user[:3] == "cfs":
-					break;
-
-				p = problem(prob)
-				if p.exists_in_db != -1:
-					tag_data = p.tag
-				for tag in tag_data:
-					if tag not in self.difficulty_matrix[user]:
-						self.difficulty_matrix[user][tag] = 0
-					self.difficulty_matrix[user][tag]+= tag_data[tag]
-
 			else:
-				self.difficulty_matrix[user][prob] = i[2]
+				self.difficulty_matrix[user][item] = i[2]
 
 		self_handle = self.erd_handle
 		# if self.difficulty_matrix.has_key(self_handle):
@@ -371,7 +361,8 @@ if __name__ == '__main__':
 	options['normalize'] = 0
 	options['sample_data'] = 0
 	options['penalize'] = 1
-	a = user('TheOrganicGypsy', options)
+	a = user(erd_handle = 'TheOrganicGypsy', options = options)
+	print a.difficulty_matrix
 	# print a.rank_erdos_users()[:10]
 	#plot_concept_cfs(a.cfs_handle)
 	#graph.plot_difficulty_matrix(a.difficulty_matrix)

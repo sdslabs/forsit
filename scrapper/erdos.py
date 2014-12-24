@@ -41,6 +41,11 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    from problem import problem
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
 print "script was run at ", time()
 
 scraper = cfscrape.create_scraper()
@@ -193,14 +198,28 @@ def fetch_user_activity_erd(handle=""):
         result.reverse()
         for act in result:
             if int(act['created_at']) > last_activity:
-                sql = "SELECT * FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+                sql = "SELECT pid FROM activity WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
                 check = db.read(sql, cursor)
                 difficulty = 0
                 if check == ():
                     sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + ", " + str(act['created_at']) + " )"
                     db.write(sql, cursor, conn)
+                    p = problem("erd" + act['problem_id'])
+                    if p.exists_in_db != -1:
+                        tag_data = p.tag
+                        for tag in tag_data:
+                            sql = "SELECT tag FROM user_tag_score WHERE tag = \'" + tag + "\' AND handle = \'" + handle + "\'"
+                            tag_check = db.read(sql, cursor)
+                            if tag_check == ():
+                                sql = "INSERT INTO user_tag_score (handle, tag, score) VALUES ( \'" + handle + "\' , \'" + tag + "\' , " + str(tag_data[tag]) + " )"
+                                db.write(sql, cursor, conn)
+                            else:
+                                sql = "UPDATE user_tag_score SET score = score +" + str(tag_data[tag]) + " WHERE tag = \'" + tag + "\' AND handle = \'" + handle + "\'"
+                                db.write(sql, cursor, conn)
+
                 else:
                     sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['created_at']) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
+                    db.write(sql, cursor, conn)
 
 def fetch_user_activity_all():
     erd_users = fetch_user_list_erd()

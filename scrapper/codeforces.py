@@ -29,6 +29,11 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+    from problem import problem
+except ImportError as exc:
+    print("Error: failed to import settings module ({})".format(exc))
+
 from time import sleep
 from time import time
 
@@ -342,7 +347,7 @@ def fetch_user_activity_cfs(handle=""):
         result.reverse()
         for act in result:
             if int(act['creationTimeSeconds']) > last_activity:
-                sql = "SELECT * FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
+                sql = "SELECT pid FROM activity WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
                 check = db.read(sql, cursor)
                 difficulty = 0
                 if act['verdict'] == "OK":
@@ -352,6 +357,18 @@ def fetch_user_activity_cfs(handle=""):
                 if check == ():
                     sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + ", " + str(act['creationTimeSeconds']) +" )"
                     db.write(sql, cursor, conn)
+                    p = problem("cfs" + str(act['problem']['contestId']) + str(act['problem']['index'])
+                    if p.exists_in_db != -1:
+                        tag_data = p.tag
+                        for tag in tag_data:
+                            sql = "SELECT tag FROM user_tag_score WHERE tag = \'" + tag + "\' AND handle = \'" + handle + "\'"
+                            tag_check = db.read(sql, cursor)
+                            if tag_check == ():
+                                sql = "INSERT INTO user_tag_score (handle, tag, score) VALUES ( \'" + handle + "\' , \'" + tag + "\' , " + str(tag_data[tag]) + " )"
+                                db.write(sql, cursor, conn)
+                            else:
+                                sql = "UPDATE user_tag_score SET score = score + " + str(tag_data[tag]) + " WHERE tag = \'" + tag + "\' AND handle = \'" + handle + "\'"
+                                db.write(sql, cursor, conn)
                 else:
                     sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(status) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['creationTimeSeconds']) + " WHERE pid = \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\' AND handle = \'" + handle + "\'"
                     db.write(sql, cursor, conn)
