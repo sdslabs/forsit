@@ -85,9 +85,8 @@ class user(base):
 	'''
 
 		
-	def __init__(self, erd_handle, cfs_handle = '', uid = '', options = {}, app_name = "forsit"):
+	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "forsit"):
 		self.training_problems = {}
-		self.uid = str(uid)
 		self.options = {}
 		self.options['tag_based'] = 0
 		self.options['normalize'] = 0
@@ -102,13 +101,30 @@ class user(base):
 		if 'penalize' in options:
 			self.options['penalize'] = options['penalize']
 
+		self.conn=db.connect(app_name)
+		self.cursor = self.conn.cursor()
+
 		self.cfs_url = "http://codeforces.com/api/user.status"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
 		self.cfs_handle = 'cfs' + str(cfs_handle)
 		self.erd_handle = 'erd' + str(erd_handle)
-		self.conn=db.connect(app_name)
-		self.cursor = self.conn.cursor()
+		self.uid = self.get_uid()
+		print self.uid
 		self.calculate_difficulty()
+
+	def get_uid(self):
+		sql = "SELECT uid, cfs_handle FROM user WHERE erd_handle = \'" + self.erd_handle + "\'"
+		res = db.read(sql, self.cursor)
+		if not res:
+			sql = "INSERT INTO user (erd_handle, cfs_handle, erd_score, cfs_score) VALUES ( \'" + self.erd_handle + "\', \'" + self.cfs_handle + "\', '0', '0')"
+			db.write(sql, self.cursor, self.conn)
+			sql = "SELECT uid FROM user WHERE erd_handle = \'" + self.erd_handle + "\'"
+			uid = db.read(sql, self.cursor)
+			return uid[0][0]
+		else:
+			if self.cfs_handle != res[0][1] :
+				sql = "UPDATE user SET cfs_handle = \'" + self.cfs_handle + "\'"
+			return res[0][0]
 
 	def fetch_user_info_cfs(self):
 		'''
@@ -440,7 +456,7 @@ if __name__ == '__main__':
 	# print a.difficulty_matrix['erdvgupta']
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
-	print a.recommend_problems(1)
+	# print a.recommend_problems(1)
 	# print a.similar_users
 	# print a.error
 	#print len(a.training_problems)
