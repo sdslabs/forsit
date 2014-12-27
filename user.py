@@ -38,6 +38,8 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+import time
+
 #generated using http://codeforces.com/blog/entry/3064
 
 # 2600+	Red	International grandmaster	1
@@ -83,7 +85,7 @@ class user(base):
 	'''
 
 		
-	def __init__(self, uid, options = {}, app_name = "forsit", cfs_handle = '', erd_handle = ''):
+	def __init__(self, erd_handle, cfs_handle = '', uid = '', options = {}, app_name = "forsit"):
 		self.training_problems = {}
 		self.uid = str(uid)
 		self.options = {}
@@ -102,10 +104,6 @@ class user(base):
 
 		self.cfs_url = "http://codeforces.com/api/user.status"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
-		# if(cfs_handle == ''):
-		# 	cfs_handle = self.uid
-		# if(erd_handle == ''):
-		# 	erd_handle = self.uid
 		self.cfs_handle = 'cfs' + str(cfs_handle)
 		self.erd_handle = 'erd' + str(erd_handle)
 		self.conn=db.connect(app_name)
@@ -258,10 +256,10 @@ class user(base):
 		for u in self.difficulty_matrix:
 			# if u[:3] == "erd" and u[3:] != self.erd_handle and self_erd_handle in self.difficulty_matrix.keys():
 			if u[:3] == "erd" and u != self.erd_handle and self.erd_handle in self.difficulty_matrix:
-				self.similar_users[u] = self.find_correlation(self_erd_handle, u, 50)
+				self.similar_users[u] = self.find_correlation(self.erd_handle, u, 50)
 			# if u[:3] == "cfs" and u[3:] != self.cfs_handle and self_cfs_handle in self.difficulty_matrix.keys():
 			if u[:3] == "cfs" and u != self.cfs_handle and self.cfs_handle in self.difficulty_matrix:
-				self.similar_users[u] = self.find_correlation(self_cfs_handle, u, 50)
+				self.similar_users[u] = self.find_correlation(self.cfs_handle, u, 50)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
 	def recommend_problems(self, mode):
@@ -311,6 +309,7 @@ class user(base):
 		if self.options['sample_data']:
 			plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
 			self.evaluate_recommendation( plist_eval )
+		self.log_results_db(plist,50)
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
@@ -355,14 +354,77 @@ class user(base):
 				#print "\n"
 		return sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 
+	def log_results_db(self, sorted_score, number_to_recommend):
+		'''
+    	Input
+    	- *sql* : query to generate recommendation results  
+		- *status* : status = 1 if problem was solved correctly else 0
+		- *uid* : user for whom these recommendations are being generated 
+    	- *app* : "erd" for erdos and "cfs" for codeforces
+    	Output
+    	Logs the results in db with appropriate insertions/updates/deletions
+		'''
+		sql = "SELECT pid FROM user_reco WHERE uid = \'"+self.uid+"\' AND is_deleted = 0"
+		# print sql
+		results = db.read(sql, self.cursor)
+		if not results:
+			#Making entry for the first time
+			sql = "INSERT INTO user_reco (uid, pid, score, time_created, time_updated, is_deleted, state) VALUES "
+			k = min(len(sorted_score), number_to_recommend)
+			for i in range(0,k):
+				a = str(int(time.time()))
+				sql+="(\'"+self.uid+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+			sql = sql[:-2]
+			db.write(sql, self.cursor, self.conn)
+		else:
+			to_delete = []
+			for i in results:
+				to_delete.append(i[0])
+			to_update = []
+			to_insert = []
+			k = min(len(sorted_score), number_to_recommend)
+			for i in range(0,k):
+				if sorted_score[i][0] not in to_delete:
+					to_insert.append(sorted_score[i])
+				else:
+					to_update.append(sorted_score[i])
+					to_delete.remove(sorted_score[i][0])
+
+			if to_delete:					
+				sql_delete = "UPDATE user_reco SET is_deleted = 1, time_updated = "+str(int(time.time()))+" WHERE uid = \'"+self.uid+"\' AND pid IN ("
+				for i in to_delete:
+					sql_delete+="\'"+str(i)+"\',"
+				sql_delete=sql_delete[:-1]
+				sql_delete=sql_delete+")"
+				db.write(sql_delete, self.cursor, self.conn)
+
+			if to_update:		
+				sql_update = "UPDATE user_reco SET score = CASE pid "
+				where_clause = " WHERE uid = \'"+self.uid+"\' AND pid IN ("
+				for i in to_update:
+					sql_update+="WHEN \'"+str(i[0])+"\' THEN "+str(i[1])+"\n"
+					where_clause+="\'"+str(i[0])+"\',"
+				sql_update+=" END, time_updated = "+str(int(time.time()))
+				sql_update+=where_clause[:-1]
+				sql_update=sql_update+")"
+				db.write(sql_update, self.cursor, self.conn)
+
+			if to_insert:					
+				sql_insert = "INSERT INTO user_reco (uid, pid, score, time_created, time_updated, is_deleted, state) VALUES "
+				for i in to_insert:
+					a = str(int(time.time()))
+					sql_insert+="(\'"+self.uid+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+				sql_insert = sql_insert[:-2]
+				db.write(sql_insert, self.cursor, self.conn)
+
 if __name__ == '__main__':
 	options = {}
-	options['tag_based'] = 1
+	options['tag_based'] = 0
 	options['normalize'] = 0
 	options['sample_data'] = 0
 	options['penalize'] = 1
 	a = user(erd_handle = 'TheOrganicGypsy', options = options)
-	print a.difficulty_matrix
+	# print a.difficulty_matrix
 	# print a.rank_erdos_users()[:10]
 	#plot_concept_cfs(a.cfs_handle)
 	#graph.plot_difficulty_matrix(a.difficulty_matrix)
@@ -379,6 +441,6 @@ if __name__ == '__main__':
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
 	print a.recommend_problems(1)
-	print a.similar_users
+	# print a.similar_users
 	# print a.error
 	#print len(a.training_problems)
