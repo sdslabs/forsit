@@ -113,6 +113,9 @@ class user(base):
 		self.calculate_difficulty()
 
 	def get_uid(self):
+		'''
+		| Get uid from database using his erdos handle and also set cfs_handle if provided
+		'''
 		sql = "SELECT uid, cfs_handle FROM user WHERE erd_handle = \'" + self.erd_handle + "\'"
 		res = db.read(sql, self.cursor)
 		if not res:
@@ -154,6 +157,9 @@ class user(base):
 			solved_problems = r.json()['solved_problems']
 
 	def calculate_difficulty(self):
+		'''
+		| Calculate difficulty of a problem for a user
+		'''
 		sql = "UPDATE activity SET difficulty = 3 WHERE status = 0"
 		db.write(sql, self.cursor, self.conn)
 		sql = "UPDATE activity SET difficulty = 0 WHERE status = 1"
@@ -167,6 +173,11 @@ class user(base):
 		self.create_difficulty_matrix()
 
 	def create_difficulty_matrix(self):
+		'''
+		| Create user-problem difficulty or user-tag score matrix from the database
+		| Set options['tag_based'] = 0 for user-problem difficulty matrix
+		| and options['tag_based'] = 1 for user-tag score matrix
+		'''
 		self.difficulty_matrix = {}
 		# sql = "SELECT * FROM activity"
 		sql = "SELECT handle, pid, difficulty FROM activity"
@@ -203,6 +214,9 @@ class user(base):
 
 	# def normalize_difficulty_matrix(self, type = 0):
 	def normalize_difficulty_matrix(self):
+		'''
+		| Mean normalization of user-problem difficulty or user-tag score matrix
+		'''
 		for u in self.difficulty_matrix:
 			n = float(len(self.difficulty_matrix[u]))
 			s = sum(self.difficulty_matrix[u][it] for it in self.difficulty_matrix[u])
@@ -210,7 +224,13 @@ class user(base):
 			for it in self.difficulty_matrix[u]:
 				self.difficulty_matrix[u][it] = self.difficulty_matrix[u][it] - avg
 
-	def find_correlation(self, u1, u2, gamma = 100):
+	def find_correlation(self, u1, u2, gamma = 50):
+		'''
+		| Pearson Correlation Algorith to find similarity between user u1 and u2
+		| - *u1* : handle of user #1
+		| - *u2* : handle of user #2
+    	| - *gamma* : penalizing factor - to penalize users with less than a threshold number of common problems
+		'''
 
 		si = {}
 		n1 = len(self.difficulty_matrix[u1])
@@ -267,6 +287,9 @@ class user(base):
 		#return (r*n)/(n1+n2)
 
 	def find_similar_users(self):
+		'''
+		| Calculate similarity with all users
+		'''
 		self.similar_users = {}
 		# for u in self.difficulty_matrix.keys():
 		for u in self.difficulty_matrix:
@@ -279,7 +302,10 @@ class user(base):
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
 	def recommend_problems(self, mode):
-		# mode = 1 for difficult problems and 0 for easy problems
+		'''
+		| Create list of recommended problems by taking weighted sum of similar users' ratings
+		| - *mode* : 1 for difficult problems and 0 for easy problems
+		'''
 		self.find_similar_users()
 		top_similar_users = self.similar_users
 		totals = {}
@@ -329,6 +355,10 @@ class user(base):
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
+		'''
+		| Calculate error in recommendation by taking euclidean distance between actual and predicted scores
+		| *plist_eval* : list of sampled problems (20% of total solved problems) to evaluate
+		'''
 		self.error = 0
 		for i in plist_eval:
 			predicted = i[1]
@@ -357,6 +387,9 @@ class user(base):
 		self.error = math.sqrt( self.error )
 
 	def rank_erdos_users(self):
+		'''
+		| Rank erdos users based on the sum of difficulty of problems solved by them
+		'''
 		score = {}
 		for user in self.difficulty_matrix:
 			if( user[:3] == "erd" ):
@@ -373,10 +406,8 @@ class user(base):
 	def log_results_db(self, sorted_score, number_to_recommend):
 		'''
     	Input
-    	- *sql* : query to generate recommendation results  
-		- *status* : status = 1 if problem was solved correctly else 0
-		- *uid* : user for whom these recommendations are being generated 
-    	- *app* : "erd" for erdos and "cfs" for codeforces
+    	- *sorted_score* : recommendation results
+    	- *number_to_recommend* : number of problems to recommend
     	Output
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
