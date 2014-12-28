@@ -128,6 +128,7 @@ class user(base):
 		else:
 			if self.cfs_handle != res[0][1] :
 				sql = "UPDATE user SET cfs_handle = \'" + self.cfs_handle + "\'"
+				db.write(sql, self.cursor, self.conn)
 			return res[0][0]
 
 	def fetch_user_info_cfs(self):
