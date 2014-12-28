@@ -85,7 +85,7 @@ class user(base):
 	'''
 
 		
-	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "forsit"):
+	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "forsit", number_to_recommend = 5):
 		self.training_problems = {}
 		self.options = {}
 		self.options['tag_based'] = 0
@@ -108,6 +108,7 @@ class user(base):
 		self.erd_url = "http://erdos.sdslabs.co/users/"
 		self.cfs_handle = 'cfs' + str(cfs_handle)
 		self.erd_handle = 'erd' + str(erd_handle)
+		self.number_to_recommend = number_to_recommend
 		self.uid = self.get_uid()
 		print self.uid
 		self.calculate_difficulty()
@@ -351,7 +352,9 @@ class user(base):
 		if self.options['sample_data']:
 			plist_eval = [(problem, total/simSum_eval[problem]) for problem,total in totals_eval.items()]
 			self.evaluate_recommendation( plist_eval )
-		self.log_results_db(plist,50)
+		# self.log_results_db(plist,50)
+		self.number_to_recommend = 50
+		self.log_results_db(plist)
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
@@ -403,7 +406,7 @@ class user(base):
 				#print "\n"
 		return sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 
-	def log_results_db(self, sorted_score, number_to_recommend):
+	def log_results_db(self, sorted_score):
 		'''
     	Input
     	- *sorted_score* : recommendation results
@@ -463,6 +466,25 @@ class user(base):
 					sql_insert+="(\'"+self.uid+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
 				db.write(sql_insert, self.cursor, self.conn)
+
+	def recommend_problems_temp(self):
+		'''
+		| Create list of recommended problems by taking weighted sum of similar users' ratings
+		'''
+		self.find_weighted_tags()
+		sql = "SELECT * FROM ptag WHERE pid NOT IN (SELECT pid FROM activity WHERE uid = \'"+str(self.uid)+"\' AND status = 1)"
+		result = db.read(sql, self.cursor)
+		plist = defaultdict(list)
+		plist_score = {}
+		for i in result:
+			plist[i[0]].append(i[1])
+		for i in plist:
+			a = len(plist[i])
+			plist_score[i] = 0
+			for j in plist[i]:
+				plist_score[i]+=self.weighted_tag[j]/a
+		plist = sorted(plist, key=operator.itemgetter(1), reverse = 1)
+		self.log_results_db(plist)
 
 if __name__ == '__main__':
 	options = {}
