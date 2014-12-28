@@ -172,7 +172,7 @@ class problem(base):
 		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 		return sorted_score
 
-	def find_similar_erdos(self, status = 0, uid = 0, user_difficulty = 0):
+	def find_similar_erdos(self, status = 0, uid = '0', user_difficulty = 0):
 		'''
     	Input 
 		- *status* : status = 1 if problem was solved correctly else 0 
@@ -182,20 +182,20 @@ class problem(base):
     	and then calls the reco_algo() with the sql as input. The top k results from this function are then logged
     	into mysql with appropriate insertions/updates/deletions
 		'''
-		sql = "SELECT erd_score FROM user where uid = \'"+str(uid)+"\'"
-		result = db.read(sql, self.cursor)
-		user_difficulty = 0
-		if result:
-			user_difficulty = float(result[0][0])
-		sql = "SELECT (correct_count-3)/(attempt_count) as difficulty FROM problem \
-			WHERE MID(pid,1,3) = \"erd\" AND correct_count>3"
+		# sql = "SELECT erd_score FROM user where uid = \'"+str(uid)+"\'"
+		# result = db.read(sql, self.cursor)
+		# user_difficulty = 0
+		# if result:
+		# 	user_difficulty = float(result[0][0])
+		sql = "SELECT (correct_count)/(attempt_count) as difficulty FROM problem \
+			WHERE MID(pid,1,3) = \"erd\" AND attempt_count>5"
 		#can improve this later		
 		res = self.gen_window(sql, status, user_difficulty)
 		# print res
 		upper = res[0]
 		lower = res[1]
 			
-		sql = "	SELECT ptag.pid, ptag.tag, (correct_count-3)/attempt_count as difficulty \
+		sql = "	SELECT ptag.pid, ptag.tag, (correct_count)/attempt_count as difficulty \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
 				AND problem.pid IN \
@@ -328,7 +328,7 @@ class problem(base):
 		i = 0
 		imax = len(sorted_difficulty)-1
 		hi = imax
-		lo = 0
+		lo = float(0)
 		i = (hi+lo)/2
 		while(hi>=lo):
 			i = (hi+lo)/2
@@ -435,6 +435,14 @@ class problem(base):
 		self.correlated_problems = sorted(self.correlated_problems.items(), key=operator.itemgetter(1), reverse = 1)
 
 if __name__ == "__main__":
+
+	conn = db.connect('forsit')
+	cursor = self.conn.cursor()
+
+	sql = "SELECT uid, erd_score, cfs_score FROM user"
+	result = db.read()
+	for i in result:
+
 
 	a = problem('cfs175E')
 	print time.strftime("%d-%m-%Y %H:%M")
