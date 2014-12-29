@@ -110,7 +110,7 @@ class user(base):
 		self.erd_handle = 'erd' + str(erd_handle)
 		self.number_to_recommend = number_to_recommend
 		self.uid = self.get_uid()
-		print self.uid
+		# print self.uid
 		self.calculate_difficulty()
 
 	def get_uid(self):
@@ -162,16 +162,16 @@ class user(base):
 		'''
 		| Calculate difficulty of a problem for a user
 		'''
-		sql = "UPDATE activity SET difficulty = 3 WHERE status = 0"
+		sql = "UPDATE activity SET difficulty = 1 WHERE status = 0"
 		db.write(sql, self.cursor, self.conn)
 		sql = "UPDATE activity SET difficulty = 0 WHERE status = 1"
 		db.write(sql, self.cursor, self.conn)
-		sql = "UPDATE activity SET difficulty = difficulty + 1 WHERE attempt_count <= 2"
-		db.write(sql, self.cursor, self.conn)
-		sql = "UPDATE activity SET difficulty = difficulty + 2 WHERE attempt_count >= 3 AND attempt_count <= 5"
-		db.write(sql, self.cursor, self.conn)
-		sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count > 5;"
-		db.write(sql, self.cursor, self.conn)
+		# sql = "UPDATE activity SET difficulty = difficulty + 1 WHERE attempt_count <= 2"
+		# db.write(sql, self.cursor, self.conn)
+		# sql = "UPDATE activity SET difficulty = difficulty + 2 WHERE attempt_count >= 3 AND attempt_count <= 5"
+		# db.write(sql, self.cursor, self.conn)
+		# sql = "UPDATE activity SET difficulty = difficulty + 3 WHERE attempt_count > 5;"
+		# db.write(sql, self.cursor, self.conn)
 		self.create_difficulty_matrix()
 
 	def create_difficulty_matrix(self):
@@ -193,7 +193,7 @@ class user(base):
 			if user not in self.difficulty_matrix:
 			# if not self.difficulty_matrix.has_key(user):
 				self.difficulty_matrix[user] = {}
-
+				self.difficulty_matrix[user][item] = i[2]
 			else:
 				self.difficulty_matrix[user][item] = i[2]
 
@@ -415,7 +415,7 @@ class user(base):
     	Output
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
-		sql = "SELECT pid FROM user_reco WHERE uid = \'"+self.uid+"\' AND is_deleted = 0"
+		sql = "SELECT pid FROM user_reco WHERE uid = \'"+str(self.uid)+"\' AND is_deleted = 0"
 		# print sql
 		results = db.read(sql, self.cursor)
 		if not results:
@@ -424,7 +424,7 @@ class user(base):
 			k = min(len(sorted_score), number_to_recommend)
 			for i in range(0,k):
 				a = str(int(time.time()))
-				sql+="(\'"+self.uid+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+				sql+="(\'"+str(self.uid)+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 			sql = sql[:-2]
 			db.write(sql, self.cursor, self.conn)
 		else:
@@ -442,7 +442,7 @@ class user(base):
 					to_delete.remove(sorted_score[i][0])
 
 			if to_delete:					
-				sql_delete = "UPDATE user_reco SET is_deleted = 1, time_updated = "+str(int(time.time()))+" WHERE uid = \'"+self.uid+"\' AND pid IN ("
+				sql_delete = "UPDATE user_reco SET is_deleted = 1, time_updated = "+str(int(time.time()))+" WHERE uid = \'"+str(self.uid)+"\' AND pid IN ("
 				for i in to_delete:
 					sql_delete+="\'"+str(i)+"\',"
 				sql_delete=sql_delete[:-1]
@@ -451,7 +451,7 @@ class user(base):
 
 			if to_update:		
 				sql_update = "UPDATE user_reco SET score = CASE pid "
-				where_clause = " WHERE uid = \'"+self.uid+"\' AND pid IN ("
+				where_clause = " WHERE uid = \'"+str(self.uid)+"\' AND pid IN ("
 				for i in to_update:
 					sql_update+="WHEN \'"+str(i[0])+"\' THEN "+str(i[1])+"\n"
 					where_clause+="\'"+str(i[0])+"\',"
@@ -464,7 +464,7 @@ class user(base):
 				sql_insert = "INSERT INTO user_reco (uid, pid, score, time_created, time_updated, is_deleted, state) VALUES "
 				for i in to_insert:
 					a = str(int(time.time()))
-					sql_insert+="(\'"+self.uid+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+					sql_insert+="(\'"+str(self.uid)+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
 				db.write(sql_insert, self.cursor, self.conn)
 
@@ -491,7 +491,7 @@ if __name__ == '__main__':
 	options = {}
 	options['tag_based'] = 0
 	options['normalize'] = 0
-	options['sample_data'] = 0
+	options['sample_data'] = 1
 	options['penalize'] = 1
 	a = user(erd_handle = 'TheOrganicGypsy', options = options)
 	# print a.difficulty_matrix
@@ -510,7 +510,7 @@ if __name__ == '__main__':
 	# print a.difficulty_matrix['erdvgupta']
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
-	# print a.recommend_problems(1)
+	print a.recommend_problems(1)
 	# print a.similar_users
-	# print a.error
+	print a.error
 	#print len(a.training_problems)
