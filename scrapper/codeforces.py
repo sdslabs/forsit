@@ -357,7 +357,7 @@ def fetch_user_activity_cfs(handle=""):
                 if check == ():
                     sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'cfs" + str(act['problem']['contestId']) + str(act['problem']['index']) + "\', '1', " + str(status) + ", " + str(difficulty) + ", " + str(act['creationTimeSeconds']) +" )"
                     db.write(sql, cursor, conn)
-                    p = problem("cfs" + str(act['problem']['contestId']) + str(act['problem']['index'])
+                    p = problem("cfs" + str(act['problem']['contestId']) + str(act['problem']['index']))
                     if p.exists_in_db != -1:
                         tag_data = p.tag
                         for tag in tag_data:
