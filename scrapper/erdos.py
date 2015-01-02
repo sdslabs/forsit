@@ -75,7 +75,7 @@ def fetch_all():
     ptag_sql = ""
     problem_sql = "INSERT INTO problem (pid, name, attempt_count, correct_count, time) VALUES "
     tag_url = "http://erdos.sdslabs.co/tags.json"
-    tag_r = scrapper.get(tag_url)
+    tag_r = scraper.get(tag_url)
     if(tag_r.status_code != 200 ):
         print tag_r.status_code, " returned from ", tag_url
     else:
@@ -86,7 +86,7 @@ def fetch_all():
             if(tag not in tags):
                 tag_sql+="('" + tag + "','','"  + str(int(time())) + "'), "
             ptag_url = "http://erdos.sdslabs.co/tags/"+tag+".json"
-            ptag_r = scrapper.get(ptag_url)
+            ptag_r = scraper.get(ptag_url)
             if(ptag_r.status_code != 200 ):
                 print ptag_r.status_code, " returned from ", ptag_url
             else:
@@ -96,7 +96,7 @@ def fetch_all():
                     code = code.replace('"','\\"')
                     code = code.replace("'","\\'")
                     problem_url = "http://erdos.sdslabs.co/problems/"+code+".json"
-                    prob = scrapper.get(problem_url)
+                    prob = scraper.get(problem_url)
                     prob = prob.json()['submissions']
                     correct = prob['correct']
                     total = prob['total']
@@ -136,7 +136,7 @@ def fetch_all():
     new_user = []
 
     user_url = "http://erdos.sdslabs.co/users.json"
-    user_r = scrapper.get(user_url)
+    user_r = scraper.get(user_url)
     if(user_r.status_code != 200 ):
         print user_r.status_code, " returned from ", user_url
     else:
@@ -167,7 +167,7 @@ def fetch_user_list_erd():
     '''
     erd_users = []
     url = "http://erdos.sdslabs.co/users.json"
-    r = scrapper.get(url)
+    r = scraper.get(url)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
@@ -190,7 +190,7 @@ def fetch_user_activity_erd(handle=""):
     else:
         last_activity = res[0][0]
     last_activity = int(last_activity)
-    r = scrapper.get(url)
+    r = scraper.get(url)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
