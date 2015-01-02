@@ -436,18 +436,7 @@ class problem(base):
 
 if __name__ == "__main__":
 
-	conn = db.connect('forsit')
-	cursor = self.conn.cursor()
-
-	sql = "SELECT uid, erd_score, cfs_score FROM user"
-	result = db.read()
-	for i in result:
-
-
-	a = problem('cfs175E')
-	print time.strftime("%d-%m-%Y %H:%M")
-	a.print_info()
-	a.find_similar_cfs(0)
+	
 
 	# sql = "SELECT cfs_score FROM user where uid = \'"+str(uid)+"\'"
 	# 	print sql
