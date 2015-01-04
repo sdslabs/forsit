@@ -85,7 +85,7 @@ class user(base):
 	'''
 
 		
-	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "forsit", number_to_recommend = 5):
+	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "forsit", number_to_recommend = 50):
 		self.training_problems = {}
 		self.options = {}
 		self.options['tag_based'] = 0
@@ -411,7 +411,6 @@ class user(base):
 		'''
     	Input
     	- *sorted_score* : recommendation results
-    	- *number_to_recommend* : number of problems to recommend
     	Output
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
@@ -421,7 +420,7 @@ class user(base):
 		if not results:
 			#Making entry for the first time
 			sql = "INSERT INTO user_reco (uid, pid, score, time_created, time_updated, is_deleted, state) VALUES "
-			k = min(len(sorted_score), number_to_recommend)
+			k = min(len(sorted_score), self.number_to_recommend)
 			for i in range(0,k):
 				a = str(int(time.time()))
 				sql+="(\'"+str(self.uid)+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
@@ -433,7 +432,7 @@ class user(base):
 				to_delete.append(i[0])
 			to_update = []
 			to_insert = []
-			k = min(len(sorted_score), number_to_recommend)
+			k = min(len(sorted_score), self.number_to_recommend)
 			for i in range(0,k):
 				if sorted_score[i][0] not in to_delete:
 					to_insert.append(sorted_score[i])
