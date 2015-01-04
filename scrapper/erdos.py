@@ -27,11 +27,6 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    import cfscrape
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
     from time import time
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
@@ -48,7 +43,7 @@ except ImportError as exc:
 
 print "script was run at ", time()
 
-scraper = cfscrape.create_scraper()
+# requests = cfscrape.create_requests()
 
 
 tags = []
@@ -75,7 +70,7 @@ def fetch_all():
     ptag_sql = ""
     problem_sql = "INSERT INTO problem (pid, name, attempt_count, correct_count, time) VALUES "
     tag_url = "http://erdos.sdslabs.co/tags.json"
-    tag_r = scraper.get(tag_url)
+    tag_r = requests.get(tag_url)
     if(tag_r.status_code != 200 ):
         print tag_r.status_code, " returned from ", tag_url
     else:
@@ -86,7 +81,7 @@ def fetch_all():
             if(tag not in tags):
                 tag_sql+="('" + tag + "','','"  + str(int(time())) + "'), "
             ptag_url = "http://erdos.sdslabs.co/tags/"+tag+".json"
-            ptag_r = scraper.get(ptag_url)
+            ptag_r = requests.get(ptag_url)
             if(ptag_r.status_code != 200 ):
                 print ptag_r.status_code, " returned from ", ptag_url
             else:
@@ -96,7 +91,7 @@ def fetch_all():
                     code = code.replace('"','\\"')
                     code = code.replace("'","\\'")
                     problem_url = "http://erdos.sdslabs.co/problems/"+code+".json"
-                    prob = scraper.get(problem_url)
+                    prob = requests.get(problem_url)
                     prob = prob.json()['submissions']
                     correct = prob['correct']
                     total = prob['total']
@@ -108,16 +103,16 @@ def fetch_all():
                         problem.append(code)
                         problem_sql+="('" + code + "','" + name + "','" + str(total) + "','" + str(correct) + "','" + str(int(time())) + "'), "
                     if code not in problem_db:
-                        ptag_sql+="('"+code+"', '"+tag+"'),"
+                        ptag_sql+="('"+code+"', '"+tag+"'), "
 
         if(tag_sql!=""):
-            tag_sql = ptag_sql[:-2]
+            tag_sql = tag_sql[:-2]
             tag_sql = "INSERT INTO tag (tag, description, time) VALUES " + tag_sql
             print tag_sql
             db.write(tag_sql, cursor, conn)
 
         problem_sql = problem_sql[:-2]
-        problem_sql+="ON DUPLICATE KEY UPDATE attempt_count=VALUES(attempt_count),correct_count=VALUES(correct_count),time=VALUES(time);"
+        problem_sql+=" ON DUPLICATE KEY UPDATE attempt_count=VALUES(attempt_count),correct_count=VALUES(correct_count),time=VALUES(time);"
         print problem_sql
         db.write(problem_sql, cursor, conn)
         
@@ -136,7 +131,7 @@ def fetch_all():
     new_user = []
 
     user_url = "http://erdos.sdslabs.co/users.json"
-    user_r = scraper.get(user_url)
+    user_r = requests.get(user_url)
     if(user_r.status_code != 200 ):
         print user_r.status_code, " returned from ", user_url
     else:
@@ -167,7 +162,7 @@ def fetch_user_list_erd():
     '''
     erd_users = []
     url = "http://erdos.sdslabs.co/users.json"
-    r = scraper.get(url)
+    r = requests.get(url)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
@@ -190,7 +185,7 @@ def fetch_user_activity_erd(handle=""):
     else:
         last_activity = res[0][0]
     last_activity = int(last_activity)
-    r = scraper.get(url)
+    r = requests.get(url)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
