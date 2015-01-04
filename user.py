@@ -104,7 +104,7 @@ class user(base):
 		self.conn=db.connect(app_name)
 		self.cursor = self.conn.cursor()
 
-		self.cfs_url = "http://codeforces.com/api/user.status"
+		self.cfs_url = "http://codeforces.com/api/user.info"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
 		self.cfs_handle = 'cfs' + str(cfs_handle)
 		self.erd_handle = 'erd' + str(erd_handle)
@@ -137,8 +137,7 @@ class user(base):
 	    '''
 		payload = {}
 		payload['handles'] = self.cfs_handle[3:]
-		url = "http://codeforces.com/api/user.info"
-		r = requests.get(url, params=payload)
+		r = requests.get(self.cfs_url, params=payload)
 		if(r.status_code != 200 ):
 			print r.status_code, " returned from ", r.url
 		else:

@@ -329,6 +329,7 @@ def fetch_user_activity_cfs(handle=""):
     '''
     |  Fetch User's activity from Codeforces
     '''
+    cfs_url = "http://codeforces.com/api/user.status"
     payload = {}
     payload['handle'] = handle
     handle = 'cfs' + handle
