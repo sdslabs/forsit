@@ -354,7 +354,8 @@ class user(base):
 			self.evaluate_recommendation( plist_eval )
 		# self.log_results_db(plist,50)
 		self.number_to_recommend = 50
-		self.log_results_db(plist)
+		if not self.options['tag_based']:
+			self.log_results_db(plist)
 		return plist[:50]
 
 	def evaluate_recommendation(self, plist_eval):
