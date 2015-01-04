@@ -91,7 +91,7 @@ class recommend():
 		a.find_similar_users()
 		result = {}
 		su = a.similar_users
-		rp = a.recommend_problems(mode)
+		rp = a.reco_algo(mode)
 		er = a.error
 		result['similar_users'] = su
 		result['recommended_problems'] = rp

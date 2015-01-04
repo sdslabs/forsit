@@ -303,7 +303,7 @@ class user(base):
 				self.similar_users[u] = self.find_correlation(self.cfs_handle, u, 50)
 		self.similar_users = sorted(self.similar_users.items(), key=operator.itemgetter(1), reverse = 1)
 
-	def recommend_problems(self, mode):
+	def reco_algo(self, mode):
 		'''
 		| Create list of recommended problems by taking weighted sum of similar users' ratings
 		| - *mode* : 1 for difficult problems and 0 for easy problems
