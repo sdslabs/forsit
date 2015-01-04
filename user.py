@@ -38,6 +38,11 @@ try:
 except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
+try:
+	from collections import defaultdict
+except ImportError as exc:
+	print("Error: failed to import settings module ({})".format(exc))
+
 import time
 
 #generated using http://codeforces.com/blog/entry/3064
@@ -110,8 +115,13 @@ class user(base):
 		self.erd_handle = 'erd' + str(erd_handle)
 		self.number_to_recommend = number_to_recommend
 		self.uid = self.get_uid()
+		self.fill_activity()
 		# print self.uid
 		self.calculate_difficulty()
+
+	def fill_activity(self):
+		sql = "UPDATE activity SET uid = \'" + str(self.uid) + "\' WHERE handle = \'" + self.erd_handle + "\' OR handle = \'" + self.cfs_handle + "\'"
+		db.write(sql, self.cursor, self.conn)
 
 	def get_uid(self):
 		'''
@@ -467,30 +477,35 @@ class user(base):
 				sql_insert = sql_insert[:-2]
 				db.write(sql_insert, self.cursor, self.conn)
 
-	def recommend_problems_temp(self):
+	def recommend_problems_from_tag(self, mode):
 		'''
 		| Create list of recommended problems by taking weighted sum of similar users' ratings
 		'''
-		self.find_weighted_tags()
+		tags = self.reco_algo(mode)
+		tags = dict(tags)
 		sql = "SELECT * FROM ptag WHERE pid NOT IN (SELECT pid FROM activity WHERE uid = \'"+str(self.uid)+"\' AND status = 1)"
 		result = db.read(sql, self.cursor)
 		plist = defaultdict(list)
 		plist_score = {}
 		for i in result:
 			plist[i[0]].append(i[1])
+		# print tags
+		# print plist
+
 		for i in plist:
 			a = len(plist[i])
 			plist_score[i] = 0
 			for j in plist[i]:
-				plist_score[i]+=self.weighted_tag[j]/a
+				plist_score[i] += tags[j]/a
 		plist = sorted(plist, key=operator.itemgetter(1), reverse = 1)
+		# print plist
 		self.log_results_db(plist)
 
 if __name__ == '__main__':
 	options = {}
-	options['tag_based'] = 0
+	options['tag_based'] = 1
 	options['normalize'] = 0
-	options['sample_data'] = 1
+	options['sample_data'] = 0
 	options['penalize'] = 1
 	a = user(erd_handle = 'TheOrganicGypsy', options = options)
 	# print a.difficulty_matrix
@@ -509,7 +524,7 @@ if __name__ == '__main__':
 	# print a.difficulty_matrix['erdvgupta']
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
-	print a.recommend_problems(1)
+	a.recommend_problems_from_tag(1)
 	# print a.similar_users
-	print a.error
+	# print a.error
 	#print len(a.training_problems)

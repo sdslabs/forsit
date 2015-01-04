@@ -426,7 +426,7 @@ def fetch_all_user_activity_cfs(handle=""):
             db.write(sql, cursor, conn)
 
 def fetch_user_activity_all():
-    cfs_users = fetch_user_list_erd()
+    cfs_users = fetch_user_list_cfs()
     for handle in cfs_users:
         fetch_user_activity_cfs(handle)
         print "User activity for " + handle
@@ -445,12 +445,14 @@ def update_user_score():
 # fetch_all_tags()
 # insert_all_tags()
 # increment_tags()
-fetch_all_problems()
-insert_all_problems()
+# fetch_all_problems()
+# insert_all_problems()
 # increment_problem()
-fetch_tags_problems()
-update_tag_count()
+# fetch_tags_problems()
+# update_tag_count()
 # fetch_tags_problems()
 # update_problem()
+# fetch_user_activity_cfs("adurysk")
+fetch_user_activity_all()
 
 cursor.close()
