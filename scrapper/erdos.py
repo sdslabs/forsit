@@ -47,7 +47,7 @@ print "script was run at ", time()
 
 
 tags = []
-problem = []
+problem_list = []
 problem_db = []
 
 conn = db.connect('forsit')
@@ -99,8 +99,8 @@ def fetch_all():
                     name = str(i['name'].encode('utf8'))
                     name = name.replace('"','\\"')
                     name = name.replace("'","\\'")
-                    if(code not in problem):
-                        problem.append(code)
+                    if(code not in problem_list):
+                        problem_list.append(code)
                         problem_sql+="('" + code + "','" + name + "','" + str(total) + "','" + str(correct) + "','" + str(int(time())) + "'), "
                     if code not in problem_db:
                         ptag_sql+="('"+code+"', '"+tag+"'), "
@@ -117,7 +117,7 @@ def fetch_all():
         db.write(problem_sql, cursor, conn)
         
         if(ptag_sql!=""):
-            ptag_sql = ptag_sql[:-1]
+            ptag_sql = ptag_sql[:-2]
             ptag_sql = "INSERT INTO ptag (pid, tag) VALUES " + ptag_sql
             print ptag_sql
             db.write(ptag_sql, cursor, conn)
@@ -143,7 +143,7 @@ def fetch_all():
     if new_user:            
         sql = "INSERT INTO user (erd_handle) VALUES "
         for i in new_user:
-            sql+="("+str(i)+"), "
+            sql+="(\'"+str(i)+"\'), "
         sql=sql[:-2]
         db.write(sql, cursor, conn)
     
@@ -223,4 +223,6 @@ def fetch_user_activity_all():
         print "User activity for " + handle
 
 fetch_all()
+fetch_user_activity_all()
+# fetch_user_activity_erd("TheOrganicGypsy")
 cursor.close()
