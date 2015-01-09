@@ -78,8 +78,9 @@ def fetch_all():
         for i in tag_res:
             # print tag
             tag = str(i['name'])
+            tag_count = str(i['count'])
             if(tag not in tags):
-                tag_sql+="('" + tag + "','','"  + str(int(time())) + "'), "
+                tag_sql+="('" + tag + "','','"  + str(int(time())) + "','" + tag_count + "'), "
             ptag_url = "http://erdos.sdslabs.co/tags/"+tag+".json"
             ptag_r = requests.get(ptag_url)
             if(ptag_r.status_code != 200 ):
@@ -107,7 +108,7 @@ def fetch_all():
 
         if(tag_sql!=""):
             tag_sql = tag_sql[:-2]
-            tag_sql = "INSERT INTO tag (tag, description, time) VALUES " + tag_sql
+            tag_sql = "INSERT INTO tag (tag, description, time, count) VALUES " + tag_sql
             print tag_sql
             db.write(tag_sql, cursor, conn)
 
