@@ -147,14 +147,6 @@ def fetch_all():
             sql+="(\'"+str(i)+"\'), "
         sql=sql[:-2]
         db.write(sql, cursor, conn)
-    
-    sql = "UPDATE user SET erd_score = \
-          (SELECT SUM((correct_count-3)/attempt_count) FROM problem WHERE pid IN \
-          (SELECT DISTINCT(pid) FROM activity WHERE uid = user.uid AND MID(pid,1,3)=\'erd\' AND status = 1)\
-          AND correct_count>3)"
-
-    print sql
-    db.write(sql, cursor, conn)  
     sleep(3)
 
 def fetch_user_list_erd():
@@ -222,6 +214,13 @@ def fetch_user_activity_all():
     for handle in erd_users:
         fetch_user_activity_erd(handle)
         print "User activity for " + handle
+    sql = "UPDATE user SET erd_score = \
+          (SELECT SUM((correct_count-3)/attempt_count) FROM problem WHERE pid IN \
+          (SELECT DISTINCT(pid) FROM activity WHERE uid = user.uid AND MID(pid,1,3)=\'erd\' AND status = 1)\
+          AND correct_count>3)"
+
+    print sql
+    db.write(sql, cursor, conn)
 
 fetch_all()
 fetch_user_activity_all()
