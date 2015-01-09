@@ -164,7 +164,7 @@ def fetch_user_list_erd():
             erd_users.append(i['username'])    
     return erd_users
 
-def fetch_user_activity_erd(handle=""):
+def fetch_user_activity_erd(uid="", handle=""):
     '''
     |  Fetch User's activity from Erdos
     '''
@@ -190,7 +190,7 @@ def fetch_user_activity_erd(handle=""):
                 check = db.read(sql, cursor)
                 difficulty = 0
                 if check == ():
-                    sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, created_at) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + ", " + str(act['created_at']) + " )"
+                    sql = "INSERT INTO activity (handle, pid, attempt_count, status, difficulty, uid, created_at) VALUES ( \'" + handle + "\', \'erd" + act['problem_id'] + "\', '1', " + str(act['status']) + ", " + str(difficulty) + ", " +  uid + ", " + str(act['created_at']) + " )"
                     db.write(sql, cursor, conn)
                     p = problem("erd" + act['problem_id'])
                     if p.exists_in_db != -1:
@@ -210,9 +210,13 @@ def fetch_user_activity_erd(handle=""):
                     db.write(sql, cursor, conn)
 
 def fetch_user_activity_all():
-    erd_users = fetch_user_list_erd()
-    for handle in erd_users:
-        fetch_user_activity_erd(handle)
+    # erd_users = fetch_user_list_erd()
+    sql = "SELECT uid, erd_handle FROM user"
+    erd_users = db.read(sql, cursor)
+    for i in erd_users:
+        uid = str(i[0])
+        handle = str(i[1].encode('utf8'))
+        fetch_user_activity_erd(uid, handle)
         print "User activity for " + handle
     sql = "UPDATE user SET erd_score = \
           (SELECT SUM((correct_count-3)/attempt_count) FROM problem WHERE pid IN \

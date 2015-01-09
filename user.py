@@ -115,7 +115,6 @@ class user(base):
 		self.erd_handle = 'erd' + str(erd_handle)
 		self.number_to_recommend = number_to_recommend
 		self.uid = self.get_uid()
-		self.fill_activity()
 		# print self.uid
 		self.calculate_difficulty()
 
@@ -134,6 +133,7 @@ class user(base):
 			db.write(sql, self.cursor, self.conn)
 			sql = "SELECT uid FROM user WHERE erd_handle = \'" + self.erd_handle + "\'"
 			uid = db.read(sql, self.cursor)
+			self.fill_activity()
 			return uid[0][0]
 		else:
 			if self.cfs_handle != res[0][1] :
