@@ -339,7 +339,7 @@ class user(base):
 				self_handle = self.cfs_handle
 				avg = self.cfs_avg
 
-			if not options['normalize']:
+			if not self.options['normalize']:
 				avg = 0
 
 			for problem in self.difficulty_matrix[handle]:
