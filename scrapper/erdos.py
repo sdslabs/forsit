@@ -144,7 +144,7 @@ def fetch_all():
     if new_user:            
         sql = "INSERT INTO user (erd_handle) VALUES "
         for i in new_user:
-            sql+="(\'"+str(i)+"\'), "
+            sql+="(\'erd"+str(i)+"\'), "
         sql=sql[:-2]
         db.write(sql, cursor, conn)
     sleep(3)

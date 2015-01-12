@@ -118,8 +118,8 @@ class user(base):
 		# print self.uid
 		self.calculate_difficulty()
 
-	def fill_activity(self):
-		sql = "UPDATE activity SET uid = \'" + str(self.uid) + "\' WHERE handle = \'" + self.erd_handle + "\' OR handle = \'" + self.cfs_handle + "\'"
+	def fill_activity(self, uid):
+		sql = "UPDATE activity SET uid = \'" + str(uid) + "\' WHERE handle = \'" + self.erd_handle + "\' OR handle = \'" + self.cfs_handle + "\'"
 		db.write(sql, self.cursor, self.conn)
 
 	def get_uid(self):
@@ -133,7 +133,7 @@ class user(base):
 			db.write(sql, self.cursor, self.conn)
 			sql = "SELECT uid FROM user WHERE erd_handle = \'" + self.erd_handle + "\'"
 			uid = db.read(sql, self.cursor)
-			self.fill_activity()
+			self.fill_activity(uid[0][0])
 			return uid[0][0]
 		else:
 			if self.cfs_handle != res[0][1] :
