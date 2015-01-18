@@ -492,22 +492,28 @@ class user(base):
 		# print tags
 		# print plist
 
-		for i in plist:
-			a = len(plist[i])
-			plist_score[i] = 0
-			for j in plist[i]:
-				plist_score[i] += tags[j]/a
-		plist = sorted(plist, key=operator.itemgetter(1), reverse = 1)
-		# print plist
-		self.log_results_db(plist)
+		if len(tags) > 0:
+			for i in plist:
+				a = len(plist[i])
+				plist_score[i] = 0
+				for j in plist[i]:
+					if j in tags:
+						plist_score[i] += tags[j]/a
+					elif j in self.difficulty_matrix[self.erd_handle]:
+						plist_score[i] += self.difficulty_matrix[self.erd_handle][j]/a
+					elif j in self.difficulty_matrix[self.cfs_handle]:
+						plist_score[i] += self.difficulty_matrix[self.cfs_handle][j]/a
+			plist_score = sorted(plist_score.items(), key=operator.itemgetter(1), reverse = 1)
+			# print plist_score
+			self.log_results_db(plist_score)
 
 if __name__ == '__main__':
 	options = {}
 	options['tag_based'] = 1
 	options['normalize'] = 0
 	options['sample_data'] = 0
-	options['penalize'] = 1
-	a = user(erd_handle = 'TheOrganicGypsy', options = options)
+	options['penalize'] = 0
+	a = user(erd_handle = 'shagun', options = options)
 	# print a.difficulty_matrix
 	# print a.rank_erdos_users()[:10]
 	#plot_concept_cfs(a.cfs_handle)
@@ -527,4 +533,4 @@ if __name__ == '__main__':
 	a.recommend_problems_from_tag(1)
 	# print a.similar_users
 	# print a.error
-	#print len(a.training_problems)
+	# print len(a.training_problems)
