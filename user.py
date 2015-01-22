@@ -424,6 +424,8 @@ class user(base):
     	Output
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
+		if len(sorted_score) == 0:
+			return
 		sql = "SELECT pid FROM user_reco WHERE uid = \'"+str(self.uid)+"\' AND is_deleted = 0"
 		# print sql
 		results = db.read(sql, self.cursor)
