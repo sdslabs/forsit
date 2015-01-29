@@ -201,7 +201,7 @@ class problem(base):
 				AND problem.pid IN \
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
-				AND P.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'erd\' AND uid = \'"+str(uid)+"\')\
+				AND problem.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'erd\' AND uid = \'"+str(uid)+"\')\
 				HAVING difficulty BETWEEN " + str(lower) + " AND " + str(upper)				
 		# print sql
 		self.log_results_db(sql, status, uid, "erd")
@@ -248,8 +248,8 @@ class problem(base):
 		'''
 		sorted_score = self.reco_algo(sql)
 		status = str(status)
-		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\'AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0 AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
-		print sql
+		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\' AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0 AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
+		# print sql
 		results = db.read(sql, self.cursor)
 		if not results:
 			#Making entry for the first time
@@ -259,7 +259,9 @@ class problem(base):
 				a = str(int(time.time()))
 				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 			sql = sql[:-2]
-			db.write(sql, self.cursor, self.conn)
+			if(sql[:-1] == ')'):
+
+				db.write(sql, self.cursor, self.conn)
 		else:
 			to_delete = []
 			for i in results:
@@ -299,6 +301,7 @@ class problem(base):
 					a = str(int(time.time()))
 					sql_insert+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
+				print sql_insert
 				db.write(sql_insert, self.cursor, self.conn)
 
 	def gen_window(self, sql, status = 0, user_difficulty = 0):
@@ -328,7 +331,7 @@ class problem(base):
 		i = 0
 		imax = len(sorted_difficulty)-1
 		hi = imax
-		lo = float(0)
+		lo = 0	
 		i = (hi+lo)/2
 		while(hi>=lo):
 			i = (hi+lo)/2
@@ -343,11 +346,15 @@ class problem(base):
 		if status == 1:
 			#correct submission
 			upper = sorted_difficulty[i][1]
+			max_len = len(sorted_difficulty)-1
 			j = i
 			#increase the right end of the window till the upper threshold is met
-			while(upper < self.upper_threshold):
+			while(upper < self.upper_threshold and j < max_len):
+				# print j
 				j+=1
+				# print j
 				upper+=sorted_difficulty[j][1]
+				# print upper
 			x = float(sorted_difficulty[j][0] - self.difficulty)
 			# print x
 			# how much deviation we allowed on the right side of self.difficulty
@@ -365,16 +372,11 @@ class problem(base):
 		else:
 			#incorrect submission
 			lower = sorted_difficulty[i-1][1]
-			print lower
-			print i
-			print sorted_difficulty[i-1]
 			k=i-1
 			while(lower < self.lower_threshold):
 				k-=1
 				lower+=sorted_difficulty[k][1]
-				print lower
 			x = self.difficulty - sorted_difficulty[k][0]
-			# print x
 			if (self.difficulty+x/2 < user_difficulty or user_difficulty == 0):
 				return (self.difficulty+x/2, self.difficulty-x)
 			else:
