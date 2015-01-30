@@ -246,7 +246,9 @@ class problem(base):
     	Output
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
+		# print sql
 		sorted_score = self.reco_algo(sql)
+		# print sorted_score
 		status = str(status)
 		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\' AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0 AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
 		# print sql
@@ -258,9 +260,13 @@ class problem(base):
 			for i in range(0,k):
 				a = str(int(time.time()))
 				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+			# print sql
 			sql = sql[:-2]
-			if(sql[:-1] == ')'):
-
+			# print sql
+			# print sql[:-1]
+			if(sql[-1] == ')'):
+				# print "shagun"
+				# print sql
 				db.write(sql, self.cursor, self.conn)
 		else:
 			to_delete = []
@@ -301,7 +307,7 @@ class problem(base):
 					a = str(int(time.time()))
 					sql_insert+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
-				print sql_insert
+				# print sql_insert
 				db.write(sql_insert, self.cursor, self.conn)
 
 	def gen_window(self, sql, status = 0, user_difficulty = 0):
