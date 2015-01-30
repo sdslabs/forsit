@@ -154,14 +154,22 @@ def fetch_user_list_erd():
     |  Fetch List of all the users from Erdos
     '''
     erd_users = []
-    url = "http://erdos.sdslabs.co/users.json"
-    r = requests.get(url)
-    if(r.status_code != 200 ):
-        print r.status_code, " returned from ", r.url
-    else:
-        result = r.json()['list']
-        for i in result:
-            erd_users.append(i['username'])    
+    done = 0
+    total = 1
+    page = 1
+    while ( done < total ):
+        url = "http://erdos.sdslabs.co/users.json?page=" + str(page)
+        r = requests.get(url)
+        if(r.status_code != 200 ):
+            print r.status_code, " returned from ", r.url
+        else:
+            total = r.json()['TOTAL']
+            done += 500
+            result = r.json()['list']
+            for i in result:
+                erd_users.append(i['username'])
+        page += 1
+    print len(erd_users)
     return erd_users
 
 def fetch_user_activity_erd(uid="", handle=""):
@@ -229,4 +237,5 @@ def fetch_user_activity_all():
 fetch_all()
 fetch_user_activity_all()
 # fetch_user_activity_erd("TheOrganicGypsy")
+# fetch_user_list_erd()
 cursor.close()
