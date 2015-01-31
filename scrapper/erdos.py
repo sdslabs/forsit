@@ -176,9 +176,9 @@ def fetch_user_activity_erd(uid="", handle=""):
     '''
     |  Fetch User's activity from Erdos
     '''
-
+    handle = handle[3:]
     url = "http://erdos.sdslabs.co/activity/users/" + handle + ".json"
-    handle = 'erd' + handle
+    print url
     sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
     res = db.read(sql, cursor)
     if res == ():
