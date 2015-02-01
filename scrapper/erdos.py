@@ -123,7 +123,7 @@ def fetch_all():
             print ptag_sql
             db.write(ptag_sql, cursor, conn)
 
-    sql_user = "SELECT cfs_handle FROM user"
+    sql_user = "SELECT erd_handle FROM user"
     result = db.read(sql_user, cursor)
     user_list = {}
     #using dict for fast lookup
@@ -131,20 +131,28 @@ def fetch_all():
         user_list[i[0]]=0
     new_user = []
 
-    user_url = "http://erdos.sdslabs.co/users.json"
-    user_r = requests.get(user_url)
-    if(user_r.status_code != 200 ):
-        print user_r.status_code, " returned from ", user_url
-    else:
-        user_res = user_r.json()['list']
-        for i in user_res:
-            if(i['username'] not in user_list):
-                new_user.append(i['username'])
+    done = 0
+    total = 1
+    page = 1
+    while ( done < total ):
+        user_url = "http://erdos.sdslabs.co/users.json?page=" + str(page)
+        user_r = requests.get(user_url)
+        if(user_r.status_code != 200 ):
+            print user_r.status_code, " returned from ", user_url
+        else:
+            total = user_r.json()['TOTAL']
+            done += 500
+            user_res = user_r.json()['list']
+            for i in user_res:
+                if(i['username'] not in user_list):
+                    new_user.append(i['username'])
+        page += 1
 
-    if new_user:            
-        sql = "INSERT INTO user (erd_handle) VALUES "
+    if new_user:         
+        print len(new_user)
+        sql = "INSERT INTO user (erd_handle, cfs_handle) VALUES "
         for i in new_user:
-            sql+="(\'erd"+str(i)+"\'), "
+            sql+="(\'erd"+str(i)+"\',\'cfs\'), "
         sql=sql[:-2]
         db.write(sql, cursor, conn)
     sleep(3)
@@ -234,6 +242,7 @@ def fetch_user_activity_all():
     print sql
     db.write(sql, cursor, conn)
 
+# fetch_user_list_erd()
 fetch_all()
 fetch_user_activity_all()
 # fetch_user_activity_erd("TheOrganicGypsy")
