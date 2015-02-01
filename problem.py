@@ -42,7 +42,7 @@ class problem(base):
 
 	'''
 	
-	def __init__(self, pid, app_name = "forsit", cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
+	def __init__(self, pid, erd_problem_difficulty, app_name = "forsit", cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
 		
 		self.pid = str(pid)
 		self.cfs_max_score = str(cfs_max_score)
@@ -52,6 +52,7 @@ class problem(base):
 		self.lower_threshold = lower_threshold
 		self.upper_threshold = upper_threshold
 		self.number_to_recommend = number_to_recommend
+		self.erd_problem_difficulty = erd_problem_difficulty
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
@@ -187,10 +188,8 @@ class problem(base):
 		# user_difficulty = 0
 		# if result:
 		# 	user_difficulty = float(result[0][0])
-		sql = "SELECT (correct_count)/(attempt_count) as difficulty FROM problem \
-			WHERE MID(pid,1,3) = \"erd\" AND attempt_count>5"
-		#can improve this later		
-		res = self.gen_window(sql, status, user_difficulty)
+			
+		res = self.gen_window(status, user_difficulty)
 		# print res
 		upper = res[0]
 		lower = res[1]
@@ -310,7 +309,7 @@ class problem(base):
 				# print sql_insert
 				db.write(sql_insert, self.cursor, self.conn)
 
-	def gen_window(self, sql, status = 0, user_difficulty = 0):
+	def gen_window(self, sql, status = 0, user_difficulty = 0, app = "erd"):
 		'''
     	Input 
     	- *sql* : query to compute difficulty of each problem from the problem table
@@ -321,7 +320,11 @@ class problem(base):
 		'''
 		
 		# print sql
-		result = db.read(sql, self.cursor)
+		if(app == "erd"):
+			result = self.erd_problem_difficulty
+		else:
+			result = []
+		# result = db.read(sql, self.cursor)
 		difficulty = {}
 		for i in result:
 			point = float(i[0])

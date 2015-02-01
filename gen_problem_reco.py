@@ -24,9 +24,12 @@ lower_threshold = 10
 upper_threshold = 10
 number_to_recommend = 5
 
-
 conn = db.connect(app_name)
 cursor = conn.cursor()
+
+sql = "SELECT (correct_count)/(attempt_count) as difficulty FROM problem \
+			WHERE MID(pid,1,3) = \"erd\" AND attempt_count>5"
+erd_problem_difficulty = db.read(sql, cursor)
 
 sql = "SELECT uid, erd_score/(SELECT MAX(erd_score) FROM user), cfs_score/(SELECT MAX(cfs_score) FROM user) FROM user"
 user_result = db.read(sql, cursor)
@@ -36,7 +39,7 @@ problem_result = db.read(sql, cursor)
 
 for i in problem_result:
 	pid = str(i[0])
-	a = problem(pid = pid, app_name = app_name, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
+	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, app_name = app_name, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
 	for j in user_result:
 
 		#erdos recommendations
