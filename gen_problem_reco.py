@@ -19,12 +19,11 @@ print "Starting generating problem based reco : ", time.strftime("%d-%m-%Y %H:%M
 
 #config
 cfs_max_score = 3000
-app_name = 'forsit'
 lower_threshold = 10
 upper_threshold = 10
 number_to_recommend = 5
 
-conn = db.connect(app_name)
+conn = db.connect()
 cursor = conn.cursor()
 
 sql = "SELECT (correct_count)/(attempt_count) as difficulty FROM problem \
@@ -39,7 +38,7 @@ problem_result = db.read(sql, cursor)
 
 for i in problem_result:
 	pid = str(i[0])
-	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, app_name = app_name, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
+	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
 	for j in user_result:
 
 		#erdos recommendations
@@ -49,5 +48,5 @@ for i in problem_result:
 		
 		# a.find_similar_cfs(status = 0, uid = str(j[0]), user_difficulty = float(j[2]))
 		# a.find_similar_cfs(status = 1, uid = str(j[0]), user_difficulty = float(j[2]))
-
+	print pid, " pid finished"	
 print "Finished generating problem based reco : ", time.strftime("%d-%m-%Y %H:%M")

@@ -32,7 +32,6 @@ class problem(base):
 
 	'''
 	- *pid* : problem id. For erdos problems, it starts with *erd* and for codeforces problems it starts with *cfs*
-	- *app_name* : Name of the app ie forsit
 	- *cfs_max_score* : Defines the default max score for a competiton on codeforces. 
 	  The codeforces API has some bugs and it does not return all the problems.
 	  So for some contests, the max score is returned incorrect. That error is accounted by taking max of cfs_max_score and actual max score of a contest 
@@ -42,11 +41,11 @@ class problem(base):
 
 	'''
 	
-	def __init__(self, pid, erd_problem_difficulty, app_name = "forsit", cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
+	def __init__(self, pid, erd_problem_difficulty, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
 		
 		self.pid = str(pid)
 		self.cfs_max_score = str(cfs_max_score)
-		self.conn = db.connect(app_name)
+		self.conn = db.connect()
 		self.cursor = self.conn.cursor()
 		self.exists_in_db = self.fetch_info()
 		self.lower_threshold = lower_threshold
@@ -133,6 +132,7 @@ class problem(base):
 		else:
 			print "No Results Found!"
 
+	#@profile		
 	def reco_algo(self, sql):
 		'''
     	Input 
@@ -173,6 +173,7 @@ class problem(base):
 		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
 		return sorted_score
 
+	#@profile
 	def find_similar_erdos(self, status = 0, uid = '0', user_difficulty = 0):
 		'''
     	Input 
@@ -235,6 +236,7 @@ class problem(base):
 		# print sql
 		self.log_results_db(sql, status, uid, "cfs")
 
+	#@profile
 	def log_results_db(self, sql, status = 0, uid = 0, app = "erd"):
 		'''
     	Input
@@ -309,6 +311,7 @@ class problem(base):
 				# print sql_insert
 				db.write(sql_insert, self.cursor, self.conn)
 
+	#@profile
 	def gen_window(self, sql, status = 0, user_difficulty = 0, app = "erd"):
 		'''
     	Input 
