@@ -28,13 +28,16 @@ erd_problem_difficulty = db.read(sql, cursor)
 sql = "SELECT uid, erd_score/(SELECT MAX(erd_score) FROM user), cfs_score/(SELECT MAX(cfs_score) FROM user) FROM user"
 user_result = db.read(sql, cursor)
 
+sql = "UPDATE problem_reco SET is_deleted = 1"
+db.write(sql, cursor, conn)
+
 sql = "SELECT pid FROM problem WHERE MID(pid, 1, 3)='erd'"
 problem_result = db.read(sql, cursor)
 
 count = 0
 for i in problem_result:
 	pid = str(i[0])
-	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, conn = conn, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
+	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, conn = conn, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend, batchmode = 1)
 	for j in user_result:
 
 		#erdos recommendations
@@ -50,3 +53,6 @@ for i in problem_result:
 		# a.find_similar_cfs(status = 1, uid = str(j[0]), user_difficulty = float(j[2]))
 	print pid, " pid finished"	
 print "Finished generating problem based reco : ", time.strftime("%d-%m-%Y %H:%M")
+
+sql = "DELETE problem_reco WHERE is_deleted = `1`"
+db.write(sql, cursor, conn)

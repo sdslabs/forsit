@@ -41,7 +41,7 @@ class problem(base):
 
 	'''
 	
-	def __init__(self, pid, erd_problem_difficulty, conn, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
+	def __init__(self, pid, erd_problem_difficulty, conn, batchmode = 0, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
 		
 		self.pid = str(pid)
 		self.cfs_max_score = str(cfs_max_score)
@@ -54,6 +54,7 @@ class problem(base):
 		self.upper_threshold = upper_threshold
 		self.number_to_recommend = number_to_recommend
 		self.erd_problem_difficulty = erd_problem_difficulty
+		self.batchmode = batchmode
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
@@ -241,7 +242,10 @@ class problem(base):
 				AND problem.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'erd\' AND uid = \'"+str(uid)+"\')\
 				HAVING difficulty BETWEEN " + str(self.lower_incorrect_attempt) + " AND " + str(self.upper_correct_attempt)				
 		# print sql
-		self.log_results_db(sql, uid, "erd")
+		if self.batchmode : 
+			self.log_results_db_batchmode(sql, uid, "erd")
+		else:
+			self.log_results_db(sql, uid, "erd")
 
 	def find_similar_cfs(self, status = 0, uid = 0, user_difficulty = 0):
 		'''
@@ -274,6 +278,35 @@ class problem(base):
 		self.log_results_db(sql, status, uid, "cfs")
 
 	#@profile
+	def log_results_db_batchmode(self, sql, uid = 0, app = "erd"):
+		'''
+    	Input
+    	- *sql* : query to generate recommendation results  
+		- *status* : status = 1 if problem was solved correctly else 0
+		- *uid* : user for whom these recommendations are being generated 
+    	- *app* : "erd" for erdos and "cfs" for codeforces
+    	Output
+    	Logs the results in db with appropriate insertions/updates/deletions
+		'''
+		# print sql
+		result = self.reco_algo(sql)
+		sorted_score = result[0]
+		status = result[1]
+		#Making entry for the first time
+		sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state, is_deleted) VALUES "
+		k = min(len(sorted_score), self.number_to_recommend)
+		for i in range(0,k):
+			a = str(int(time.time()))
+			sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[sorted_score[i][0]]+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+		# print sql
+		sql = sql[:-2]
+		# print sql
+		# print sql[:-1]
+		if(sql[-1] == ')'):
+			# print "shagun"
+			# print sql
+			db.write(sql, self.cursor, self.conn)
+		
 	def log_results_db(self, sql, uid = 0, app = "erd"):
 		'''
     	Input
@@ -294,11 +327,11 @@ class problem(base):
 		results = db.read(sql, self.cursor)
 		if not results:
 			#Making entry for the first time
-			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state) VALUES "
+			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state, is_deleted) VALUES "
 			k = min(len(sorted_score), self.number_to_recommend)
 			for i in range(0,k):
 				a = str(int(time.time()))
-				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[sorted_score[i][0]]+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\' ), "
+				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[sorted_score[i][0]]+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 			# print sql
 			sql = sql[:-2]
 			# print sql
@@ -354,7 +387,7 @@ class problem(base):
 				sql_insert = sql_insert[:-2]
 				# print sql_insert
 				db.write(sql_insert, self.cursor, self.conn)
-
+							
 	#@profile
 	def gen_window(self, status = 0, user_difficulty = 0, app = "erd"):
 		'''
