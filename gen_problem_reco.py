@@ -36,14 +36,19 @@ user_result = db.read(sql, cursor)
 sql = "SELECT pid FROM problem WHERE MID(pid, 1, 3)='erd'"
 problem_result = db.read(sql, cursor)
 
+count = 0
 for i in problem_result:
 	pid = str(i[0])
 	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
 	for j in user_result:
 
 		#erdos recommendations
-		a.find_similar_erdos(status = 0, uid = str(j[0]), user_difficulty = float(j[1]))
-		a.find_similar_erdos(status = 1, uid = str(j[0]), user_difficulty = float(j[1]))
+		a.find_similar_erdos(uid = str(j[0]), user_difficulty = float(j[1]))
+		count+=1
+		print count
+		if(count%100 == 0):
+			print count," insertions done"
+		# a.find_similar_erdos(status = 1, uid = str(j[0]), user_difficulty = float(j[1]))
 		#cfs recommendations
 		
 		# a.find_similar_cfs(status = 0, uid = str(j[0]), user_difficulty = float(j[2]))

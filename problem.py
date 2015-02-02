@@ -141,6 +141,16 @@ class problem(base):
     	form (pid, score) where more score means better results. The list is sorted in desc order
     	by score.
 		'''
+		# sql = "	SELECT ptag.pid, ptag.tag, (correct_count)/attempt_count as difficulty \
+		# 	   	FROM problem, ptag \
+		# 	   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
+		# 		AND problem.pid IN \
+		# 		(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
+		# 		(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
+		# 		AND problem.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'erd\' AND uid = \'"+str(uid)+"\')\
+		# 		HAVING difficulty BETWEEN " + str(self.lower_incorrect_attempt) + " AND " + str(self.upper_correct_attempt)				
+
+
 		result = db.read(sql, self.cursor)
 		problem = {}
 		#mapping of problem code with a list of tags
@@ -148,14 +158,37 @@ class problem(base):
 		#mapping of score of problem code with its score 
 		difficulty = {}
 		#mapping of problem code with difficulty
+		status = {}
+		#mapping of problem code with its status
+
 		for i in result:
 			code = str(i[0].encode('utf8'))
 			tag = str(i[1].encode('utf8'))
+			problem_difficulty = float(i[2])
+			
+			#status 0 means problem is recommended only if the submission gave wrong answer
+			#status 1  means problem is recommended only if the submission gave right answer
+			#status 2 means problem is recommended in both the cases
+
+			flag1 = 0
+			flag2 = 0
+			if(self.lower_incorrect_attempt<=problem_difficulty<=self.upper_incorrect_attempt):
+				flag1 = 1
+			if(self.lower_correct_attempt<=problem_difficulty<=self.upper_correct_attempt):
+				flag2 = 1
+			if(flag1 and flag2):
+				status[code] = '2'
+			elif(flag1):
+				status[code] = '0'
+			else:
+				status[code] = '1'
+
 			if code not in problem:
 				problem[code] = []
 				score[code] = 0
-				difficulty[code] = round (abs(float(i[2])-self.difficulty), 6)
+				difficulty[code] = round (abs(problem_difficulty-self.difficulty), 6)
 			problem[code].append(tag)
+
 		for code in problem:
 			# instead of using nfactor as the number of tags, we should normalise only for those 
 			# tags which do not occur in self.tag else the results are biased towards the highest
@@ -171,13 +204,12 @@ class problem(base):
 				score[code]+=self.tag[tag]
 			score[code]=round( (score[code]/nfactor), 6)
 		sorted_score = sorted(score.items(), key=operator.itemgetter(1), reverse = 1)
-		return sorted_score
+		return sorted_score, status
 
 	#@profile
-	def find_similar_erdos(self, status = 0, uid = '0', user_difficulty = 0):
+	def find_similar_erdos(self, uid = '0', user_difficulty = 0):
 		'''
     	Input 
-		- *status* : status = 1 if problem was solved correctly else 0 
     	- *uid* : user for whom these recommendations are being generated
     	- *user_difficulty* : difficulty rating for the user. difficulty = 0 means the user has not attempted any problem so far 
     	Generate an sql query (which would generate the set of candidates for which similarity would be computed) 
@@ -189,11 +221,14 @@ class problem(base):
 		# user_difficulty = 0
 		# if result:
 		# 	user_difficulty = float(result[0][0])
-			
-		res = self.gen_window(status, user_difficulty)
-		# print res
-		upper = res[0]
-		lower = res[1]
+
+		res_incorrect_attempt = self.gen_window(status=0, user_difficulty = user_difficulty)
+		self.upper_incorrect_attempt = res_incorrect_attempt[0]
+		self.lower_incorrect_attempt = res_incorrect_attempt[1]
+
+		res_correct_attempt = self.gen_window(status=1, user_difficulty = user_difficulty)
+		self.upper_correct_attempt = res_correct_attempt[0]
+		self.lower_correct_attempt = res_correct_attempt[1]
 			
 		sql = "	SELECT ptag.pid, ptag.tag, (correct_count)/attempt_count as difficulty \
 			   	FROM problem, ptag \
@@ -202,9 +237,9 @@ class problem(base):
 				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
 				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'erd\' ) \
 				AND problem.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'erd\' AND uid = \'"+str(uid)+"\')\
-				HAVING difficulty BETWEEN " + str(lower) + " AND " + str(upper)				
+				HAVING difficulty BETWEEN " + str(self.lower_incorrect_attempt) + " AND " + str(self.upper_correct_attempt)				
 		# print sql
-		self.log_results_db(sql, status, uid, "erd")
+		self.log_results_db(sql, uid, "erd")
 
 	def find_similar_cfs(self, status = 0, uid = 0, user_difficulty = 0):
 		'''
@@ -237,7 +272,7 @@ class problem(base):
 		self.log_results_db(sql, status, uid, "cfs")
 
 	#@profile
-	def log_results_db(self, sql, status = 0, uid = 0, app = "erd"):
+	def log_results_db(self, sql, uid = 0, app = "erd"):
 		'''
     	Input
     	- *sql* : query to generate recommendation results  
@@ -248,19 +283,20 @@ class problem(base):
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
 		# print sql
-		sorted_score = self.reco_algo(sql)
+		result = self.reco_algo(sql)
+		sorted_score = result[0]
+		status = result[1]
 		# print sorted_score
-		status = str(status)
-		sql = "SELECT reco_pid FROM problem_reco WHERE uid = \'"+str(uid)+"\' AND base_pid =\'"+str(self.pid)+"\' AND is_deleted = 0 AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
+		sql = "SELECT reco_pid, status FROM problem_reco WHERE uid = \'"+str(uid)+"\' AND base_pid =\'"+str(self.pid)+"\' AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
 		# print sql
 		results = db.read(sql, self.cursor)
 		if not results:
 			#Making entry for the first time
-			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, is_deleted, state) VALUES "
+			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state) VALUES "
 			k = min(len(sorted_score), self.number_to_recommend)
 			for i in range(0,k):
 				a = str(int(time.time()))
-				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+				sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[sorted_score[i][0]]+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\' ), "
 			# print sql
 			sql = sql[:-2]
 			# print sql
@@ -281,10 +317,10 @@ class problem(base):
 					to_insert.append(sorted_score[i])
 				else:
 					to_update.append(sorted_score[i])
-					to_delete.remove(sorted_score[i][0])
+					# to_delete.remove(sorted_score[i][0])
 
 			if to_delete:					
-				sql_delete = "UPDATE problem_reco SET is_deleted = 1, time_updated = "+str(int(time.time()))+" WHERE uid = \'"+str(uid)+"\' AND reco_pid IN ("
+				sql_delete = "DELETE FROM problem_reco WHERE uid = \'"+str(uid)+"\' AND reco_pid IN ("
 				for i in to_delete:
 					sql_delete+="\'"+str(i)+"\',"
 				sql_delete=sql_delete[:-1]
@@ -293,29 +329,34 @@ class problem(base):
 
 			if to_update:		
 				sql_update = "UPDATE problem_reco SET score = CASE reco_pid "
+				status_update = ", status = CASE reco_pid "
+
 				where_clause = " WHERE uid = \'"+str(uid)+"\' AND reco_pid IN ("
 				for i in to_update:
 					sql_update+="WHEN \'"+str(i[0])+"\' THEN "+str(i[1])+"\n"
+					status_update+="WHEN \'"+str(i[0])+"\' THEN "+status[i[0]]+"\n"
 					where_clause+="\'"+str(i[0])+"\',"
+				sql_update+=" END"+status_update
 				sql_update+=" END, time_updated = "+str(int(time.time()))
 				sql_update+=where_clause[:-1]
 				sql_update=sql_update+")"
+				# print sql_update
+				# print "shagun"
 				db.write(sql_update, self.cursor, self.conn)
 
 			if to_insert:					
-				sql_insert = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, is_deleted, state) VALUES "
+				sql_insert = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state) VALUES "
 				for i in to_insert:
 					a = str(int(time.time()))
-					sql_insert+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
+					sql_insert+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[i[0]]+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
 				# print sql_insert
 				db.write(sql_insert, self.cursor, self.conn)
 
 	#@profile
-	def gen_window(self, sql, status = 0, user_difficulty = 0, app = "erd"):
+	def gen_window(self, status = 0, user_difficulty = 0, app = "erd"):
 		'''
     	Input 
-    	- *sql* : query to compute difficulty of each problem from the problem table
 		- *status* : status = 1 if problem was solved correctly else 0
 		- *user_difficulty* : difficulty rating for the user. difficulty = 0 means the user has not attempted any problem so far
     	Return a difficulty window to be used by find_similar_cfs() or find_similar_erd(). 
