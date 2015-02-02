@@ -41,11 +41,13 @@ class problem(base):
 
 	'''
 	
-	def __init__(self, pid, erd_problem_difficulty, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
+	def __init__(self, pid, erd_problem_difficulty, conn, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
 		
 		self.pid = str(pid)
 		self.cfs_max_score = str(cfs_max_score)
-		self.conn = db.connect()
+		# self.conn = db.connect()
+		# self.cursor = self.conn.cursor()
+		self.conn = conn
 		self.cursor = self.conn.cursor()
 		self.exists_in_db = self.fetch_info()
 		self.lower_threshold = lower_threshold

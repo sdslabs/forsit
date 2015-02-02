@@ -6,11 +6,6 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 try:
-    from user import user
-except ImportError as exc:
-    print("Error: failed to import settings module ({})".format(exc))
-
-try:
 	import db
 except ImportError as exc:
 	print("Error: failed to import settings module ({})".format(exc))
@@ -39,7 +34,7 @@ problem_result = db.read(sql, cursor)
 count = 0
 for i in problem_result:
 	pid = str(i[0])
-	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
+	a = problem(pid = pid, erd_problem_difficulty = erd_problem_difficulty, conn = conn, cfs_max_score = cfs_max_score, lower_threshold = lower_threshold, upper_threshold = upper_threshold, number_to_recommend = number_to_recommend)
 	for j in user_result:
 
 		#erdos recommendations
