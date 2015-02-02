@@ -243,7 +243,7 @@ class problem(base):
 				HAVING difficulty BETWEEN " + str(self.lower_incorrect_attempt) + " AND " + str(self.upper_correct_attempt)				
 		# print sql
 		if self.batchmode : 
-			self.log_results_db_batchmode(sql, uid, "erd")
+			return self.log_results_db_batchmode(sql, uid, "erd")
 		else:
 			self.log_results_db(sql, uid, "erd")
 
@@ -286,26 +286,17 @@ class problem(base):
 		- *uid* : user for whom these recommendations are being generated 
     	- *app* : "erd" for erdos and "cfs" for codeforces
     	Output
-    	Logs the results in db with appropriate insertions/updates/deletions
+    	Return the sql query to be run to update the database
 		'''
-		# print sql
 		result = self.reco_algo(sql)
 		sorted_score = result[0]
 		status = result[1]
-		#Making entry for the first time
-		sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state, is_deleted) VALUES "
+		sql = ""
 		k = min(len(sorted_score), self.number_to_recommend)
 		for i in range(0,k):
 			a = str(int(time.time()))
 			sql+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[sorted_score[i][0]]+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
-		# print sql
-		sql = sql[:-2]
-		# print sql
-		# print sql[:-1]
-		if(sql[-1] == ')'):
-			# print "shagun"
-			# print sql
-			db.write(sql, self.cursor, self.conn)
+		return sql
 		
 	def log_results_db(self, sql, uid = 0, app = "erd"):
 		'''
