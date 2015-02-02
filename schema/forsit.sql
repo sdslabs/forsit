@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 01, 2015 at 03:37 PM
+-- Generation Time: Feb 02, 2015 at 02:51 PM
 -- Server version: 5.5.41
 -- PHP Version: 5.4.36-1+deb.sury.org~precise+2
 
@@ -94,7 +94,13 @@ CREATE TABLE IF NOT EXISTS `problem_reco` (
   `time_created` int(11) NOT NULL,
   `time_updated` int(11) NOT NULL,
   `is_deleted` int(11) NOT NULL,
-  `state` int(11) NOT NULL
+  `state` int(11) NOT NULL,
+  KEY `uid` (`uid`),
+  KEY `base_pid` (`base_pid`),
+  KEY `status` (`status`),
+  KEY `reco_pid` (`reco_pid`),
+  KEY `score` (`score`),
+  KEY `state` (`state`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
