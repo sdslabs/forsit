@@ -41,7 +41,7 @@ class problem(base):
 
 	'''
 	
-	def __init__(self, pid, erd_problem_difficulty, conn, batchmode = 0, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
+	def __init__(self, pid, erd_problem_difficulty, conn = '', batchmode = 0, cfs_max_score = 3000, lower_threshold = 25, upper_threshold = 25, number_to_recommend = 5):
 		
 		self.pid = str(pid)
 		self.cfs_max_score = str(cfs_max_score)
@@ -55,6 +55,11 @@ class problem(base):
 		self.number_to_recommend = number_to_recommend
 		self.erd_problem_difficulty = erd_problem_difficulty
 		self.batchmode = batchmode
+		if self.batchmode :
+			self.conn = conn
+		else:
+			self.conn = db.connect()
+		self.cursor = self.conn.cursor() 
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
