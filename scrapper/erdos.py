@@ -72,7 +72,7 @@ def fetch_all():
     tag_url = "http://erdos.sdslabs.co/tags.json"
     tag_r = requests.get(tag_url)
     if(tag_r.status_code != 200 ):
-        # print tag_r.status_code, " returned from ", tag_url
+        print tag_r.status_code, " returned from ", tag_url
     else:
         tag_res = tag_r.json()['list']
         for i in tag_res:
