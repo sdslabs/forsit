@@ -72,7 +72,7 @@ def fetch_all():
     tag_url = "http://erdos.sdslabs.co/tags.json"
     tag_r = requests.get(tag_url)
     if(tag_r.status_code != 200 ):
-        print tag_r.status_code, " returned from ", tag_url
+        # print tag_r.status_code, " returned from ", tag_url
     else:
         tag_res = tag_r.json()['list']
         for i in tag_res:
@@ -109,18 +109,18 @@ def fetch_all():
         if(tag_sql!=""):
             tag_sql = tag_sql[:-2]
             tag_sql = "INSERT INTO tag (tag, description, time, count) VALUES " + tag_sql
-            print tag_sql
+            # print tag_sql
             db.write(tag_sql, cursor, conn)
 
         problem_sql = problem_sql[:-2]
         problem_sql+=" ON DUPLICATE KEY UPDATE attempt_count=VALUES(attempt_count),correct_count=VALUES(correct_count),time=VALUES(time);"
-        print problem_sql
+        # print problem_sql
         db.write(problem_sql, cursor, conn)
         
         if(ptag_sql!=""):
             ptag_sql = ptag_sql[:-2]
             ptag_sql = "INSERT INTO ptag (pid, tag) VALUES " + ptag_sql
-            print ptag_sql
+            # print ptag_sql
             db.write(ptag_sql, cursor, conn)
 
     sql_user = "SELECT erd_handle FROM user"
@@ -149,7 +149,7 @@ def fetch_all():
         page += 1
 
     if new_user:         
-        print len(new_user)
+        # print len(new_user)
         sql = "INSERT INTO user (erd_handle, cfs_handle) VALUES "
         for i in new_user:
             sql+="(\'erd"+str(i)+"\',\'cfs\'), "
@@ -177,7 +177,7 @@ def fetch_user_list_erd():
             for i in result:
                 erd_users.append(i['username'])
         page += 1
-    print len(erd_users)
+    # print len(erd_users)
     return erd_users
 
 def fetch_user_activity_erd(uid="", handle=""):
@@ -185,7 +185,7 @@ def fetch_user_activity_erd(uid="", handle=""):
     |  Fetch User's activity from Erdos
     '''
     url = "http://erdos.sdslabs.co/activity/users/" + handle[3:] + ".json"
-    print url
+    # print url
     sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
     res = db.read(sql, cursor)
     if res == ():
@@ -232,13 +232,13 @@ def fetch_user_activity_all():
         uid = str(i[0])
         handle = str(i[1].encode('utf8'))
         fetch_user_activity_erd(uid, handle)
-        print "User activity for " + handle
+        # print "User activity for " + handle
     sql = "UPDATE user SET erd_score = \
           (SELECT SUM((correct_count-3)/attempt_count) FROM problem WHERE pid IN \
           (SELECT DISTINCT(pid) FROM activity WHERE uid = user.uid AND MID(pid,1,3)=\'erd\' AND status = 1)\
           AND correct_count>3)"
 
-    print sql
+    # print sql
     db.write(sql, cursor, conn)
 
 # fetch_user_list_erd()
