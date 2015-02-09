@@ -47,9 +47,6 @@ class problem(base):
 		self.cfs_max_score = str(cfs_max_score)
 		# self.conn = db.connect()
 		# self.cursor = self.conn.cursor()
-		self.conn = conn
-		self.cursor = self.conn.cursor()
-		self.exists_in_db = self.fetch_info()
 		self.lower_threshold = lower_threshold
 		self.upper_threshold = upper_threshold
 		self.number_to_recommend = number_to_recommend
@@ -60,6 +57,7 @@ class problem(base):
 		else:
 			self.conn = db.connect()
 		self.cursor = self.conn.cursor() 
+		self.exists_in_db = self.fetch_info()
 		# self.create_difficulty_matrix()
 
 	def fetch_info(self):
