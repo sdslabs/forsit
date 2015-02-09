@@ -50,7 +50,7 @@ tags = []
 problem_list = []
 problem_db = []
 
-conn = db.connect('forsit')
+conn = db.connect()
 cursor=conn.cursor()
 
 def fetch_all():

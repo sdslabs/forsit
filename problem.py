@@ -54,8 +54,12 @@ class problem(base):
 		self.batchmode = batchmode
 		if self.batchmode :
 			self.conn = conn
+			self.remote_conn = ''
+			self.remote_cursor = ''
 		else:
 			self.conn = db.connect()
+			self.remote_conn = db.connect('remote')
+			self.remote_cursor = self.remote_conn.cursor()
 		self.cursor = self.conn.cursor() 
 		self.exists_in_db = self.fetch_info()
 		# self.create_difficulty_matrix()
@@ -318,7 +322,7 @@ class problem(base):
 		# print sorted_score
 		sql = "SELECT reco_pid, status FROM problem_reco WHERE uid = \'"+str(uid)+"\' AND base_pid =\'"+str(self.pid)+"\' AND MID(reco_pid,1,3) = \'"+str(app)+"\'"
 		# print sql
-		results = db.read(sql, self.cursor)
+		results = db.read(sql, self.remote_cursor)
 		if not results:
 			#Making entry for the first time
 			sql = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state, is_deleted) VALUES "
@@ -333,7 +337,7 @@ class problem(base):
 			if(sql[-1] == ')'):
 				# print "shagun"
 				# print sql
-				db.write(sql, self.cursor, self.conn)
+				db.write(sql, self.remote_cursor, self.remote_conn)
 		else:
 			to_delete = []
 			for i in results:
@@ -354,7 +358,7 @@ class problem(base):
 					sql_delete+="\'"+str(i)+"\',"
 				sql_delete=sql_delete[:-1]
 				sql_delete=sql_delete+")"
-				db.write(sql_delete, self.cursor, self.conn)
+				db.write(sql_delete, self.remote_cursor, self.remote_conn)
 
 			if to_update:		
 				sql_update = "UPDATE problem_reco SET score = CASE reco_pid "
@@ -371,7 +375,7 @@ class problem(base):
 				sql_update=sql_update+")"
 				# print sql_update
 				# print "shagun"
-				db.write(sql_update, self.cursor, self.conn)
+				db.write(sql_update, self.remote_cursor, self.remote_conn)
 
 			if to_insert:					
 				sql_insert = "INSERT INTO problem_reco (uid, base_pid, status, reco_pid, score, time_created, time_updated, state) VALUES "
@@ -380,7 +384,7 @@ class problem(base):
 					sql_insert+="(\'"+str(uid)+"\', \'"+str(self.pid)+"\', \'"+status[i[0]]+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
 				# print sql_insert
-				db.write(sql_insert, self.cursor, self.conn)
+				db.write(sql_insert, self.remote_cursor, self.remote_conn)
 							
 	#@profile
 	def gen_window(self, status = 0, user_difficulty = 0, app = "erd"):
