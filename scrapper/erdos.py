@@ -114,7 +114,7 @@ def fetch_all():
 
         problem_sql = problem_sql[:-2]
         problem_sql+=" ON DUPLICATE KEY UPDATE attempt_count=VALUES(attempt_count),correct_count=VALUES(correct_count),time=VALUES(time);"
-        # print problem_sql
+        print problem_sql
         db.write(problem_sql, cursor, conn)
         
         if(ptag_sql!=""):
@@ -123,7 +123,7 @@ def fetch_all():
             # print ptag_sql
             db.write(ptag_sql, cursor, conn)
 
-    sql_user = "SELECT erd_handle FROM user"
+    sql_user = "SELECT MID(erd_handle,4) FROM user"
     result = db.read(sql_user, cursor)
     user_list = {}
     #using dict for fast lookup

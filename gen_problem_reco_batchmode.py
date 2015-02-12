@@ -20,6 +20,8 @@ number_to_recommend = 5
 
 conn = db.connect()
 cursor = conn.cursor()
+remote_conn = db.connect('remote')
+remote_cursor = remote_conn.cursor()
 
 sql = "SELECT (correct_count)/(attempt_count) as difficulty FROM problem \
 			WHERE MID(pid,1,3) = \"erd\" AND attempt_count>5"
@@ -53,13 +55,13 @@ for i in problem_result:
 		if(count%20000 == 0):
 			sql = sql[:-2]
 			if(sql[-1] == ')'):
-				db.write(sql, cursor, conn)
+				db.write(sql, remote_cursor, remote_conn)
 			sql = "INSERT INTO problem_reco_new (uid, base_pid, status, reco_pid, score, time_created, time_updated, state, is_deleted) VALUES "
 			print count," insertions done"
 
 
 if(sql[-1] == ')'):
-	db.write(sql, cursor, conn)
+	db.write(sql, remote_cursor, remote_conn)
 	sql = "INSERT INTO problem_reco_new (uid, base_pid, status, reco_pid, score, time_created, time_updated, state, is_deleted) VALUES "
 	print count," insertions done"			
 
@@ -68,7 +70,7 @@ print "Finished generating problem based reco : ", time.strftime("%d-%m-%Y %H:%M
 # # create table new_table like old_table;
 sql = "RENAME table problem_reco to problem_reco_old, problem_reco_new to problem_reco"
 print sql
-db.write(sql, cursor, conn)
+db.write(sql, remote_cursor, remote_conn)
 sql = "DROP table problem_reco_old"
 print sql
-db.write(sql, cursor, conn)
+db.write(sql, remote_cursor, remote_conn)
