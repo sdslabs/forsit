@@ -34,7 +34,7 @@ sql = "UPDATE problem_reco SET is_deleted = 1"
 db.write(sql, cursor, conn)
 
 sql = "CREATE table IF NOT EXISTS problem_reco_new LIKE problem_reco"
-db.write(sql, cursor, conn)
+db.write(sql, remote_cursor, remote_conn)
 
 sql = "SELECT pid FROM problem WHERE MID(pid, 1, 3)='erd' "
 problem_result = db.read(sql, cursor)
