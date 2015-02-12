@@ -109,7 +109,7 @@ class user(base):
 		self.conn=db.connect()
 		self.cursor = self.conn.cursor()
 		self.remote_conn = db.connect('remote')
-		self.remote_cursor = remote_conn.cursor('remote')
+		self.remote_cursor = self.remote_conn.cursor()
 
 		self.cfs_url = "http://codeforces.com/api/user.info"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
@@ -439,6 +439,7 @@ class user(base):
 				a = str(int(time.time()))
 				sql+="(\'"+str(self.uid)+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 			sql = sql[:-2]
+			print sql
 			db.write(sql, self.remote_cursor, self.remote_conn)
 		else:
 			to_delete = []
