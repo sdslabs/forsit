@@ -156,6 +156,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 CREATE TABLE IF NOT EXISTS `user_reco` (
   `uid` varchar(100) NOT NULL,
   `pid` varchar(100) NOT NULL,
+  `score` double NOT NULL,
   `time_created` int(11) NOT NULL,
   `time_updated` int(11) NOT NULL,
   `is_deleted` int(11) NOT NULL,
