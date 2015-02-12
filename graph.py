@@ -102,7 +102,7 @@ def plot_difficulty_distribution_cfs(cfs_max_score):
 	|  Input 
 	|  - *cfs_max_score* : Defines the default max score for a competiton on codeforces.
 	   For further information on this variable, check problem module  
-	|  - *app_name* : Name of the app ie forsit
+	|  - *app_name* : Database config being used
 
 	|  Conclusion from the plots when used with codeforces data : 
 	

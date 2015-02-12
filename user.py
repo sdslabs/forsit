@@ -84,13 +84,13 @@ class user(base):
 	
 	'''
 	- *uid* : user id. To serve as default value of *cfs_handle* and *erd_handle*
-	- *app_name* : Name of the app ie forsit
+	- *app_name* : Database config being used
 	- *cfs_handle* : User's handle on Codeforces.
 	- *erd_handle* : User's handle on Erdos.
 	'''
 
 		
-	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "forsit", number_to_recommend = 50):
+	def __init__(self, erd_handle, cfs_handle = '', options = {}, app_name = "local", number_to_recommend = 50):
 		self.training_problems = {}
 		self.options = {}
 		self.options['tag_based'] = 0
@@ -106,8 +106,10 @@ class user(base):
 		if 'penalize' in options:
 			self.options['penalize'] = options['penalize']
 
-		self.conn=db.connect(app_name)
+		self.conn=db.connect()
 		self.cursor = self.conn.cursor()
+		self.remote_conn = db.connect('remote')
+		self.remote_cursor = remote_conn.cursor('remote')
 
 		self.cfs_url = "http://codeforces.com/api/user.info"
 		self.erd_url = "http://erdos.sdslabs.co/users/"
@@ -428,7 +430,7 @@ class user(base):
 			return
 		sql = "SELECT pid FROM user_reco WHERE uid = \'"+str(self.uid)+"\' AND is_deleted = 0"
 		# print sql
-		results = db.read(sql, self.cursor)
+		results = db.read(sql, self.remote_cursor)
 		if not results:
 			#Making entry for the first time
 			sql = "INSERT INTO user_reco (uid, pid, score, time_created, time_updated, is_deleted, state) VALUES "
@@ -437,7 +439,7 @@ class user(base):
 				a = str(int(time.time()))
 				sql+="(\'"+str(self.uid)+"\', \'"+str(sorted_score[i][0])+"\', \'"+str(sorted_score[i][1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 			sql = sql[:-2]
-			db.write(sql, self.cursor, self.conn)
+			db.write(sql, self.remote_cursor, self.remote_conn)
 		else:
 			to_delete = []
 			for i in results:
@@ -458,7 +460,7 @@ class user(base):
 					sql_delete+="\'"+str(i)+"\',"
 				sql_delete=sql_delete[:-1]
 				sql_delete=sql_delete+")"
-				db.write(sql_delete, self.cursor, self.conn)
+				db.write(sql_delete, self.remote_cursor, self.remote_conn)
 
 			if to_update:		
 				sql_update = "UPDATE user_reco SET score = CASE pid "
@@ -469,7 +471,7 @@ class user(base):
 				sql_update+=" END, time_updated = "+str(int(time.time()))
 				sql_update+=where_clause[:-1]
 				sql_update=sql_update+")"
-				db.write(sql_update, self.cursor, self.conn)
+				db.write(sql_update, self.remote_cursor, self.remote_conn)
 
 			if to_insert:					
 				sql_insert = "INSERT INTO user_reco (uid, pid, score, time_created, time_updated, is_deleted, state) VALUES "
@@ -477,7 +479,7 @@ class user(base):
 					a = str(int(time.time()))
 					sql_insert+="(\'"+str(self.uid)+"\', \'"+str(i[0])+"\', \'"+str(i[1])+"\', \'"+a+"\', \'"+a+"\', \'0\', \'0\' ), "
 				sql_insert = sql_insert[:-2]
-				db.write(sql_insert, self.cursor, self.conn)
+				db.write(sql_insert, self.remote_cursor, self.remote_conn)
 
 	def recommend_problems_from_tag(self, mode):
 		'''

@@ -470,7 +470,7 @@ class problem(base):
 
 	def create_difficulty_matrix(self):
 		self.difficulty_matrix = {}
-		conn = db.connect('forsit')
+		conn = db.connect()
 		cursor=conn.cursor()
 		sql = "SELECT * FROM activity"
 		result = db.read(sql, cursor)

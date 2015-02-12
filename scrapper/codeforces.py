@@ -44,7 +44,7 @@ except ImportError as exc:
 
 print "script was run at ", time()
 
-conn = db.connect('forsit')
+conn = db.connect()
 cursor=conn.cursor()
 
 tags = {}

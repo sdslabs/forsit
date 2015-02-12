@@ -23,7 +23,7 @@ class apriori():
 
 	'''
 	- *list_pid* : list of pids for which association rules and frequent itemsets are to be mined
-	- *app_name* : Name of the app ie forsit
+	- *app_name* : Database config being used
 	- *min_support* : The minimum support for generating frequent itemse
 	- *min_confidence* : The minimum number for generating association rules.
 	- *transaction* : List of all the transactions involving the pids
@@ -38,7 +38,7 @@ class apriori():
 	- *Final_rules* : List of rules having confidence > min_confidence. Each entry in the list is of the form ( (X,Y), confidence) where rule itself is of the form X -> Y
 	'''
 
-	def __init__(self, list_pid, app_name = "forsit", min_support = 0.15 , min_confidence = 0.6, max_iterations = 50):	
+	def __init__(self, list_pid, app_name = "local", min_support = 0.15 , min_confidence = 0.6, max_iterations = 50):	
 			
 		self.min_support = min_support
 		self.min_confidence = min_confidence

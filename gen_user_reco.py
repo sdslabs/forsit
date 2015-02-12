@@ -18,14 +18,13 @@ except ImportError as exc:
 print "Starting generating user based reco : ", time.strftime("%d-%m-%Y %H:%M")
 
 #config
-app_name = 'forsit'
 options = {}
 options['tag_based'] = 0
 options['normalize'] = 0
 options['sample_data'] = 0
 options['penalize'] = 1
 
-conn = db.connect(app_name)
+conn = db.connect()
 cursor = conn.cursor()
 
 sql = "SELECT erd_handle, cfs_handle FROM user"
