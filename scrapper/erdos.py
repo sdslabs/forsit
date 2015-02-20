@@ -52,6 +52,8 @@ problem_db = []
 
 conn = db.connect()
 cursor=conn.cursor()
+remote_conn = db.connect('remote')
+remote_cursor = remote_conn.cursor()
 
 def fetch_all():
 
@@ -109,7 +111,7 @@ def fetch_all():
         if(tag_sql!=""):
             tag_sql = tag_sql[:-2]
             tag_sql = "INSERT INTO tag (tag, description, time, count) VALUES " + tag_sql
-            # print tag_sql
+            print tag_sql
             db.write(tag_sql, cursor, conn)
 
         problem_sql = problem_sql[:-2]
@@ -120,7 +122,7 @@ def fetch_all():
         if(ptag_sql!=""):
             ptag_sql = ptag_sql[:-2]
             ptag_sql = "INSERT INTO ptag (pid, tag) VALUES " + ptag_sql
-            # print ptag_sql
+            print ptag_sql
             db.write(ptag_sql, cursor, conn)
 
     sql_user = "SELECT MID(erd_handle,4) FROM user"
@@ -154,7 +156,9 @@ def fetch_all():
         for i in new_user:
             sql+="(\'erd"+str(i)+"\',\'cfs\'), "
         sql=sql[:-2]
+        print sql
         db.write(sql, cursor, conn)
+        db.write(sql, remote_cursor, remote_conn)
     sleep(3)
 
 def fetch_user_list_erd():
@@ -185,7 +189,7 @@ def fetch_user_activity_erd(uid="", handle=""):
     |  Fetch User's activity from Erdos
     '''
     url = "http://erdos.sdslabs.co/activity/users/" + handle[3:] + ".json"
-    # print url
+    print url
     sql = "SELECT created_at FROM activity WHERE handle = \'" + handle + "\' ORDER BY created_at DESC LIMIT 1;"
     res = db.read(sql, cursor)
     if res == ():
@@ -223,7 +227,7 @@ def fetch_user_activity_erd(uid="", handle=""):
                 else:
                     sql = "UPDATE activity SET attempt_count = attempt_count + 1, status = " + str(act['status']) + ", difficulty = " + str(difficulty) + ", created_at = " + str(act['created_at']) + " WHERE pid = \'erd" + act['problem_id'] + "\' AND handle = \'" + handle + "\'"
                     db.write(sql, cursor, conn)
-
+            print sql
 def fetch_user_activity_all():
     # erd_users = fetch_user_list_erd()
     sql = "SELECT uid, erd_handle FROM user"
