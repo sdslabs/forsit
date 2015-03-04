@@ -28,13 +28,6 @@ except ImportError as exc:
 
 print "script was run at ", time()
 
-# tags = []
-tags = {}
-problem_list = []
-# problem_db = []
-problem_db = {}
-
-
 conn = db.connect()
 cursor=conn.cursor()
 
@@ -42,6 +35,10 @@ remote_conn = db.connect('remote')
 remote_cursor = remote_conn.cursor()
 
 def fetch_problems():
+
+    tags = {}
+    problem_list = []
+    problem_db = {}
     
     sql = "SELECT pid from problem WHERE MID(pid,1,3)=\"erd\""
     a = db.read(sql, cursor)
@@ -54,12 +51,14 @@ def fetch_problems():
     a = db.read(sql, cursor)
     for i in a:
         tag = str(i[0].encode('utf8'))
-        tags.append(tag)
         tags[tag] = 0
     
     tag_sql = "INSERT INTO tag (tag, description, time, count) VALUES "
+    tag_sql_original = tag_sql
     ptag_sql = "INSERT INTO ptag (pid, tag) VALUES "
+    ptag_sql_original = ptag_sql
     problem_sql = "INSERT INTO problem (pid, name, attempt_count, correct_count, time) VALUES "
+    problem_sql_original = problem_sql
 
     tag_url = "http://erdos.sdslabs.co/tags.json"
     
@@ -104,18 +103,18 @@ def fetch_problems():
                     if not tag_flag:
                         ptag_sql+="('"+code+"', '"+tag+"'), "             
 
-        if(tag_sql!=""):
+        if(tag_sql!=tag_sql_original):
             tag_sql = tag_sql[:-2]
             # tag_sql =  + tag_sql
             print tag_sql
             db.write(tag_sql, cursor, conn)
-        if(problem_sql!=""):
+        if(problem_sql!=problem_sql_original):
             problem_sql = problem_sql[:-2]
             problem_sql+=" ON DUPLICATE KEY UPDATE attempt_count=VALUES(attempt_count),correct_count=VALUES(correct_count),time=VALUES(time);"
             print problem_sql
             db.write(problem_sql, cursor, conn)
         
-        if(ptag_sql!=""):
+        if(ptag_sql!=ptag_sql_original):
             ptag_sql = ptag_sql[:-2]
             # ptag_sql =  + ptag_sql
             print ptag_sql
@@ -162,19 +161,19 @@ def fetch_user_activity_erd(uid="", handle=""):
     '''
     url = "http://erdos.sdslabs.co/activity/users/" + handle[3:] + ".json"
     print url
-    
-    start_time 
 
     sql = "SELECT MAX(created_at) FROM activity WHERE handle = \'" + handle + "\'"
     print sql
     res = db.read(sql, cursor)
-    if res == ():
+    # print res
+    if res[0][0] is None:
         last_activity = 0
     else:
-        last_activity = res[0][0]
-    last_activity = int(last_activity)
-    params['start_time'] = last_activity 
-    r = requests.get(url, params)
+        last_activity = int(res[0][0])
+    # last_activity = int(last_activity)
+    payload = {}
+    payload['start_time'] = last_activity 
+    r = requests.get(url, params = payload)
     if(r.status_code != 200 ):
         print r.status_code, " returned from ", r.url
     else:
