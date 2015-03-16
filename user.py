@@ -426,8 +426,30 @@ class user(base):
     	Output
     	Logs the results in db with appropriate insertions/updates/deletions
 		'''
-		if len(sorted_score) == 0:
+
+		if len(sorted_score) == 0 and len(self.similar_users) == 0:
 			return
+
+		# Insert similar users
+		i = 0
+		for user in self.similar_users:
+			similar_user = user[0]
+			similarity = user[1]
+			sql = "SELECT * FROM similar_users WHERE uid = \'" + str(self.uid) + "\' AND similar_user = \'" + similar_user + "\'"
+			results = db.read(sql, self.remote_cursor)
+			if not results:
+				sql = "INSERT INTO similar_users VALUES ( \'" + str(self.uid) + "\', \'" + similar_user + "\', \'" + str(similarity) + "\' )"
+				print sql
+				db.write(sql, self.remote_cursor, self.remote_conn)
+			else:
+				sql = "UPDATE similar_users SET similarity = \'" + str(similarity) + "\' WHERE uid = \'" + str(self.uid) + "\' AND similar_user = \'" + similar_user + "\'"
+				print sql
+				db.write(sql, self.remote_cursor, self.remote_conn)
+			i = i + 1
+			if ( i == 50 ):
+				break;
+
+		# Insert Reecommendations
 		sql = "SELECT pid FROM user_reco WHERE uid = \'"+str(self.uid)+"\' AND is_deleted = 0"
 		# print sql
 		results = db.read(sql, self.remote_cursor)
@@ -536,6 +558,7 @@ if __name__ == '__main__':
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
 	a.recommend_problems_from_tag(1)
-	# print a.similar_users
+	print a.similar_users
 	# print a.error
 	# print len(a.training_problems)
+	# a.log_results_db([])

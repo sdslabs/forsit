@@ -119,6 +119,18 @@ CREATE TABLE IF NOT EXISTS `ptag` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `similar_users`
+--
+
+CREATE TABLE IF NOT EXISTS `similar_users` (
+  `uid` int(11) NOT NULL,
+  `similar_user` varchar(300) NOT NULL,
+  `similarity` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tag`
 --
 
