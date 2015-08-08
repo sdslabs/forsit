@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 3.5.8.1deb1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 05, 2015 at 01:21 AM
--- Server version: 5.5.41
--- PHP Version: 5.4.36-1+deb.sury.org~precise+2
+-- Generation Time: Mar 17, 2015 at 02:07 AM
+-- Server version: 5.5.34-0ubuntu0.13.04.1
+-- PHP Version: 5.4.9-4ubuntu2.4
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -33,12 +33,7 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `status` int(11) NOT NULL DEFAULT '0',
   `difficulty` double NOT NULL DEFAULT '0',
   `uid` int(11) NOT NULL DEFAULT '0',
-  `created_at` int(12) NOT NULL DEFAULT '0',
-  KEY `handle` (`handle`),
-  KEY `pid` (`pid`),
-  KEY `status` (`status`),
-  KEY `created_at` (`created_at`),
-  KEY `uid` (`uid`)
+  `created_at` int(12) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -94,13 +89,7 @@ CREATE TABLE IF NOT EXISTS `problem_reco` (
   `time_created` int(11) NOT NULL,
   `time_updated` int(11) NOT NULL,
   `is_deleted` int(11) NOT NULL,
-  `state` int(11) NOT NULL,
-  KEY `uid` (`uid`),
-  KEY `base_pid` (`base_pid`),
-  KEY `status` (`status`),
-  KEY `reco_pid` (`reco_pid`),
-  KEY `score` (`score`),
-  KEY `state` (`state`)
+  `state` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -155,9 +144,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `cfs_handle` varchar(50) NOT NULL,
   `erd_score` double NOT NULL,
   `cfs_score` double NOT NULL,
-  PRIMARY KEY (`uid`),
-  KEY `erd_handle` (`erd_handle`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9059 ;
 
 -- --------------------------------------------------------
 

@@ -323,6 +323,11 @@ def fetch_user_list_cfs():
         result = r.json()['result']
         for i in result:
             cfs_users.append(i['handle'])
+            sql = "SELECT uid FROM user WHERE cfs_handle = \'" + i['handle'] + "\'"
+            res = db.read(sql, cursor)
+            if not res:
+                sql = "INSERT INTO user (erd_handle, cfs_handle, erd_score, cfs_score) VALUES ( 'erd', \'cfs" + i['handle'] + "\', '0', \'" + str(i['rating']) + "\')"
+                db.write(sql, cursor, conn)
     return cfs_users
 
 def fetch_user_activity_cfs(handle=""):
@@ -453,6 +458,7 @@ def update_user_score():
 # fetch_tags_problems()
 # update_problem()
 # fetch_user_activity_cfs("adurysk")
-fetch_user_activity_all()
+# fetch_user_activity_all()
+fetch_user_list_cfs()
 
 cursor.close()
