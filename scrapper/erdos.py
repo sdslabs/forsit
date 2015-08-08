@@ -34,6 +34,8 @@ cursor=conn.cursor()
 remote_conn = db.connect('remote')
 remote_cursor = remote_conn.cursor()
 
+base_url = "https://erdos.sdslabs.co"
+
 def fetch_problems():
 
     tags = {}
@@ -60,7 +62,7 @@ def fetch_problems():
     problem_sql = "INSERT INTO problem (pid, name, attempt_count, correct_count, time) VALUES "
     problem_sql_original = problem_sql
 
-    tag_url = "http://erdos.sdslabs.co/tags.json"
+    tag_url = base_url+"/tags.json"
     
     tag_r = requests.get(tag_url)
     
@@ -76,7 +78,7 @@ def fetch_problems():
             if(tag not in tags):
                 tag_flag = 0
                 tag_sql+="('" + tag + "','','"  + str(int(time())) + "','" + tag_count + "'), "
-            ptag_url = "http://erdos.sdslabs.co/tags/"+tag+".json"
+            ptag_url = base_url+"/tags/"+tag+".json"
             ptag_r = requests.get(ptag_url)
             if(ptag_r.status_code != 200 ):
                 print ptag_r.status_code, " returned from ", ptag_url
@@ -88,7 +90,7 @@ def fetch_problems():
                     code = code.replace("'","\\'")
                     if (code in problem_db and problem_db[code] == 0) or code not in problem_db :
                         #(problem already in db but not updated) or (is not in the db)
-                        problem_url = "http://erdos.sdslabs.co/problems/"+code+".json"
+                        problem_url = base_url+"/problems/"+code+".json"
                         prob = requests.get(problem_url)
                         prob = prob.json()['submissions']
                         correct = prob['correct']
@@ -132,7 +134,7 @@ def fetch_users():
     total = 1
     page = 1
     while ( done < total ):
-        user_url = "http://erdos.sdslabs.co/users.json?page=" + str(page)
+        user_url = base_url+"/users.json?page=" + str(page)
         user_r = requests.get(user_url)
         if(user_r.status_code != 200 ):
             print user_r.status_code, " returned from ", user_url
@@ -159,7 +161,7 @@ def fetch_user_activity_erd(uid="", handle=""):
     '''
     |  Fetch User's activity from Erdos
     '''
-    url = "http://erdos.sdslabs.co/activity/users/" + handle[3:] + ".json"
+    url = base_url+"/activity/users/" + handle[3:] + ".json"
     print url
 
     sql = "SELECT MAX(created_at) FROM activity WHERE handle = \'" + handle + "\'"
