@@ -299,10 +299,17 @@ class user(base):
 		return r
 		#return (r*n)/(n1+n2)
 
-	def find_similar_users(self):
+	def find_similar_users(self, user = ""):
 		'''
 		| Calculate similarity with all users
 		'''
+		if user != "":
+			similar_users = {}
+			for u in self.difficulty_matrix:
+				if u != user and user in self.difficulty_matrix:
+					similar_users[u] = self.find_correlation(user, u, 50)
+			return similar_users
+				
 		self.similar_users = {}
 		# for u in self.difficulty_matrix.keys():
 		for u in self.difficulty_matrix:
@@ -401,6 +408,44 @@ class user(base):
 		n = len(plist_eval)
 		self.error = self.error/n
 		self.error = math.sqrt( self.error )
+
+	def evaluate_user_ranking_accuracy(self):
+		'''
+		| Validate the calculated user ranking against codeforces ranks
+		'''
+		sql = "SELECT * FROM user WHERE cfs_handle != 'cfs'"
+		user_list = db.read(sql, self.cursor)
+		score = 0
+		for user in user_list:
+			handle = user[2]
+			rating = int( user[4] )
+			pred_sim_users = self.find_similar_users( handle )
+			act_sim_users = {}
+			for i in user_list:
+				act_sim_users[i[2]] = abs( rating - int( i[4] ) )
+			common = set( pred_sim_users.keys() ) & set( act_sim_users.keys() )
+			pred = list( pred_sim_users[c] for c in common )
+			act = list( act_sim_users[c] for c in common )
+			# print pred_sim_users
+			# print act_sim_users
+			# break
+			sim = self.cosine_similarity( pred, act )
+			print "accuracy for user: " + handle + " = " + str( sim )
+			score += sim
+		score = score / len( user_list )
+		return score
+
+	def cosine_similarity(self, v1, v2):
+	    "compute cosine similarity of v1 to v2: (v1 dot v1)/{||v1||*||v2||)"
+	    sumxx, sumxy, sumyy = 0, 0, 0
+	    if ( len(v1) == 0 ) | ( len(v2) == 0 ):
+	    	return 0
+	    for i in range(len(v1)):
+	        x = v1[i]; y = v2[i]
+	        sumxx += x*x
+	        sumyy += y*y
+	        sumxy += x*y
+	    return sumxy/math.sqrt(sumxx*sumyy)
 
 	def rank_erdos_users(self):
 		'''
@@ -557,8 +602,9 @@ if __name__ == '__main__':
 	# print a.difficulty_matrix['erdvgupta']
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdpriyanshu1994', 50)
 	# print a.find_correlation('erdTheOrganicGypsy', 'erdvgupta', 50)
-	a.recommend_problems_from_tag(1)
-	print a.similar_users
+	# a.recommend_problems_from_tag(1)
+	# print a.similar_users
 	# print a.error
 	# print len(a.training_problems)
 	# a.log_results_db([])
+	a.evaluate_user_ranking_accuracy()
