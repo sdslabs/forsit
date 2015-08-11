@@ -248,7 +248,7 @@ class user(base):
 		si = {}
 		n1 = len(self.difficulty_matrix[u1])
 		n2 = len(self.difficulty_matrix[u2])
-
+		# print n1, n2
 		if self.options['sample_data']:
 			n1 = n1 * 0.8
 
@@ -307,6 +307,7 @@ class user(base):
 			similar_users = {}
 			for u in self.difficulty_matrix:
 				if u != user and user in self.difficulty_matrix:
+					# print user, u
 					similar_users[u] = self.find_correlation(user, u, 50)
 			return similar_users
 				
@@ -413,24 +414,27 @@ class user(base):
 		'''
 		| Validate the calculated user ranking against codeforces ranks
 		'''
-		sql = "SELECT * FROM user WHERE cfs_handle != 'cfs'"
+		sql = "SELECT * FROM user WHERE cfs_handle != 'cfs' AND cfs_handle != ''"
 		user_list = db.read(sql, self.cursor)
 		score = 0
 		for user in user_list:
 			handle = user[2]
 			rating = int( user[4] )
+			# print handle
 			pred_sim_users = self.find_similar_users( handle )
 			act_sim_users = {}
 			for i in user_list:
 				act_sim_users[i[2]] = abs( rating - int( i[4] ) )
+			# print pred_sim_users
+			# print act_sim_users.keys()
 			common = set( pred_sim_users.keys() ) & set( act_sim_users.keys() )
 			pred = list( pred_sim_users[c] for c in common )
 			act = list( act_sim_users[c] for c in common )
-			# print pred_sim_users
-			# print act_sim_users
+			# print common
 			# break
 			sim = self.cosine_similarity( pred, act )
-			print "accuracy for user: " + handle + " = " + str( sim )
+			if sim != 0:
+				print "accuracy for user: " + handle + " = " + str( sim )
 			score += sim
 		score = score / len( user_list )
 		return score
@@ -438,6 +442,8 @@ class user(base):
 	def cosine_similarity(self, v1, v2):
 	    "compute cosine similarity of v1 to v2: (v1 dot v1)/{||v1||*||v2||)"
 	    sumxx, sumxy, sumyy = 0, 0, 0
+	    # print len(v1)
+	    # print len(v2)
 	    if ( len(v1) == 0 ) | ( len(v2) == 0 ):
 	    	return 0
 	    for i in range(len(v1)):
@@ -445,7 +451,11 @@ class user(base):
 	        sumxx += x*x
 	        sumyy += y*y
 	        sumxy += x*y
-	    return sumxy/math.sqrt(sumxx*sumyy)
+	    den = math.sqrt(sumxx*sumyy)
+	    if den == 0:
+	    	print "here"
+	    	return 0
+	    return sumxy/den
 
 	def rank_erdos_users(self):
 		'''
@@ -580,8 +590,9 @@ class user(base):
 			self.log_results_db(plist_score)
 
 if __name__ == '__main__':
+	print "script started at: ", time.strftime("%d-%m-%Y %H:%M")
 	options = {}
-	options['tag_based'] = 1
+	options['tag_based'] = 0
 	options['normalize'] = 0
 	options['sample_data'] = 0
 	options['penalize'] = 0
@@ -607,4 +618,5 @@ if __name__ == '__main__':
 	# print a.error
 	# print len(a.training_problems)
 	# a.log_results_db([])
-	a.evaluate_user_ranking_accuracy()
+	print a.evaluate_user_ranking_accuracy()
+	print "script finished at: ", time.strftime("%d-%m-%Y %H:%M")
