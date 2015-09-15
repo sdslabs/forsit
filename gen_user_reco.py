@@ -34,4 +34,4 @@ for u in result:
 	a.reco_algo(1)
 	print 'Recommendation generated for ' + u[0][3:]
 
-print "Finished generating problem based reco : ", time.strftime("%d-%m-%Y %H:%M")
+print "Finished generating user based reco : ", time.strftime("%d-%m-%Y %H:%M")
