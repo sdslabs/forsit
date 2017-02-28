@@ -1,20 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.8.1deb1
+-- version 4.5.4.1deb2ubuntu2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 17, 2015 at 02:07 AM
--- Server version: 5.5.34-0ubuntu0.13.04.1
--- PHP Version: 5.4.9-4ubuntu2.4
+-- Generation Time: Feb 28, 2017 at 09:10 PM
+-- Server version: 5.7.17-0ubuntu0.16.04.1
+-- PHP Version: 7.0.15-0ubuntu0.16.04.2
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `forsit`
@@ -23,167 +23,67 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `activity`
---
-
-CREATE TABLE IF NOT EXISTS `activity` (
-  `handle` varchar(100) NOT NULL,
-  `pid` varchar(100) NOT NULL,
-  `attempt_count` int(11) NOT NULL DEFAULT '0',
-  `status` int(11) NOT NULL DEFAULT '0',
-  `difficulty` double NOT NULL DEFAULT '0',
-  `uid` int(11) NOT NULL DEFAULT '0',
-  `created_at` int(12) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `activity_concept`
---
-
-CREATE TABLE IF NOT EXISTS `activity_concept` (
-  `handle` varchar(100) NOT NULL,
-  `pid` varchar(100) NOT NULL,
-  `attempt_count` int(11) NOT NULL DEFAULT '0',
-  `status` int(11) NOT NULL DEFAULT '0',
-  `difficulty` double NOT NULL DEFAULT '0',
-  `uid` int(11) NOT NULL DEFAULT '0',
-  `created_at` bigint(20) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `problem`
---
-
-CREATE TABLE IF NOT EXISTS `problem` (
-  `pid` varchar(50) NOT NULL,
-  `name` varchar(200) NOT NULL,
-  `contestId` varchar(50) NOT NULL,
-  `points` int(11) NOT NULL,
-  `correct_count` int(11) NOT NULL,
-  `attempt_count` int(11) NOT NULL DEFAULT '-1',
-  `time` int(11) NOT NULL,
-  `isdeleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`pid`),
-  KEY `name` (`name`),
-  KEY `pid` (`pid`),
-  KEY `contestId` (`contestId`),
-  KEY `points` (`points`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `problem_reco`
---
-
-CREATE TABLE IF NOT EXISTS `problem_reco` (
-  `uid` varchar(100) NOT NULL,
-  `base_pid` varchar(100) NOT NULL,
-  `status` int(11) NOT NULL,
-  `reco_pid` varchar(100) NOT NULL,
-  `score` double NOT NULL,
-  `time_created` int(11) NOT NULL,
-  `time_updated` int(11) NOT NULL,
-  `is_deleted` int(11) NOT NULL,
-  `state` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ptag`
---
-
-CREATE TABLE IF NOT EXISTS `ptag` (
-  `pid` varchar(50) NOT NULL,
-  `tag` varchar(100) NOT NULL,
-  PRIMARY KEY (`pid`,`tag`),
-  KEY `tag` (`tag`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `similar_users`
---
-
-CREATE TABLE IF NOT EXISTS `similar_users` (
-  `uid` int(11) NOT NULL,
-  `similar_user` varchar(300) NOT NULL,
-  `similarity` double NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tag`
 --
 
-CREATE TABLE IF NOT EXISTS `tag` (
+CREATE TABLE `tag` (
   `tag` varchar(100) NOT NULL,
-  `description` varchar(250) NOT NULL,
+  `description` varchar(250) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `time` int(11) NOT NULL,
-  `count` int(11) NOT NULL,
-  PRIMARY KEY (`tag`),
-  UNIQUE KEY `tag` (`tag`,`description`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user`
---
-
-CREATE TABLE IF NOT EXISTS `user` (
-  `uid` int(11) NOT NULL AUTO_INCREMENT,
-  `erd_handle` varchar(50) NOT NULL,
-  `cfs_handle` varchar(50) NOT NULL,
-  `erd_score` double NOT NULL,
-  `cfs_score` double NOT NULL,
-  PRIMARY KEY (`uid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9059 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_reco`
---
-
-CREATE TABLE IF NOT EXISTS `user_reco` (
-  `uid` varchar(100) NOT NULL,
-  `pid` varchar(100) NOT NULL,
-  `score` double NOT NULL,
-  `time_created` int(11) NOT NULL,
-  `time_updated` int(11) NOT NULL,
-  `is_deleted` int(11) NOT NULL,
-  `state` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_tag_score`
---
-
-CREATE TABLE IF NOT EXISTS `user_tag_score` (
-  `handle` varchar(100) NOT NULL,
-  `tag` varchar(100) NOT NULL,
-  `score` double NOT NULL
+  `count` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Constraints for dumped tables
+-- Dumping data for table `tag`
+--
+
+INSERT INTO `tag` (`tag`, `description`, `time`, `count`) VALUES
+('2-sat', '2-satisfiability', 1488295855, 8),
+('binary search', 'Binary search', 1488295855, 266),
+('bitmasks', 'Bitmasks', 1488295855, 104),
+('brute force', 'Brute force', 1488295855, 466),
+('chinese remainder theorem', 'Сhinese remainder theorem', 1488295855, 6),
+('combinatorics', 'Combinatorics', 1488295855, 154),
+('constructive algorithms', 'Constructive algorithms', 1488295855, 342),
+('data structures', 'Heaps, binary search trees, segment trees, hash tables, etc', 1488295855, 445),
+('dfs and similar', 'Dfs and similar', 1488295855, 290),
+('divide and conquer', 'Divide and Conquer', 1488295855, 61),
+('dp', 'Dynamic programming', 1488295855, 606),
+('dsu', 'Disjoint set union', 1488295855, 111),
+('expression parsing', 'Parsing expression grammar', 1488295855, 30),
+('fft', 'Fast Fourier transform', 1488295855, 11),
+('flows', 'Graph network flows', 1488295855, 40),
+('games', 'Games, Sprague–Grundy theorem', 1488295855, 54),
+('geometry', 'Geometry, computational geometry', 1488295855, 155),
+('graph matchings', 'Graph matchings, König\'s theorem, vertex cover of bipartite graph', 1488295855, 23),
+('graphs', 'Graphs', 1488295855, 226),
+('greedy', 'Greedy algorithms', 1488295855, 580),
+('hashing', 'Hashing, hashtables', 1488295855, 71),
+('implementation', 'Implementation problems, programming technics, simulation', 1488295855, 1014),
+('math', 'Mathematics including integration, differential equations, etc', 1488295855, 583),
+('matrices', 'Matrix multiplication, determinant, Cramer\'s rule, systems of linear equations', 1488295855, 45),
+('meet-in-the-middle', 'Meet-in-the-middle', 1488295855, 13),
+('number theory', 'Number theory: Euler function, GCD, divisibility, etc', 1488295855, 158),
+('probabilities', 'Probabilities, expected values, statistics, random variables, etc', 1488295855, 82),
+('schedules', 'Scheduling Algorithms', 1488295855, 5),
+('shortest paths', 'Shortest paths on weighted and unweighted graphs', 1488295855, 72),
+('sortings', 'Sortings, orderings', 1488295855, 281),
+('string suffix structures', 'Suffix arrays, suffix trees, suffix automatas, etc', 1488295855, 38),
+('strings', 'Prefix- and Z-functions, suffix structures, Knuth–Morris–Pratt algorithm, etc', 1488295855, 185),
+('ternary search', 'Ternary search', 1488295855, 16),
+('trees', 'Trees', 1488295855, 187),
+('two pointers', 'Two pointers', 1488295855, 122);
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Constraints for table `ptag`
+-- Indexes for table `tag`
 --
-ALTER TABLE `ptag`
-  ADD CONSTRAINT `ptag_ibfk_2` FOREIGN KEY (`tag`) REFERENCES `tag` (`tag`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `tag`
+  ADD PRIMARY KEY (`tag`),
+  ADD UNIQUE KEY `tag` (`tag`,`description`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
