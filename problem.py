@@ -254,6 +254,21 @@ class problem(base):
 		else:
 			self.log_results_db(sql, uid, "erd")
 
+	def find_similar_bckdr(self, uid = '0', user_difficulty = 0):
+			
+		sql = "	SELECT ptag.pid, ptag.tag \
+			   	FROM problem, ptag \
+			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
+				AND problem.pid IN \
+				(SELECT ptag.pid FROM problem, ptag WHERE ptag.tag IN \
+				(SELECT tag FROM ptag where pid = \'" + self.pid + "\') AND MID(problem.pid,1,3)=\'bkd\' ) \
+				AND problem.pid NOT IN (SELECT pid FROM activity WHERE MID(pid,1,3)=\'bkd\' AND uid = \'"+str(uid)+"\'))				
+		# print sql
+		if self.batchmode : 
+			return self.log_results_db_batchmode(sql, uid, "bkd")
+		else:
+			self.log_results_db(sql, uid, "bkd")
+
 	def find_similar_cfs(self, status = 0, uid = 0, user_difficulty = 0):
 		'''
     	Input 

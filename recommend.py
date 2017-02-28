@@ -86,6 +86,16 @@ class recommend():
 		os.write(self.result_file,res)
 		print res
 
+	def recommend_most_recent_bckdr(self):
+		bkd = problem(self.pid)
+		res = "\nShowing recommendations for problem: " + self.pid + "\n"
+		os.write(self.log_file,res)
+		print res 
+		res = json.dumps(bkd.find_similar_bckdr(self.status), indent=4, separators=(',', ': '))
+		os.write(self.log_file,res)
+		os.write(self.result_file,res)
+		print res
+
 	def recommend_similar_users(self, mode):
 		a = user(self.uid)
 		a.find_similar_users()
@@ -126,7 +136,7 @@ def main():
 	p = optparse.OptionParser(description="Cross platform recommendation system for Erdos and Codeforces")
 
 	p.add_option("--problem", "-p", help="Get list of problems similar to given problem through content based ( tag matching ) algorithm.")
-	p.add_option("--site", "-s", help="Site to give recommendations for. Choose from 'erd' and 'cfs'.", default="erd", action="store", type="choice", dest="site", choices=["erd","cfs"])
+	p.add_option("--site", "-s", help="Site to give recommendations for. Choose from 'erd', 'cfs' and 'bkd'", default="erd", action="store", type="choice", dest="site", choices=["erd","cfs","bkd"])
 	p.add_option("--status", "-t", help="Status of the given problem. 1 for correct submission and 0 otherwise.", default=0, action="store", type="choice", dest="status", choices=[1,0])
 	p.add_option("--user", "-u", help="Get list of users similar to given user and list of recommended problems through collaborative filtering ( neighbourhood matching ) algorithm.", default="")
 	p.add_option("--difficulty_mode", "-d", action="store" ,help="Difficulty mode of problems recommended for a user. 1 for difficult problems and 0 for easy problems.", type="choice", dest="difficulty_mode", choices=[1,0], default=0)
@@ -146,6 +156,12 @@ def main():
 			pid = "cfs" + options.problem
 			a = recommend(pid,options.status)
 			a.recommend_most_recent_cfs()
+
+		elif options.site == "bkd":
+			pid = "bkd" + options.problem
+			a = recommend(pid,options.status)
+			a.recommend_most_recent_bckdr()
+
 		flag = 1
 
 	if options.user:
