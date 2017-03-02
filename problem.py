@@ -255,7 +255,86 @@ class problem(base):
 			self.log_results_db(sql, uid, "erd")
 
 	def find_similar_bckdr(self, uid = '0', user_difficulty = 0):
-			
+		
+	    chal_sql = "SELECT `pid` FROM `problem`"
+	    cursor.execute(chal_sql)
+	    chals = cursor.fetchall()	
+	    chal_t_sql = "SELECT `pid` FROM `ptag`"
+	    tag_sql = "SELECT `tag` FROM `ptag`"
+	    cursor.execute(chal_t_sql)
+	    chal_t = cursor.fetchall()
+	    cursor.execute(tag_sql)
+	    tag = cursor.fetchall()
+
+	    tags_sql = "SELECT `tag` FROM `tag`"
+	    cursor.execute(tags_sql)
+	    tags_t = cursor.fetchall()
+
+	    def create_tag_matrix(p_id):
+	        i = 0
+	        chals_tag = []
+	        while(i<len(tags_t)):
+	            if tags_t[i] in tags(p_id):
+	                chals_tag = np.append(chals_tag,1)
+	            else:
+	                chals_tag = np.append(chals_tag,0)
+	            i = i+1
+	        return chals_tag
+
+	    def tag_matrix():
+	        i = 0 
+	        chal_tag = np.zeros((np.amax(chals)+1, len(tags_t)))
+	        while(i<len(chals)):
+	            chal_tag[chals[i]] = create_tag_matrix(chals[i])
+	            i = i+1
+	        return chal_tag
+
+	    def tags(p_id):
+	        tag_id = []
+	        i = 0
+	        while(i<len(chal_t)):
+	            if chal_t[i]==p_id:
+	                tag_id.append(tag[i])
+	            i = i+1
+	        return tag_id
+
+	    def sim_pearson(create_tag_matrix,p1,p2):
+	        # Get the list of mutually rated items
+	        si={}
+	        for item in create_tag_matrix[p1]:
+	            if item in create_tag_matrix[p2]: si[item]=1
+	        # Find the number of elements
+	        n=len(si)
+	        # if they are no ratings in common, return 0
+	        if n==0: return 0
+	        # Add up all the preferences
+	        sum1=sum([create_tag_matrix[p1][it] for it in si])
+	        sum2=sum([create_tag_matrix[p2][it] for it in si])
+	        # Sum up the squares
+	        sum1Sq=sum([pow(create_tag_matrix[p1][it],2) for it in si])
+	        sum2Sq=sum([pow(create_tag_matrix[p2][it],2) for it in si])
+	        # Sum up the products
+	        pSum=sum([create_tag_matrix[p1][it]*create_tag_matrix[p2][it] for it in si])
+	        # Calculate Pearson score
+	        num=pSum-(sum1*sum2/n)
+	        den=sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
+	        if den==0: return 0
+	        r=num/den
+	        return r
+
+
+	    # Returns the best matches for person from the prefs dictionary.
+	    # Number of results and similarity function are optional params.
+	    def topMatches(create_tag_matrix,person,n,similarity = sim_pearson):
+	        scores=[(similarity(create_tag_matrix,person,other),other)
+	        for other in chals if other!=person]
+	            # Sort the list so the highest scores appear at the top
+	        scores.sort( )
+	        scores.reverse( )
+	        return scores[0:n]
+
+	    print(topMatches(tag_matrix(),self.pid,3))
+        """
 		sql = "	SELECT ptag.pid, ptag.tag \
 			   	FROM problem, ptag \
 			   	WHERE problem.pid != \'" + self.pid + "\' AND problem.pid = ptag.pid  \
@@ -268,6 +347,7 @@ class problem(base):
 			return self.log_results_db_batchmode(sql, uid, "bkd")
 		else:
 			self.log_results_db(sql, uid, "bkd")
+        """ 
 
 	def find_similar_cfs(self, status = 0, uid = 0, user_difficulty = 0):
 		'''
