@@ -29,6 +29,7 @@ except ImportError as exc:
     print("Error: failed to import settings module ({})".format(exc))
 
 import math
+from math import sqrt
 import time
 import operator
 
@@ -66,7 +67,7 @@ class problem(base):
             self.remote_conn = db.connect('remote')
             self.remote_cursor = self.remote_conn.cursor()
         self.cursor = self.conn.cursor() 
-        self.exists_in_db = self.fetch_info()
+        # self.exists_in_db = self.fetch_info()
         # self.create_difficulty_matrix()
 
     def fetch_info(self):
@@ -260,7 +261,7 @@ class problem(base):
             self.log_results_db(sql, uid, "erd")
 
     def find_similar_bckdr(self, uid = '0', user_difficulty = 0):
-        
+        cursor = self.conn.cursor() 
         chal_sql = "SELECT `pid` FROM `problem`"
         cursor.execute(chal_sql)
         chals = cursor.fetchall()   
@@ -270,25 +271,23 @@ class problem(base):
         chal_t = cursor.fetchall()
         cursor.execute(tag_sql)
         tag = cursor.fetchall()
-
         tags_sql = "SELECT `tag` FROM `tag`"
         cursor.execute(tags_sql)
         tags_t = cursor.fetchall()
         
         def tags(p_id):
-            tag_id = []
-            i = 0
-            while(i<len(chal_t)):
-                if chal_t[i]==p_id:
-                    tag_id.append(tag[i])
-                i = i+1
-            return tag_id
+            tag_sql = "SELECT `tag` FROM `ptag` WHERE pid = \'" + p_id + "\'"
+            cursor = self.conn.cursor()
+            cursor.execute(tag_sql)
+            taggsf = cursor.fetchall()
+            return taggsf   
 
         def create_tag_matrix(p_id):
             i = 0
             chals_tag = []
             while(i<len(tags_t)):
-                if tags_t[i] in tags(p_id):
+                tags_match = tags(p_id)
+                if tags_t[i] in tags_match:
                     chals_tag = np.append(chals_tag,1)
                 else:
                     chals_tag = np.append(chals_tag,0)
@@ -298,10 +297,10 @@ class problem(base):
         def tag_dict():
             dict_tag = {}
             for i in chals:
-                dict_tag[i] = {}
+                dict_tag[i[0]] = {}
                 k = 0
                 for j in tags_t:
-                    dict_tag[i][j] = create_tag_matrix(i)[k]
+                    dict_tag[i[0]][j[0]] = create_tag_matrix(i[0])[k]
                     k = k+1
             return dict_tag
 
@@ -335,14 +334,14 @@ class problem(base):
         # Returns the best matches for person from the prefs dictionary.
         # Number of results and similarity function are optional params.
         def topMatches(create_tag_matrix,person,n,similarity = sim_pearson):
-            scores=[(similarity(create_tag_matrix,person,other),other)
-            for other in chals if other!=person]
+            scores=[(similarity(create_tag_matrix,person,other[0]),other[0])
+            for other in chals if other[0]!=person]
                 # Sort the list so the highest scores appear at the top
             scores.sort( )
             scores.reverse( )
             return scores[0:n]
 
-        print(topMatches(tag_matrix(),self.pid,3))
+        print(topMatches(tag_dict(),self.pid,3))
         """
         sql = " SELECT ptag.pid, ptag.tag \
                 FROM problem, ptag \
