@@ -66,7 +66,7 @@ class problem(base):
             self.remote_conn = db.connect('remote')
             self.remote_cursor = self.remote_conn.cursor()
         self.cursor = self.conn.cursor() 
-        # self.exists_in_db = self.fetch_info()
+        self.exists_in_db = self.fetch_info()
         # self.create_difficulty_matrix()
 
     def fetch_info(self):
@@ -260,8 +260,7 @@ class problem(base):
             self.log_results_db(sql, uid, "erd")
 
     def find_similar_bckdr(self, uid = '0', user_difficulty = 0):
-        conn = db.connect()
-        cursor=conn.cursor()
+        
         chal_sql = "SELECT `pid` FROM `problem`"
         cursor.execute(chal_sql)
         chals = cursor.fetchall()   
@@ -274,7 +273,16 @@ class problem(base):
 
         tags_sql = "SELECT `tag` FROM `tag`"
         cursor.execute(tags_sql)
-        tags_t = cursor.fetchall()  
+        tags_t = cursor.fetchall()
+        
+        def tags(p_id):
+            tag_id = []
+            i = 0
+            while(i<len(chal_t)):
+                if chal_t[i]==p_id:
+                    tag_id.append(tag[i])
+                i = i+1
+            return tag_id
 
         def create_tag_matrix(p_id):
             i = 0
@@ -287,22 +295,17 @@ class problem(base):
                 i = i+1
             return chals_tag
 
-        def tag_matrix():
-            i = 0 
-            chal_tag = np.zeros((np.amax(chals)+1, len(tags_t)))
-            while(i<len(chals)):
-                chal_tag[chals[i]] = create_tag_matrix(chals[i])
-                i = i+1
-            return chal_tag
+        def tag_dict():
+            dict_tag = {}
+            for i in chals:
+                dict_tag[i] = {}
+                k = 0
+                for j in tags_t:
+                    dict_tag[i][j] = create_tag_matrix(i)[k]
+                    k = k+1
+            return dict_tag
 
-        def tags(p_id):
-            tag_id = []
-            i = 0
-            while(i<len(chal_t)):
-                if chal_t[i]==p_id:
-                    tag_id.append(tag[i])
-                i = i+1
-            return tag_id
+
 
         def sim_pearson(create_tag_matrix,p1,p2):
             # Get the list of mutually rated items
