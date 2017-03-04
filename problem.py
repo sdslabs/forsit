@@ -341,7 +341,10 @@ class problem(base):
             scores.reverse( )
             return scores[0:n]
 
-        print(topMatches(tag_dict(),self.pid,3))
+        reco_problems = topMatches(tag_dict(),self.pid,3)
+        for reco in reco_problems:
+            sql_insert  = ' INSERT INTO problem_reco (base_pid , reco_pid, score) VALUES (self.pid, reco[1],reco[0])'
+            cursor.execute(sql_insert)
         """
         sql = " SELECT ptag.pid, ptag.tag \
                 FROM problem, ptag \
