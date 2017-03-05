@@ -44,12 +44,12 @@ headers = {'X-Requested-With': 'XMLHttpRequest'}
 
 def fetch_problems():
 
-    tag_orignal_sql = "INSERT INTO `tag` (`tag`, `description`) VALUES "
-    ptag_original_sql = "INSERT INTO `ptag` (`pid`, `tag`) VALUES "
-    problem_original_sql = "INSERT INTO `problem` (`pid`, `name`) VALUES "
+    tag_orignal_sql = "INSERT IGNORE INTO `tag` (`tag`, `description`) VALUES "
+    ptag_original_sql = "INSERT IGNORE INTO `ptag` (`pid`, `tag`) VALUES "
+    problem_original_sql = "INSERT IGNORE INTO `problem` (`pid`, `name`) VALUES "
     problem_list = []
     problem_db = {}
-    for i in (0, 12):
+    for i in range(0, 12):
         fetch_url = base_url + "/challenges?page=" + str(i)
         data = requests.get(fetch_url).text
         soup = BeautifulSoup(data)
@@ -65,6 +65,8 @@ def fetch_problems():
         data = requests.get(fetch_url,headers=headers).json()
         for tag in data:
             ptag_sql = ptag_original_sql + "('"+code+"', '"+tag+"')"
+            tag_sql = tag_orignal_sql + "('"+tag+"', '"+tag+"')"
             db.write(ptag_sql, cursor, conn)
+            db.write(tag_sql, cursor, conn)
 
 fetch_problems()    
