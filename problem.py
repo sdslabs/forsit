@@ -342,9 +342,18 @@ class problem(base):
             return scores[0:n]
 
         reco_problems = topMatches(tag_dict(),self.pid,3)
+        name_sql = 'SELECT name FROM problem WHERE pid = %s'
+        print self.pid
+        cursor.execute(name_sql, [self.pid])
+        prob_name = cursor.fetchall()
+        print prob_name
         for reco in reco_problems:
-            sql_insert  = ' INSERT INTO problem_reco (base_pid , reco_pid, score) VALUES (self.pid, reco[1],reco[0])'
-            cursor.execute(sql_insert)
+            cursor.execute(name_sql, [reco[1]])
+            other_prob_name = cursor.fetchall()
+            print other_prob_name
+            sql_insert  = 'INSERT INTO problem_reco (base_pid , reco_pid, score) VALUES (%s,%s,%s)'
+            cursor.execute(sql_insert,(prob_name[0], other_prob_name[0], reco[0]))
+            self.conn.commit()
         """
         sql = " SELECT ptag.pid, ptag.tag \
                 FROM problem, ptag \
